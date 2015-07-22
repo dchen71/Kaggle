@@ -50,6 +50,28 @@ colnames(DescriptionWords) = make.names(colnames(DescriptionWords))
 wordCor = cor(DescriptionWords)
 corrplot(wordCor)
 
+#Remove low importance words, < 2
+testCor = data.frame(DescriptionWords$box)
+testCor$come = DescriptionWords$come
+testCor$condit = DescriptionWords$condit
+testCor$cosmet = DescriptionWords$cosmet
+testCor$good = DescriptionWords$good
+testCor$great = DescriptionWords$great
+testCor$ipad = DescriptionWords$ipad
+testCor$new = DescriptionWords$new
+testCor$onli = DescriptionWords$onli
+testCor$scratch = DescriptionWords$scratch
+testCor$screen = DescriptionWords$screen
+testCor$still = DescriptionWords$still
+testCor$this = DescriptionWords$this
+testCor$use = DescriptionWords$use
+testCor$veri = DescriptionWords$veri
+testCor$work = DescriptionWords$work
+
+#Creates a correlation plot of the > 2 imporance words
+wordCor = cor(testCor)
+corrplot(wordCor)
+
 #Merge datasets together and break again in order to get equal factors
 eBay = merge(eBayTest,eBayTrain, all.x = TRUE, all.y = TRUE, sort = FALSE)
 
@@ -115,7 +137,7 @@ SoldTrain = subset(DescriptionWordsTrain, spl==TRUE)
 SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
 
 #Checks the AUC value, 
-testRF = randomForest(as.factor(sold) ~ ., data=SoldTrain)
+testRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color, data=SoldTrain)
 predicttestRF = predict(testRF, newdata=SoldTest)
 
 predicttestRF = as.numeric(predicttestRF)
@@ -129,13 +151,11 @@ importance(testRF)
 #AUC .825 -> .7594?
 #testRF = randomForest(as.factor(sold) ~ case + charger + condition + crack + dent + excellent + great + new + perfect + scratch + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
 
-
 #Setup the randomforest
-descriptRF = randomForest(as.factor(sold) ~ case + charger + condition + crack + dent + excellent + great + new + perfect + scratch + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
+descriptRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color, data=DescriptionWordsTrain)
 
 # Make predictions:
 predictRF = predict(descriptRF, newdata=DescriptionWordsTest)
-
 
 #Preps file for kaggle submission
 MySubmission = data.frame(UniqueID = eBayTest$UniqueID, Probability1 = predictRF)
