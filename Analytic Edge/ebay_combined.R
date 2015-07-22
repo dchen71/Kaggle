@@ -4,10 +4,12 @@
 eBayTrain = read.csv("eBayiPadTrain.csv", stringsAsFactors=FALSE)
 eBayTest = read.csv("eBayiPadTest.csv", stringsAsFactors=FALSE)
 
-#Loads TM,ROCR, randomForest
+#Loads TM,ROCR, randomForest, corrplot
 library(tm)
 library(ROCR)
 library(randomForest)
+library(corplot)
+library(caTools)
 
 #Converts all to factors
 test = lapply(eBayTest, as.factor)
@@ -24,32 +26,6 @@ levels(test$carrier) = levels(train$carrier)
 levels(test$color) = levels(train$color)
 levels(test$storage) = levels(train$storage)
 levels(test$productline) = levels(train$productline)
-
-#Setup the randomforest
-descriptRF = randomForest(sold ~ biddable + startprice  + productline + condition 
-                          + carrier + color + storage, data=train)
-
-#Test model for AUC:
-predictRF = predict(descriptRF, newdata=train)
-
-#Checks the AUC value
-predictRF = as.numeric(predictRF)
-ROCRpred = prediction(predictRF, train$sold)
-as.numeric(performance(ROCRpred, "auc")@y.values)
-importance(descriptRF)
-
-#Revised RF based on importance from before, auc prior was ~.93
-testRF = randomForest(sold ~ productline + condition 
-                      + carrier + color + storage, data=train)
-
-#Test prediction for AUC:
-predicttestRF = predict(testRF, newdata=train)
-
-#Checks the AUC value, ~.88
-predicttestRF = as.numeric(predicttestRF)
-ROCRpred = prediction(predicttestRF, train$sold)
-as.numeric(performance(ROCRpred, "auc")@y.values)
-importance(testRF)
 
 #Create a corpus from the description variable
 CorpusDescription = Corpus(VectorSource(c(eBayTrain$description, eBayTest$description)))
@@ -69,6 +45,10 @@ DescriptionWords = as.data.frame(as.matrix(sparse))
 
 #Ensure variable names are readable for R
 colnames(DescriptionWords) = make.names(colnames(DescriptionWords))
+
+#Creates a correlation plot of the word variables
+wordCor = cor(DescriptionWords)
+corrplot(wordCor)
 
 #Merge datasets together and break again in order to get equal factors
 eBay = merge(eBayTest,eBayTrain, all.x = TRUE, all.y = TRUE, sort = FALSE)
@@ -92,8 +72,7 @@ DescriptionWordsTrain = head(DescriptionWords, nrow(eBayTrain))
 DescriptionWordsTest = tail(DescriptionWords, nrow(eBayTest))
 
 #Add dependent variable to the training set
-#Add variables biddable + startprice  + productline + condition, wordcount
-#Converts data to factor
+#Add variables from eBayTrain and wordcount to training/testing sets
 DescriptionWordsTrain$sold = eBayTrain$sold
 
 DescriptionWordsTrain$WordCount = eBayTrain$WordCount
@@ -101,6 +80,15 @@ DescriptionWordsTest$WordCount = eBayTest$WordCount
 
 DescriptionWordsTrain$biddable = eBayTrain$biddable
 DescriptionWordsTest$biddable = eBayTest$biddable
+
+DescriptionWordsTrain$color = eBayTrain$color
+DescriptionWordsTest$color = eBayTest$color
+
+DescriptionWordsTrain$storage = eBayTrain$storage
+DescriptionWordsTest$storage = eBayTest$storage
+
+DescriptionWordsTrain$carrier = eBayTrain$carrier
+DescriptionWordsTest$carrier = eBayTest$carrier
 
 DescriptionWordsTrain$condition = eBayTrain$condition
 DescriptionWordsTest$condition = eBayTest$condition
@@ -120,17 +108,30 @@ DescriptionWordsTrain$carrier = eBayTrain$carrier
 DescriptionWordsTest$color = eBayTest$color
 DescriptionWordsTrain$color = eBayTrain$color
 
+# Split the data
+set.seed(50)
+spl = sample.split(DescriptionWordsTrain$sold, SplitRatio = 0.6)
+SoldTrain = subset(DescriptionWordsTrain, spl==TRUE)
+SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
+
 #Checks the AUC value, 
-testRF = randomForest(as.factor(sold) ~ apple + back + box + brand + case + charger + condition + clean + corner + cosmet + crack + dent + excellent + fulli + functional + good + great + includ + ipad + light + mint + new + normal + perfect + scratch + screen + scuff + tear + use + work + productline + startprice, data=DescriptionWordsTrain)
-predicttestRF = predict(testRF, newdata=DescriptionWordsTrain)
+testRF = randomForest(as.factor(sold) ~ ., data=SoldTrain)
+predicttestRF = predict(testRF, newdata=SoldTest)
 
 predicttestRF = as.numeric(predicttestRF)
-ROCRpred = prediction(predicttestRF, DescriptionWordsTrain$sold)
+ROCRpred = prediction(predicttestRF, SoldTest$sold)
 as.numeric(performance(ROCRpred, "auc")@y.values)
 importance(testRF)
 
+#AUC .85 -> .76097
+#testRF = randomForest(as.factor(sold) ~ box + case + charger + condition + crack + dent + excellent + functional + good + great + includ + light + mint + new + normal + perfect + scratch + screen + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
+
+#AUC .825 -> .7594?
+#testRF = randomForest(as.factor(sold) ~ case + charger + condition + crack + dent + excellent + great + new + perfect + scratch + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
+
+
 #Setup the randomforest
-descriptRF = randomForest(as.factor(sold) ~ ., data=DescriptionWordsTrain)
+descriptRF = randomForest(as.factor(sold) ~ case + charger + condition + crack + dent + excellent + great + new + perfect + scratch + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
 
 # Make predictions:
 predictRF = predict(descriptRF, newdata=DescriptionWordsTest)
