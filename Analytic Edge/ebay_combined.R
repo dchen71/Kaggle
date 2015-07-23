@@ -45,32 +45,113 @@ total$storage = as.factor(total$storage)
 total$productline = as.factor(total$productline)
 total$sold = as.factor(total$sold)
 
-#Want to build average price sold /model/wireless/storage
-
 #Avgvalue based on avg of bought within productline/
 total$avgvalue = 0
-total$avgvalue[total$productline == 'iPad 1'] = mean(train_mod$startprice[train_mod$productline == 'iPad 1' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'iPad 2'] = mean(train_mod$startprice[train_mod$productline == 'iPad 2' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'iPad 3'] = mean(train_mod$startprice[train_mod$productline == 'iPad 3' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'iPad 4'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'iPad mini'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'iPad mini 2'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini 2' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'iPad mini 3'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini 3' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'iPad Air'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'iPad Air 2'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$sold == 1])
-total$avgvalue[total$productline == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$sold == 1])
-total$avgvalue = as.factor(total$avgvalue)
+for(n in 1:3){
+    for(i in 0:1){
+        total$avgvalue[total$productline == paste('iPad',n) & total$cellular == i & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == paste('iPad',n) & train_mod$cellular == i & train_mod$storage == '16' & train_mod$sold == 1])    
+        total$avgvalue[total$productline == paste('iPad',n) & total$cellular == i & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == paste('iPad',n) & train_mod$cellular == i & train_mod$storage == '32' & train_mod$sold == 1])    
+        total$avgvalue[total$productline == paste('iPad',n) & total$cellular == i & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == paste('iPad',n) & train_mod$cellular == i & train_mod$storage == '64' & train_mod$sold == 1])    
+        total$avgvalue[total$productline == paste('iPad',n) & total$cellular == i & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == paste('iPad',n) & train_mod$cellular == i & train_mod$storage == 'Unknown' & train_mod$sold == 1])       
+    }    
+}
 
-#iPad 1
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 0 total$storage == 16] = 499
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 1 total$storage == 16] = 629
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 0 total$storage == 32] = 599
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 1 total$storage == 32] = 699
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 0 total$storage == 64] = 729
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 1 total$storage == 64] = 829
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 0 total$storage == 'Unknown'] = 499
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 1 total$storage == 'Unknown'] = 629
-#total$msrp[total$productline == 'iPad 1' & total$cellular == 'Unknown' total$storage == 'Unknown'] = 499
+for(n in 1:3){
+    total$avgvalue[total$productline == paste('iPad',n) & total$cellular == 'Unknown' & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == paste('iPad',n) & train_mod$cellular == 'Unknown' & train_mod$storage == '16' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == paste('iPad',n) & total$cellular == 'Unknown' & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == paste('iPad',n) & train_mod$cellular == 'Unknown' & train_mod$storage == '32' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == paste('iPad',n) & total$cellular == 'Unknown' & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == paste('iPad',n) & train_mod$cellular == 'Unknown' & train_mod$storage == '64' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == paste('iPad',n) & total$cellular == 'Unknown' & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == paste('iPad',n) & train_mod$cellular == 'Unknown' & train_mod$storage == 'Unknown' & train_mod$sold == 1])        
+}
+
+for(i in 0:1){
+    total$avgvalue[total$productline == 'iPad 4' & total$cellular == i & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == i & train_mod$storage == '16' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad 4' & total$cellular == i & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == i & train_mod$storage == '32' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad 4' & total$cellular == i & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == i & train_mod$storage == '64' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad 4' & total$cellular == i & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == i & train_mod$storage == '128' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad 4' & total$cellular == i & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == i & train_mod$storage == 'Unknown' & train_mod$sold == 1])       
+}
+
+total$avgvalue[total$productline == 'iPad 4' & total$cellular == 'Unknown' & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == 'Unknown' & train_mod$storage == '16' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad 4' & total$cellular == 'Unknown' & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == 'Unknown' & train_mod$storage == '32' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad 4' & total$cellular == 'Unknown' & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == 'Unknown' & train_mod$storage == '64' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad 4' & total$cellular == 'Unknown' & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == 'Unknown' & train_mod$storage == '128' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad 4' & total$cellular == 'Unknown' & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$cellular == 'Unknown' & train_mod$storage == 'Unknown' & train_mod$sold == 1])        
+
+for(i in 0:1){
+    total$avgvalue[total$productline == 'iPad mini' & total$cellular == i & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == i & train_mod$storage == '16' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad mini' & total$cellular == i & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == i & train_mod$storage == '32' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad mini' & total$cellular == i & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == i & train_mod$storage == '64' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad mini' & total$cellular == i & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == i & train_mod$storage == '128' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad mini' & total$cellular == i & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == i & train_mod$storage == 'Unknown' & train_mod$sold == 1])       
+}
+
+total$avgvalue[total$productline == 'iPad mini' & total$cellular == 'Unknown' & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == 'Unknown' & train_mod$storage == '16' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad mini' & total$cellular == 'Unknown' & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == 'Unknown' & train_mod$storage == '32' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad mini' & total$cellular == 'Unknown' & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == 'Unknown' & train_mod$storage == '64' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad mini' & total$cellular == 'Unknown' & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == 'Unknown' & train_mod$storage == '128' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad mini' & total$cellular == 'Unknown' & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$cellular == 'Unknown' & train_mod$storage == 'Unknown' & train_mod$sold == 1])        
+
+for(n in 2:3){
+    for(i in 0:1){
+        total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == i & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == i & train_mod$storage == '16' & train_mod$sold == 1])    
+        total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == i & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == i & train_mod$storage == '32' & train_mod$sold == 1])    
+        total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == i & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == i & train_mod$storage == '64' & train_mod$sold == 1])    
+        total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == i & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == i & train_mod$storage == '128' & train_mod$sold == 1])    
+        total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == i & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == i & train_mod$storage == 'Unknown' & train_mod$sold == 1])       
+    }    
+}
+
+for(n in 2:3){
+    total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == 'Unknown' & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == 'Unknown' & train_mod$storage == '16' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == 'Unknown' & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == 'Unknown' & train_mod$storage == '32' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == 'Unknown' & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == 'Unknown' & train_mod$storage == '64' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == 'Unknown' & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == 'Unknown' & train_mod$storage == '128' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == paste('iPad mini',n) & total$cellular == 'Unknown' & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == paste('iPad mini',n) & train_mod$cellular == 'Unknown' & train_mod$storage == 'Unknown' & train_mod$sold == 1])        
+}
+
+for(i in 0:1){
+    total$avgvalue[total$productline == 'iPad Air' & total$cellular == i & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == i & train_mod$storage == '16' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad Air' & total$cellular == i & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == i & train_mod$storage == '32' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad Air' & total$cellular == i & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == i & train_mod$storage == '64' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad Air' & total$cellular == i & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == i & train_mod$storage == '128' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad Air' & total$cellular == i & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == i & train_mod$storage == 'Unknown' & train_mod$sold == 1])       
+}
+
+total$avgvalue[total$productline == 'iPad Air' & total$cellular == 'Unknown' & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == 'Unknown' & train_mod$storage == '16' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad Air' & total$cellular == 'Unknown' & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == 'Unknown' & train_mod$storage == '32' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad Air' & total$cellular == 'Unknown' & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == 'Unknown' & train_mod$storage == '64' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad Air' & total$cellular == 'Unknown' & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == 'Unknown' & train_mod$storage == '128' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad Air' & total$cellular == 'Unknown' & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$cellular == 'Unknown' & train_mod$storage == 'Unknown' & train_mod$sold == 1])        
+
+for(i in 0:1){
+    total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == i & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == i & train_mod$storage == '16' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == i & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == i & train_mod$storage == '32' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == i & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == i & train_mod$storage == '64' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == i & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == i & train_mod$storage == '128' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == i & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == i & train_mod$storage == 'Unknown' & train_mod$sold == 1])       
+}
+
+total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == 'Unknown' & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == 'Unknown' & train_mod$storage == '16' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == 'Unknown' & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == 'Unknown' & train_mod$storage == '32' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == 'Unknown' & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == 'Unknown' & train_mod$storage == '64' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == 'Unknown' & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == 'Unknown' & train_mod$storage == '128' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'iPad Air 2' & total$cellular == 'Unknown' & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$cellular == 'Unknown' & train_mod$storage == 'Unknown' & train_mod$sold == 1])        
+
+for(i in 0:1){
+    total$avgvalue[total$productline == 'Unknown' & total$cellular == i & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == i & train_mod$storage == '16' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'Unknown' & total$cellular == i & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == i & train_mod$storage == '32' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'Unknown' & total$cellular == i & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == i & train_mod$storage == '64' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'Unknown' & total$cellular == i & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == i & train_mod$storage == '128' & train_mod$sold == 1])    
+    total$avgvalue[total$productline == 'Unknown' & total$cellular == i & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == i & train_mod$storage == 'Unknown' & train_mod$sold == 1])       
+}
+
+total$avgvalue[total$productline == 'Unknown' & total$cellular == 'Unknown' & total$storage == '16'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == 'Unknown' & train_mod$storage == '16' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'Unknown' & total$cellular == 'Unknown' & total$storage == '32'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == 'Unknown' & train_mod$storage == '32' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'Unknown' & total$cellular == 'Unknown' & total$storage == '64'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == 'Unknown' & train_mod$storage == '64' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'Unknown' & total$cellular == 'Unknown' & total$storage == '128'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == 'Unknown' & train_mod$storage == '128' & train_mod$sold == 1])    
+total$avgvalue[total$productline == 'Unknown' & total$cellular == 'Unknown' & total$storage == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$cellular == 'Unknown' & train_mod$storage == 'Unknown' & train_mod$sold == 1])        
+
+total$avgvalue = as.factor(total$avgvalue)
 
 #Split total back into training and testing for corpus
 train = head(total,nrow(eBayTrain))
