@@ -30,12 +30,16 @@ total$Fare[which(is.na(total$Fare))] = meanclass3
 #Calculates total family members of a person
 total$family = total$SibSp + total$Parch
 
+#Adding Mother
+total$Mother<-0
+total$Mother[full$Sex=='female' & full$Parch>0 & full$Age>17 & full$Title!='Miss']<-1
+
 #Determines if person is a child(age < 18)
 total$child = total$Age < 18
 
 # Make the title column
 for(i in 1:length(total$Name)){
-    total$title[i] <- 'None'
+    total$title[i] = 'None'
     if(grepl('Mr.', total$Name[i])){total$title[i] <- 'Mr'}
     if(grepl('Miss.', total$Name[i])){total$title[i] <- 'Miss'}
     if(grepl('Mrs.', total$Name[i])){total$title[i] <- 'Mrs'}
@@ -44,6 +48,22 @@ for(i in 1:length(total$Name)){
     if(grepl('Major.', total$Name[i])){total$title[i] <- 'Major'}
 }
 total$title <- as.factor(total$title)
+
+# Clean up the cabin values
+total$Cabin_clean = 0
+
+for(i in 1:length(total$Cabin)){
+    
+    if(grepl("A", total$Cabin[i])){total$Cabin_clean[i] <- 1}
+    if(grepl("B", total$Cabin[i])){total$Cabin_clean[i] <- 2}
+    if(grepl("C", total$Cabin[i])){total$Cabin_clean[i] <- 3}
+    if(grepl("D", total$Cabin[i])){total$Cabin_clean[i] <- 4}
+    if(grepl("F", total$Cabin[i])){total$Cabin_clean[i] <- 5}
+    if(grepl("E", total$Cabin[i])){total$Cabin_clean[i] <- 5}
+    #else{total$Cabin_clean[i] <- 0}
+}
+table(total$Cabin_clean)
+total$Cabin_clean <- as.integer(total$Cabin_clean)
 
 #Convert to factors
 total$Sex = as.factor(total$Sex)
