@@ -1,34 +1,79 @@
 # KAGGLE COMPETITION - DEALING WITH THE TEXT DATA
 
+##
+## Preprocessing
+##
+
 #Reads the training and test data
 eBayTrain = read.csv("eBayiPadTrain.csv", stringsAsFactors=FALSE)
 eBayTest = read.csv("eBayiPadTest.csv", stringsAsFactors=FALSE)
+train_mod = eBayTrain
 
 #Loads TM,ROCR, randomForest, corrplot
 library(tm)
 library(ROCR)
 library(randomForest)
-library(corplot)
+library(corrplot)
 library(caTools)
 
-#Converts all to factors
-test = lapply(eBayTest, as.factor)
-train = lapply(eBayTrain,as.factor)
+#Merge the dataset into a single data frame
+total = merge(eBayTrain, eBayTest, all.x=TRUE, all.y=TRUE, sort=FALSE)
 
-test$startprice = as.numeric(test$startprice)
-train$startprice = as.numeric(train$startprice)
+#Clean up ipad mini retina(might be ipad mini 3) and set all to unknown
+train_mod$productline[train_mod$productline == 'iPad mini Retina'] = 'Unknown'
+total$productline[total$productline == 'iPad mini Retina'] = 'Unknown'
 
-levels(test$description) = levels(train$description)
-levels(test$biddable) = levels(train$biddable)
-levels(test$condition) = levels(train$condition)
-levels(test$cellular) = levels(train$cellular)
-levels(test$carrier) = levels(train$carrier)
-levels(test$color) = levels(train$color)
-levels(test$storage) = levels(train$storage)
-levels(test$productline) = levels(train$productline)
+#Set unknown ipad 5 to unknown
+total$productline[total$productline == 'iPad 5'] = 'Unknown'
+train_mod$productline[total$productline == 'iPad 5'] = 'Unknown'
+
+#Convert to factors
+total$biddable = as.factor(total$biddable)
+total$condition = as.factor(total$condition)
+total$cellular = as.factor(total$cellular)
+total$carrier = as.factor(total$carrier)
+total$color = as.factor(total$color)
+total$storage = as.factor(total$storage)
+total$productline = as.factor(total$productline)
+total$sold = as.factor(total$sold)
+
+#Want to build average price sold /model/wireless/storage
+
+#Avgvalue based on avg of bought within productline/
+total$avgvalue = 0
+total$avgvalue[total$productline == 'iPad 1'] = mean(train_mod$startprice[train_mod$productline == 'iPad 1' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'iPad 2'] = mean(train_mod$startprice[train_mod$productline == 'iPad 2' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'iPad 3'] = mean(train_mod$startprice[train_mod$productline == 'iPad 3' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'iPad 4'] = mean(train_mod$startprice[train_mod$productline == 'iPad 4' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'iPad mini'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'iPad mini 2'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini 2' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'iPad mini 3'] = mean(train_mod$startprice[train_mod$productline == 'iPad mini 3' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'iPad Air'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'iPad Air 2'] = mean(train_mod$startprice[train_mod$productline == 'iPad Air 2' & train_mod$sold == 1])
+total$avgvalue[total$productline == 'Unknown'] = mean(train_mod$startprice[train_mod$productline == 'Unknown' & train_mod$sold == 1])
+total$avgvalue = as.factor(total$avgvalue)
+
+#iPad 1
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 0 total$storage == 16] = 499
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 1 total$storage == 16] = 629
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 0 total$storage == 32] = 599
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 1 total$storage == 32] = 699
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 0 total$storage == 64] = 729
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 1 total$storage == 64] = 829
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 0 total$storage == 'Unknown'] = 499
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 1 total$storage == 'Unknown'] = 629
+#total$msrp[total$productline == 'iPad 1' & total$cellular == 'Unknown' total$storage == 'Unknown'] = 499
+
+#Split total back into training and testing for corpus
+train = head(total,nrow(eBayTrain))
+test = tail(total, nrow(eBayTest))
+
+##
+## CORPUS CREATION
+##
 
 #Create a corpus from the description variable
-CorpusDescription = Corpus(VectorSource(c(eBayTrain$description, eBayTest$description)))
+CorpusDescription = Corpus(VectorSource(c(train$description, test$description)))
 
 #Preprocessing of Corpus based on description
 CorpusDescription = tm_map(CorpusDescription, content_transformer(tolower), lazy=TRUE)
@@ -130,6 +175,9 @@ DescriptionWordsTrain$carrier = eBayTrain$carrier
 DescriptionWordsTest$color = eBayTest$color
 DescriptionWordsTrain$color = eBayTrain$color
 
+DescriptionWordsTest$avgvalue = test$color
+DescriptionWordsTrain$avgvalue = train$color
+
 # Split the data
 set.seed(50)
 spl = sample.split(DescriptionWordsTrain$sold, SplitRatio = 0.6)
@@ -137,8 +185,8 @@ SoldTrain = subset(DescriptionWordsTrain, spl==TRUE)
 SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
 
 #Checks the AUC value, 
-testRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color, data=SoldTrain)
-predicttestRF = predict(testRF, newdata=SoldTest)
+testRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
+predicttestRF = predict(testRF, newdata=SoldTest, type="class")
 
 predicttestRF = as.numeric(predicttestRF)
 ROCRpred = prediction(predicttestRF, SoldTest$sold)
@@ -152,10 +200,10 @@ importance(testRF)
 #testRF = randomForest(as.factor(sold) ~ case + charger + condition + crack + dent + excellent + great + new + perfect + scratch + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
 
 #Setup the randomforest
-descriptRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color, data=DescriptionWordsTrain)
+descriptRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color + avgvalue, data=DescriptionWordsTrain, ntree=500)
 
 # Make predictions:
-predictRF = predict(descriptRF, newdata=DescriptionWordsTest)
+predictRF = predict(descriptRF, newdata=DescriptionWordsTest, type="class")
 
 #Preps file for kaggle submission
 MySubmission = data.frame(UniqueID = eBayTest$UniqueID, Probability1 = predictRF)
