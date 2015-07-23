@@ -16,10 +16,6 @@ set.seed(100)
 ## Data Processing
 ##
 
-#Convert male = 0, female = 1 for sex
-total$Sex[which(total$Sex == 'female')] = 1
-total$Sex[which(total$Sex == 'male')] = 0
-
 #Age NA take the average age of all passengers
 meanAge = mean(total$Age, na.rm=TRUE)
 total$Age[which(is.na(total$Age))] = meanAge
@@ -34,8 +30,20 @@ total$Fare[which(is.na(total$Fare))] = meanclass3
 #Calculates total family members of a person
 total$family = total$SibSp + total$Parch
 
-#Determines if person is a child(age < 18), 0 = no, 1 = yes
+#Determines if person is a child(age < 18)
 total$child = total$Age < 18
+
+# Make the title column
+for(i in 1:length(total$Name)){
+    total$title[i] <- 'None'
+    if(grepl('Mr.', total$Name[i])){total$title[i] <- 'Mr'}
+    if(grepl('Miss.', total$Name[i])){total$title[i] <- 'Miss'}
+    if(grepl('Mrs.', total$Name[i])){total$title[i] <- 'Mrs'}
+    if(grepl('Master.', total$Name[i])){total$title[i] <- 'Master'}
+    if(grepl('Dr.', total$Name[i])){total$title[i] <- 'Doctor'}
+    if(grepl('Major.', total$Name[i])){total$title[i] <- 'Major'}
+}
+total$title <- as.factor(total$title)
 
 #Convert to factors
 total$Sex = as.factor(total$Sex)
@@ -55,14 +63,9 @@ test = tail(total, nrow(test))
 #classRF = randomForest(as.factor(Survived) ~ Sex + Age + Fare, data=train)
 #PredTest = predict(classRF, newdata=test)
 
-#RF pclass,sex,age,sibsp,parch,fare,family,child,embarked => .785
-classRF = randomForest(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + family + child + Embarked, data=train,ntree=2000, importance=TRUE)
-PredTest = predict(classRF, newdata=test)
-
-#Testing conditional random forest example
-library(party)
-classRF = cforest(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + family + child, data=train, controls= cforest_unbiased(ntree=2000, mtry=3))
-PredTest <- predict(classRF, test, OOB=TRUE, type = "response")
+#RF pclass,sex,age,sibsp,parch,fare,family,child,embarked, title => .789
+classRF = randomForest(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + family + child + Embarked + title, data=train,ntree=2000, importance=TRUE)
+PredTest = predict(classRF, newdata=test, type="class")
 
 #Preps file for kaggle submission
 MySubmission = data.frame(PassengerID = test$PassengerId, Survived = PredTest)
