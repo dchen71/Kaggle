@@ -3,13 +3,13 @@
 #Reads the training and test data and creates a merge data set
 train = read.csv("train.csv", stringsAsFactors=FALSE)
 test = read.csv("test.csv", stringsAsFactors=FALSE)
-total = merge(train,test,all.x=TRUE, all.y=TRUE)
+total = merge(train,test,all.x=TRUE, all.y=TRUE, sort= FALSE)
 
 #Loads packages to use
 library(ROCR)
 library(randomForest)
 
-#Sets seed for consistent results
+#Sets seed for reproducibility
 set.seed(100)
 
 ##
@@ -24,6 +24,9 @@ total$Sex[which(total$Sex == 'male')] = 0
 meanAge = mean(total$Age, na.rm=TRUE)
 total$Age[which(is.na(total$Age))] = meanAge
 
+#Convert the blank embarked values into the most common one, S
+total$Embarked[total$Embarked == ''] = 'S'
+
 #Fix NA of test$Fare based on mean of pclass 3
 meanclass3 = mean(total$Fare[total$Pclass == 3], na.rm = TRUE)
 total$Fare[which(is.na(total$Fare))] = meanclass3
@@ -33,19 +36,12 @@ total$family = total$SibSp + total$Parch
 
 #Determines if person is a child(age < 18), 0 = no, 1 = yes
 total$child = total$Age < 18
-total$child[which(total$child)] = 1
 
 #Convert to factors
 total$Sex = as.factor(total$Sex)
-total$Pclass = as.factor(total$Pclass)
-#total$Age = as.factor(total$Age)
-total$SibSp = as.factor(total$SibSp)
-total$Parch = as.factor(total$Parch)
-#total$Fare = as.factor(total$Fare)
-total$family = as.factor(total$family)
 total$Survived = as.factor(total$Survived)
 total$child = as.factor(total$child)
-
+total$Embarked = as.factor(total$Embarked)
 
 #Remake the train and test
 train = head(total, nrow(train))
@@ -55,37 +51,18 @@ test = tail(total, nrow(test))
 ## Model and Prediction
 ##
 
-#RF on class and sex and prediction => 76.5% accuracy
-#classRF = randomForest(as.factor(Survived) ~ Pclass + Sex, data=train)
-#PredTest = predict(classRF, newdata=test)
-
-
-#RF on class,sex,age and prediction => .75
-#classRF = randomForest(as.factor(Survived) ~ Pclass + Sex + Age, data=train)
-#PredTest = predict(classRF, newdata=test)
-
-#RF testing fare and sex => 75%
-#classRF = randomForest(as.factor(Survived) ~ Fare + Sex, data=train)
-#PredTest = predict(classRF, newdata=test)
-
-#RF testing sex and age => 76.5%
-#classRF = randomForest(as.factor(Survived) ~ Age + Sex, data=train)
-#PredTest = predict(classRF, newdata=test)
-
-#RF testing class,sex,age,sibsp,parch,fare => .76
-#classRF = randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare, data=train)
-#PredTest = predict(classRF, newdata=test)
-
-#varImpPlot(classRF)
-
 #RF testing sex,fare,age => .76
 #classRF = randomForest(as.factor(Survived) ~ Sex + Age + Fare, data=train)
 #PredTest = predict(classRF, newdata=test)
 
-#RF pclass,sex,age,sibsp,parch,fare,family,child => .76
-classRF = randomForest(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + family + child, data=train)
+#RF pclass,sex,age,sibsp,parch,fare,family,child,embarked => .785
+classRF = randomForest(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + family + child + Embarked, data=train,ntree=2000, importance=TRUE)
 PredTest = predict(classRF, newdata=test)
 
+#Testing conditional random forest example
+library(party)
+classRF = cforest(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + family + child, data=train, controls= cforest_unbiased(ntree=2000, mtry=3))
+PredTest <- predict(classRF, test, OOB=TRUE, type = "response")
 
 #Preps file for kaggle submission
 MySubmission = data.frame(PassengerID = test$PassengerId, Survived = PredTest)
