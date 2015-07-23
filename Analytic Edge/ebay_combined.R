@@ -27,10 +27,13 @@ total$productline[total$productline == 'iPad mini Retina'] = 'Unknown'
 total$productline[total$productline == 'iPad 5'] = 'Unknown'
 train_mod$productline[train_mod$productline == 'iPad 5'] = 'Unknown'
 
-#Set nonexistent 128gb iPad 3 to unknown
+#Set nonexistent storage of iPads to unknown
 total$storage[total$productline == 'iPad 3' & total$storage == '128'] = 'Unknown'
 train_mod$storage[train_mod$productline == 'iPad 3' & train_mod$storage == '128'] = 'Unknown'
-
+total$storage[total$productline == 'iPad Air 2' & total$storage == '32'] = 'Unknown'
+train_mod$storage[train_mod$productline == 'iPad Air 2' & train_mod$storage == '32'] = 'Unknown'
+total$storage[total$productline == 'iPad mini' & total$storage == '128'] = 'Unknown'
+train_mod$storage[train_mod$productline == 'iPad mini' & train_mod$storage == '128'] = 'Unknown'
 
 #Convert to factors
 total$biddable = as.factor(total$biddable)
