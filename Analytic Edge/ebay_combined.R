@@ -173,9 +173,9 @@ CorpusDescription = tm_map(CorpusDescription, removeWords, stopwords("english"),
 CorpusDescription = tm_map(CorpusDescription, stemDocument, lazy=TRUE)
 
 #Convert corpus to a DocumentTermMatrix, remove sparse terms, and turn it into a data frame. 
-#Filter threshold of .99
+#.95 occurence
 dtm = DocumentTermMatrix(CorpusDescription)
-sparse = removeSparseTerms(dtm, 0.99)
+sparse = removeSparseTerms(dtm, 0.96)
 DescriptionWords = as.data.frame(as.matrix(sparse))
 
 #Ensure variable names are readable for R
@@ -183,28 +183,6 @@ colnames(DescriptionWords) = make.names(colnames(DescriptionWords))
 
 #Creates a correlation plot of the word variables
 wordCor = cor(DescriptionWords)
-corrplot(wordCor)
-
-#Remove low importance words, < 2
-testCor = data.frame(DescriptionWords$box)
-testCor$come = DescriptionWords$come
-testCor$condit = DescriptionWords$condit
-testCor$cosmet = DescriptionWords$cosmet
-testCor$good = DescriptionWords$good
-testCor$great = DescriptionWords$great
-testCor$ipad = DescriptionWords$ipad
-testCor$new = DescriptionWords$new
-testCor$onli = DescriptionWords$onli
-testCor$scratch = DescriptionWords$scratch
-testCor$screen = DescriptionWords$screen
-testCor$still = DescriptionWords$still
-testCor$this = DescriptionWords$this
-testCor$use = DescriptionWords$use
-testCor$veri = DescriptionWords$veri
-testCor$work = DescriptionWords$work
-
-#Creates a correlation plot of the > 2 imporance words
-wordCor = cor(testCor)
 corrplot(wordCor)
 
 #Merge datasets together and break again in order to get equal factors
@@ -275,25 +253,25 @@ SoldTrain = subset(DescriptionWordsTrain, spl==TRUE)
 SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
 
 #Checks the AUC value, 
-testRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
+testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
 predicttestRF = predict(testRF, newdata=SoldTest, type="prob")
 
-predicttestRF = as.numeric(predicttestRF)
-ROCRpred = prediction(predicttestRF[,2], SoldTest$sold)
+predicttestRF = as.numeric(predicttestRF[,2])
+ROCRpred = prediction(predicttestRF, SoldTest$sold)
 as.numeric(performance(ROCRpred, "auc")@y.values)
 importance(testRF)
 
-#AUC .85 -> .76097
-#testRF = randomForest(as.factor(sold) ~ box + case + charger + condition + crack + dent + excellent + functional + good + great + includ + light + mint + new + normal + perfect + scratch + screen + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
+#AUC .8352071 -> .84360
+#testRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
 
 #Setup the randomforest
-descriptRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color + avgvalue, data=DescriptionWordsTrain, ntree=500)
+descriptRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=DescriptionWordsTrain, ntree=500)
 
 # Make predictions:
 predictRF = predict(descriptRF, newdata=DescriptionWordsTest, type="prob")
 
 #Preps file for kaggle submission
-MySubmission = data.frame(UniqueID = eBayTest$UniqueID, Probability1 = predictRF)
+MySubmission = data.frame(UniqueID = eBayTest$UniqueID, Probability1 = predictRF[,2])
 
 #Creates csv for kaggle
 write.csv(MySubmission, "SubmissionRF.csv", row.names=FALSE)
