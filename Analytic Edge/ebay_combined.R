@@ -265,7 +265,7 @@ spl = sample.split(DescriptionWordsTrain$sold, SplitRatio = 0.6)
 SoldTrain = subset(DescriptionWordsTrain, spl==TRUE)
 SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
 
-#Checks the AUC value, 
+#Checks the AUC value, current .8399201
 testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue + damaged, data=SoldTrain, ntree=500)
 predicttestRF = predict(testRF, newdata=SoldTest, type="prob")
 
