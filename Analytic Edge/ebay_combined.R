@@ -45,7 +45,8 @@ total$storage = as.factor(total$storage)
 total$productline = as.factor(total$productline)
 total$sold = as.factor(total$sold)
 
-#Avgvalue based on avg of bought within productline/
+#Avgvalue based on avg of start within productline/model
+#Has a lot of noise so might not be good predictor unless it was final price given
 total$avgvalue = 0
 for(n in 1:3){
     for(i in 0:1){
@@ -275,24 +276,21 @@ SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
 
 #Checks the AUC value, 
 testRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
-predicttestRF = predict(testRF, newdata=SoldTest, type="class")
+predicttestRF = predict(testRF, newdata=SoldTest, type="prob")
 
 predicttestRF = as.numeric(predicttestRF)
-ROCRpred = prediction(predicttestRF, SoldTest$sold)
+ROCRpred = prediction(predicttestRF[,2], SoldTest$sold)
 as.numeric(performance(ROCRpred, "auc")@y.values)
 importance(testRF)
 
 #AUC .85 -> .76097
 #testRF = randomForest(as.factor(sold) ~ box + case + charger + condition + crack + dent + excellent + functional + good + great + includ + light + mint + new + normal + perfect + scratch + screen + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
 
-#AUC .825 -> .7594?
-#testRF = randomForest(as.factor(sold) ~ case + charger + condition + crack + dent + excellent + great + new + perfect + scratch + scuff +  work + productline + startprice, data=DescriptionWordsTrain)
-
 #Setup the randomforest
 descriptRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color + avgvalue, data=DescriptionWordsTrain, ntree=500)
 
 # Make predictions:
-predictRF = predict(descriptRF, newdata=DescriptionWordsTest, type="class")
+predictRF = predict(descriptRF, newdata=DescriptionWordsTest, type="prob")
 
 #Preps file for kaggle submission
 MySubmission = data.frame(UniqueID = eBayTest$UniqueID, Probability1 = predictRF)
