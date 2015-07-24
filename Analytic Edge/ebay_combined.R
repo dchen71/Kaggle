@@ -45,6 +45,15 @@ total$storage = as.factor(total$storage)
 total$productline = as.factor(total$productline)
 total$sold = as.factor(total$sold)
 
+# Make the damaged column
+for(i in 1:length(total$description)){
+    total$damaged[i] = 0
+    if(grepl('scratch', total$description[i])){total$damaged[i] = 1}
+    if(grepl('dent', total$description[i])){total$damaged[i] = 1}
+    if(grepl('crack', total$description[i])){total$damaged[i] <- 1}
+}
+total$damaged <- as.factor(total$damaged)
+
 #Avgvalue based on avg of start within productline/model
 #Has a lot of noise so might not be good predictor unless it was final price given
 total$avgvalue = 0
@@ -246,6 +255,10 @@ DescriptionWordsTrain$color = eBayTrain$color
 DescriptionWordsTest$avgvalue = test$color
 DescriptionWordsTrain$avgvalue = train$color
 
+DescriptionWordsTest$damaged = test$damaged
+DescriptionWordsTrain$damaged = train$damaged
+
+
 # Split the data
 set.seed(50)
 spl = sample.split(DescriptionWordsTrain$sold, SplitRatio = 0.6)
@@ -253,7 +266,7 @@ SoldTrain = subset(DescriptionWordsTrain, spl==TRUE)
 SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
 
 #Checks the AUC value, 
-testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
+testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue + damaged, data=SoldTrain, ntree=500)
 predicttestRF = predict(testRF, newdata=SoldTest, type="prob")
 
 predicttestRF = as.numeric(predicttestRF[,2])
@@ -261,8 +274,8 @@ ROCRpred = prediction(predicttestRF, SoldTest$sold)
 as.numeric(performance(ROCRpred, "auc")@y.values)
 importance(testRF)
 
-#AUC .8352071 -> .84360
-#testRF = randomForest(as.factor(sold) ~ box + come + condit + condition + cosmet + good + great + ipad + new + onli + scratch + screen + still + this + use + veri + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
+#AUC .83781361 -> .84460
+#testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
 
 #Setup the randomforest
 descriptRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=DescriptionWordsTrain, ntree=500)
