@@ -251,13 +251,13 @@ predicttestRF = as.numeric(predicttestRF)
 ROCRpred = prediction(predicttestRF, SoldTest$sold)
 as.numeric(performance(ROCRpred, "auc")@y.values)
 
-#Auc of .8453997
+#Auc of .8453997 => .83266
 
 #Logistic regression model using all of the variables
 DescriptionWordsLog = glm(sold ~ ., data=DescriptionWordsTrain, family=binomial)
 
 #Predictions on our test set:
-PredTest = predict(DescriptionWordsLog, newdata=DescriptionWordsTest, type="response")
+PredTest = predict(DescriptionWordsLog, newdata=DescriptionWordsTest, type="pred")
 
 #Preps file for kaggle submission
 MySubmission = data.frame(UniqueID = eBayTest$UniqueID, Probability1 = PredTest)

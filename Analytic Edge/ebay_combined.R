@@ -50,9 +50,26 @@ for(i in 1:length(total$description)){
     total$damaged[i] = 0
     if(grepl('scratch', total$description[i])){total$damaged[i] = 1}
     if(grepl('dent', total$description[i])){total$damaged[i] = 1}
-    if(grepl('crack', total$description[i])){total$damaged[i] <- 1}
+    if(grepl('crack', total$description[i])){total$damaged[i] = 1}
 }
 total$damaged <- as.factor(total$damaged)
+
+# Make the extras column
+for(i in 1:length(total$description)){
+    total$extras[i] = 0
+    if(grepl('charger', total$description[i])){total$extras[i] = 1}
+    if(grepl('cable', total$description[i])){total$extras[i] = 1}
+    if(grepl('component', total$description[i])){total$extras[i] = 1}
+}
+total$extras <- as.factor(total$extras)
+
+# Make the warranty column
+for(i in 1:length(total$description)){
+    total$warranty[i] = 0
+    if(grepl('warranty', total$description[i])){total$warranty[i] = 1}
+}
+total$extras <- as.factor(total$extras)
+
 
 #Avgvalue based on avg of start within productline/model
 #Has a lot of noise so might not be good predictor unless it was final price given
@@ -258,6 +275,11 @@ DescriptionWordsTrain$avgvalue = train$color
 DescriptionWordsTest$damaged = test$damaged
 DescriptionWordsTrain$damaged = train$damaged
 
+DescriptionWordsTest$warranty = test$warranty
+DescriptionWordsTrain$warranty = train$warranty
+
+DescriptionWordsTest$extras = test$extras
+DescriptionWordsTrain$extras = train$extras
 
 # Split the data
 set.seed(50)
@@ -265,8 +287,8 @@ spl = sample.split(DescriptionWordsTrain$sold, SplitRatio = 0.6)
 SoldTrain = subset(DescriptionWordsTrain, spl==TRUE)
 SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
 
-#Checks the AUC value, current .8399201
-testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue + damaged, data=SoldTrain, ntree=500)
+#Checks the AUC value, current .8403016
+testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue + damaged + extras, data=SoldTrain, ntree=500)
 predicttestRF = predict(testRF, newdata=SoldTest, type="prob")
 
 predicttestRF = as.numeric(predicttestRF[,2])
@@ -277,8 +299,8 @@ importance(testRF)
 #AUC .83781361 -> .84460
 #testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
 
-#Setup the randomforest
-descriptRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=DescriptionWordsTrain, ntree=500)
+#Setup the randomforest  => .84206 without damaged, probably same as above
+descriptRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue + damaged + extras, data=DescriptionWordsTrain, ntree=500)
 
 # Make predictions:
 predictRF = predict(descriptRF, newdata=DescriptionWordsTest, type="prob")
