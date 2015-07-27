@@ -287,7 +287,7 @@ SoldTrain = subset(DescriptionWordsTrain, spl==TRUE)
 SoldTest = subset(DescriptionWordsTrain, spl==FALSE)
 
 #Checks the AUC value, current .841657
-testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue + damaged + extras + warranty, data=SoldTrain, ntree=500)
+testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
 predicttestRF = predict(testRF, newdata=SoldTest, type="prob")
 
 predicttestRF = as.numeric(predicttestRF[,2])
@@ -295,12 +295,11 @@ ROCRpred = prediction(predicttestRF, SoldTest$sold)
 as.numeric(performance(ROCRpred, "auc")@y.values)
 importance(testRF)
 
-#AUC .83781361 -> .84460
+#AUC .8378161 -> .84460
 #testRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=SoldTrain, ntree=500)
 
 #Setup the randomforest  => .84206 without damaged, probably same as above
-descriptRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue + damaged + extras + warranty, data=DescriptionWordsTrain, ntree=500)
-
+descriptRF = randomForest(as.factor(sold) ~ condit + condition + cosmet + good + great + ipad + minor + new  + scratch + screen + use + used + work + biddable + productline + startprice + carrier + color + avgvalue, data=DescriptionWordsTrain, ntree=500)
 # Make predictions:
 predictRF = predict(descriptRF, newdata=DescriptionWordsTest, type="prob")
 
