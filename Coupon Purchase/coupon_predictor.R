@@ -21,7 +21,7 @@ train = train[,c("COUPON_ID_hash","USER_ID_hash",
                  "GENRE_NAME","DISCOUNT_PRICE","PRICE_RATE",
                  "USABLE_DATE_MON","USABLE_DATE_TUE","USABLE_DATE_WED","USABLE_DATE_THU",
                  "USABLE_DATE_FRI","USABLE_DATE_SAT","USABLE_DATE_SUN","USABLE_DATE_HOLIDAY",
-                 "USABLE_DATE_BEFORE_HOLIDAY","ken_name","small_area_name")]
+                 "USABLE_DATE_BEFORE_HOLIDAY","small_area_name")]
 
 #Combine test data with train data
 list_test$USER_ID_hash = "dummyuser"
@@ -29,7 +29,7 @@ test_data = list_test[,c("COUPON_ID_hash","USER_ID_hash",
                          "GENRE_NAME","DISCOUNT_PRICE","PRICE_RATE",
                          "USABLE_DATE_MON","USABLE_DATE_TUE","USABLE_DATE_WED","USABLE_DATE_THU",
                          "USABLE_DATE_FRI","USABLE_DATE_SAT","USABLE_DATE_SUN","USABLE_DATE_HOLIDAY",
-                         "USABLE_DATE_BEFORE_HOLIDAY","ken_name","small_area_name")]
+                         "USABLE_DATE_BEFORE_HOLIDAY","small_area_name")]
 
 train = rbind(train,test_data)
 
@@ -56,18 +56,18 @@ uchar$PRICE_RATE = 1
 
 #Weight Matrix: GENRE_NAME DISCOUNT_PRICE PRICE_RATE USABLE_DATE_ ken_name small_area_name
 require(Matrix)
-W = as.matrix(Diagonal(x=c(rep(2,13), rep(1,1), rep(0,1), rep(0,9), rep(1,47), rep(4,55))))
+W = as.matrix(Diagonal(x=c(rep(2,13), rep(1,1), rep(0,1), rep(0,9), rep(4,55))))
 
 #Calculation of cosine similairties of users and coupons for test purchases
 score = as.matrix(uchar[,2:ncol(uchar)]) %*% W %*% t(as.matrix(test[,2:ncol(test)]))
 
-#Order the list of coupons according to similarities and take only first 10 coupons
+#Order the list of coupons according to similarities and take only first 20 coupons
 uchar$PURCHASED_COUPONS = do.call(rbind, lapply(1:nrow(uchar),FUN=function(i){
-    purchased_cp <- paste(test$COUPON_ID_hash[order(score[i,], decreasing = TRUE)][1:10],collapse=" ")
+    purchased_cp <- paste(test$COUPON_ID_hash[order(score[i,], decreasing = TRUE)][1:20],collapse=" ")
     return(purchased_cp)
 }))
 
 #Creates submission
-submission <- merge(user_list, uchar, all.x=TRUE)
-submission <- submission[,c("USER_ID_hash","PURCHASED_COUPONS")]
-write.csv(submission, file="cosine_sim.csv", row.names=FALSE)
+submission = merge(user_list, uchar, all.x=TRUE)
+submission = submission[,c("USER_ID_hash","PURCHASED_COUPONS")]
+write.csv(submission, file="recommended.csv", row.names=FALSE)
