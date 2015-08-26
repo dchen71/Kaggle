@@ -1,5 +1,9 @@
 #Kaggle Competition - Coupon Purchase
 
+#Initialize libraries
+require(Matrix)
+library(caTools)
+
 #Read input
 #area_train      <<- read.csv('input/coupon_area_train.csv') #coupon per area
 #area_test       <<- read.csv('input/coupon_area_test.csv') #coupon per area
@@ -14,6 +18,8 @@ user_list       <<- read.csv('input/user_list.csv') #user details
 #prefecture and district data may be colinear
 #maybe dispense date/dispense length could be useful
 #figure out how to setup rmse to validate
+#check validity using list_train data and comparing coupon
+#Consider compressing useable into weekday/weekend/holiday
 
 #Maybe use large_area_name for regional
 #Use ken name for prefectural
@@ -41,6 +47,7 @@ train[is.na(train)] = 1
 
 #Setup feature to find difference from average of type in region
 #Feature engineering
+#train$AVG_RATE = 1/log10(mean(price_rate ~ location/genre))
 train$DISCOUNT_PRICE = 1/log10(train$DISCOUNT_PRICE) #Normalizes value via divide by log
 train$PRICE_RATE = 1/log10(train$PRICE_RATE) #Normalizes value via divide by log
 train$VALIDPERIOD = 1/log10(train$VALIDPERIOD) #Normalizes value via divide by log
@@ -54,22 +61,32 @@ test = train[train$USER_ID_hash=="dummyuser",]
 test = test[,-2]
 train = train[train$USER_ID_hash!="dummyuser",]
 
-#Data frame containing averages of characteristics
-uchar = aggregate(. ~ USER_ID_hash, data=train[,-1],FUN=mean)
+# Randomly split the data into training and testing sets
+#split = sample.split(train$COUPON_ID_hash, SplitRatio = 0.7)
+
+# Split up the data using subset
+#train_sub = subset(train, split==TRUE)
+#test_sub = subset(train, split==FALSE)
+
+#Data frame containing averages of characteristics for collaborative filtering
+uchar = aggregate( . ~ USER_ID_hash, data=train[,-1],FUN=mean)
 uchar$DISCOUNT_PRICE = 1
 uchar$PRICE_RATE = 1
 
-#Change weights to make it out of 100
-#Weight Matrix: GENRE_NAME DISCOUNT_PRICE PRICE_RATE USABLE_DATE_ ken_name VALIDPERIOD small_area_name
-require(Matrix)
-W = as.matrix(Diagonal(x=c(rep(2,13), rep(1,1), rep(0,1), rep(0,9), rep(0,1), rep(4,55))))
+#Change weights varaible
+#Figure out if possible to progmaticcaly determine weights
+#Weight Matrix: GENRE_NAME DISCOUNT_PRICE PRICE_RATE USABLE_DATE_ VALIDPERIOD small_area_name
+weights = c(2,1,0,0,0,4)
+
+W = as.matrix(Diagonal(x=c(rep(weights[1],13), rep(weights[2],1), rep(weights[3],1), 
+                           rep(weights[4],9), rep(weights[5],1), rep(weights[6],55))))
 
 #Calculation of cosine similairties of users and coupons for test purchases
 score = as.matrix(uchar[,2:ncol(uchar)]) %*% W %*% t(as.matrix(test[,2:ncol(test)]))
 
-#Order the list of coupons according to similarities and take only first 20 coupons
+#Order the list of coupons according to similarities and take only first 15 coupons
 uchar$PURCHASED_COUPONS = do.call(rbind, lapply(1:nrow(uchar),FUN=function(i){
-    purchased_cp <- paste(test$COUPON_ID_hash[order(score[i,], decreasing = TRUE)][1:20],collapse=" ")
+    purchased_cp = paste(test$COUPON_ID_hash[order(score[i,], decreasing = TRUE)][1:15],collapse=" ")
     return(purchased_cp)
 }))
 
