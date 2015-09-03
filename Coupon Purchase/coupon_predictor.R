@@ -48,6 +48,7 @@ train[is.na(train)] = 1
 #Setup feature to find difference from average of type in region
 #Feature engineering
 #train$AVG_RATE = 1/log10(mean(price_rate ~ location/genre))
+#Normalize it by subtracting nonblank by user buy
 train$DISCOUNT_PRICE = 1/log10(train$DISCOUNT_PRICE) #Normalizes value via divide by log
 train$PRICE_RATE = 1/log10(train$PRICE_RATE) #Normalizes value via divide by log
 train$VALIDPERIOD = 1/log10(train$VALIDPERIOD) #Normalizes value via divide by log
