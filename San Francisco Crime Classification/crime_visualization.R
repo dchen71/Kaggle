@@ -24,7 +24,3 @@ map_crime = function(crime_df, crime) {
 # map_crime(train, c('LARCENY/THEFT', 'VEHICLE THEFT', 'STOLEN PROPERTY', 'ROBBERY'))
 # map_crime(train, c('NON-CRIMINAL', 'LOITERING', 'RECOVERED VEHICLE', 'DISORDERLY CONDUCT'))
 # map_crime(train, c('DRIVING UNDER THE INFLUENCE', 'FAMILY OFFENSES', 'LIQUOR LAWS', 'RUNAWAY'))
-
-#Trying glm prediction
-log_model1 = glm(Category ~ PdDistrict + X + Y, data=train, family=binomial)
-pred_test1 = predict(log_model1,newdata=test ,type="response")
