@@ -28,7 +28,7 @@ map_crime = function(crime_df, crime) {
 
 #Trying glm prediction
 log_model1 = glm(Category ~ PdDistrict + X + Y, data=train, family=binomial)
-pred_test1 = predict(log_model1,newdata=test ,type="classificaion")
+pred_test1 = predict(log_model1,newdata=test ,type="response")
 
 #Shaping data for saving
 save_data = data.frame(test$Id)
