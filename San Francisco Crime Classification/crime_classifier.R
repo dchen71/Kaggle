@@ -14,6 +14,7 @@ treatment = function(fname){
     Dates1 = strptime(as.character(df$Dates),"%Y-%m-%d %H:%M:%S")
     df$Year = Dates1$year
     df$Month = Dates1$mon
+    df$Day = as.numeric(format(ymd_hms(Dates1), "%d"))
     df$Hour = as.numeric(format(ymd_hms(Dates1), "%H"))
     df$Loc = as.factor(paste(round(df$X,2), round(df$Y,2), sep= " "))
     df$AddOf = sapply(df$Address, FUN=function(x) {strsplit(as.character(x), split="of ")[[1]][2]})
@@ -39,7 +40,7 @@ rpart.train = function(train,test){
     for (i in crime){
         response[i] =  0
         response[i][response$Cat==i,] = 1
-        fit = glm(response[,i]~PdDistrict+X+Y+AddType+DayOfWeek+Year+Hour+Month ,data=train, family = binomial)
+        fit = glm(response[,i]~PdDistrict+X+Y+AddType+DayOfWeek+Year+Hour+Month+Day,data=train, family = binomial)
         pred = predict(fit,test, type = "response")
         submission[i] = pred
         print(paste0(ncol(submission)/length(crime)*100,'% completed'))
