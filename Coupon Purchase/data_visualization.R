@@ -22,11 +22,11 @@ ggplot(data=area_train,aes(x=PREF_NAME)) + geom_bar(stat='bin') +
 #Plot the number of coupons sold per prefecture(smaller)
 small_pref_coupons = as.data.frame(table(area_train$SMALL_AREA_NAME))
 names(small_pref_coupons) = c('pref','freq')
-ggplot(data=area_train,aes(x=as.factor(SMALL_AREA_NAME))) + geom_bar(stat='bin') + 
+ggplot(data=area_train,aes(x=SMALL_AREA_NAME)) + geom_bar(stat='bin') + 
     labs(title="Coupons bought per area" ,x="Area", y="Coupons bought") + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-#Plot number of male to female
+#Plot number of male to female using this service
 mf = ggplot(user_list, aes(x = factor(1), fill = factor(SEX_ID))) +
     geom_bar(width = 1) + labs(title="Ratio of male to female users", x="",y="") +
     scale_fill_discrete(name="Sex")
