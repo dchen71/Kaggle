@@ -31,7 +31,23 @@ ggplot(data=area_train,aes(x=as.factor(SMALL_AREA_NAME))) + geom_bar(stat='bin')
     theme(axis.text.x = element_text(angle = 90, hjust = 1,family="MS Mincho"))
 
 #Plot number of male to female
-pie <- ggplot(user_list, aes(x = factor(1), fill = factor(SEX_ID))) +
+mf <- ggplot(user_list, aes(x = factor(1), fill = factor(SEX_ID))) +
     geom_bar(width = 1) + labs(title="Ratio of male to female users", x="",y="") +
     scale_fill_discrete(name="Sex")
-pie + coord_polar(theta = "y")
+mf + coord_polar(theta = "y")
+
+#Plots age groups using this service
+ages = data.frame(matrix(nrow=6,ncol=2))
+names(ages) = c('Group','Count')
+ages$Group = c('under18','a18to25','a25to35','a35to50','a50to65','a65to80')
+ages[1,2] = data.frame(table(user_list$AGE < 18))[2,2]
+ages[2,2] = data.frame(table(user_list$AGE >= 18,user_list$AGE <= 25))[4,3]
+ages[3,2] = data.frame(table(user_list$AGE > 25,user_list$AGE <= 35))[4,3]
+ages[4,2] = data.frame(table(user_list$AGE > 35,user_list$AGE <= 50))[4,3]
+ages[5,2] = data.frame(table(user_list$AGE > 50,user_list$AGE <= 65))[4,3]
+ages[6,2] = data.frame(table(user_list$AGE > 65,user_list$AGE <= 80))[2,3]
+age <- ggplot(ages, aes(x = factor(1), y=Count,fill = factor(Group))) +
+    geom_bar(width = 1,stat="identity") + labs(title="Age distribution of users", x="",y="") +
+    scale_fill_discrete(name="Age groups")
+age + coord_polar(theta = "y")
+
