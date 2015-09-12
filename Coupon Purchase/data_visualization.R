@@ -107,7 +107,7 @@ male_coupon_total[4,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE[male_coupo
 male_coupon_total[5,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE[male_coupons$AGE <= 65] > 50])
 male_coupon_total[6,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE[male_coupons$AGE <= 80] > 65])
 
-ggplot(data=male_coupon_total,aes(x=Group,y=Count)) + geom_bar(stat='identity') + 
+ggplot(data=male_coupon_total,aes(x=Group,y=Count,fill=Group)) + geom_bar(stat='identity') + 
     labs(title="Total number of coupons bought by men" ,x="Age Groups", y="Coupons bought") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -124,17 +124,17 @@ female_coupon_total[4,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE[fema
 female_coupon_total[5,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE[female_coupons$AGE <= 65] > 50])
 female_coupon_total[6,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE[female_coupons$AGE <= 80] > 65])
 
-ggplot(data=female_coupon_total,aes(x=Group,y=Count)) + geom_bar(stat='identity') + 
+ggplot(data=female_coupon_total,aes(x=Group,y=Count,fill=Group)) + geom_bar(stat='identity') + 
     labs(title="Total number of coupons bought by women" ,x="Age Groups", y="Coupons bought") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 #Tallies the number of coupons per genre
-ggplot(data=list_train,aes(x=GENRE_NAME)) + geom_bar(stat='bin') + 
+ggplot(data=list_train,aes(x=GENRE_NAME,fill=GENRE_NAME)) + geom_bar(stat='bin') + 
        labs(title="Number of Coupons per Genre" ,x="Genres", y="Number of coupons") + 
        theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 #Tallies number of coupons per prefecture
-ggplot(data=list_train,aes(x=large_area_name)) + geom_bar(stat='bin') + 
+ggplot(data=list_train,aes(x=large_area_name,,fill=large_area_name)) + geom_bar(stat='bin') + 
     labs(title="Number of Coupons per Prefecture" ,x="Prefecture", y="Number of coupons") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -158,7 +158,7 @@ ken_price = aggregate(x=list_train$DISCOUNT_PRICE, by=list(list_train$ken_name, 
 names(ken_price) = c('Pref','Genre', 'Mean_Price')
 ken_price = ken_price[order(ken_price$Pref, ken_price$Mean_Price),]
 
-#Function to plot bar graphs comparing values against two prefectures
+#Function to plot bar graphs comparing mean discounted price against two prefectures
 plot_mean = function(df, prefs) {
     filtered = filter(df, Pref %in% prefs)
     plot = ggplot(data=filtered,aes(x=Genre,y=Mean_Price,fill=Pref)) + 
