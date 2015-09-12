@@ -137,10 +137,26 @@ ggplot(data=list_train,aes(x=large_area_name)) + geom_bar(stat='bin') +
     labs(title="Number of Coupons per Prefecture" ,x="Prefecture", y="Number of coupons") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-#Contains distribution of coupon genre per prefecture
-coupon_distribution = aggregate(COUPON_ID_hash ~ large_area_name + GENRE_NAME, data=list_train, FUN="length")
-names(coupon_distribution) = c('Pref','Genre', 'Coupons')
-coupon_distribution = coupon_distribution[order(coupon_distribution$Pref, coupon_distribution$Coupons),]
+#Contains distribution of coupon genre per area
+area_distribution = aggregate(COUPON_ID_hash ~ large_area_name + GENRE_NAME, data=list_train, FUN="length")
+names(area_distribution) = c('Pref','Genre', 'Coupons')
+area_distribution = area_distribution[order(area_distribution$Pref, area_distribution$Coupons),]
+
+#Contains distribution of coupon genre per ken
+ken_distribution = aggregate(COUPON_ID_hash ~ ken_name + GENRE_NAME, data=list_train, FUN="length")
+names(ken_distribution) = c('Pref','Genre', 'Coupons')
+ken_distribution = ken_distribution[order(ken_distribution$Pref, ken_distribution$Coupons),]
+
+#Contains the mean percentage discount distribution of ken/genre
+ken_percent_price = aggregate(x=list_train$PRICE_RATE, by=list(list_train$ken_name, list_train$GENRE_NAME),FUN="mean")
+names(ken_percent_price) = c('Pref','Genre', 'Mean_Discount')
+ken_percent_price = ken_percent_price[order(ken_percent_price$Pref, ken_percent_price$Mean_Discount),]
+
+#Contains the mean price distribution of ken/genre
+ken_price = aggregate(x=list_train$DISCOUNT_PRICE, by=list(list_train$ken_name, list_train$GENRE_NAME),FUN="mean")
+names(ken_price) = c('Pref','Genre', 'Mean_Price')
+ken_price = ken_price[order(ken_price$Pref, ken_price$Mean_Price),]
+
 
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
