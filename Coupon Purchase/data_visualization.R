@@ -127,5 +127,10 @@ ggplot(data=female_coupon_total,aes(x=Group,y=Count)) + geom_bar(stat='identity'
     labs(title="Total number of coupons bought by women" ,x="Age Groups", y="Coupons bought") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+#Tallies the number of coupons per genre
+ggplot(data=list_train,aes(x=GENRE_NAME)) + geom_bar(stat='bin') + 
+       labs(title="Number of Coupons per Genre" ,x="Genres", y="Number of coupons") + 
+       theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
