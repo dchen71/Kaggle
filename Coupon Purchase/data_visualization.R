@@ -148,6 +148,20 @@ ken_distribution = aggregate(COUPON_ID_hash ~ ken_name + GENRE_NAME, data=list_t
 names(ken_distribution) = c('Pref','Genre', 'Coupons')
 ken_distribution = ken_distribution[order(ken_distribution$Pref, ken_distribution$Coupons),]
 
+#Function to plot bar graphs comparing coupon distribution against two prefectures
+plot_ken = function(df, prefs) {
+    filtered = filter(df, Pref %in% prefs)
+    plot = ggplot(data=filtered,aes(x=Genre,y=Coupons,fill=Pref)) + 
+        geom_bar(stat='identity', position=position_dodge()) + 
+        labs(title="Comparsion of coupon numbers between prefectures",x="Genre", y="Number of Coupons") + 
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    return(plot)
+}
+
+#Plot the comparasions of coupon distribution bought between prefectures
+plot_ken(ken_distribution, c('?????????','?????????'))
+
+
 #Contains the mean percentage discount distribution of ken/genre
 ken_percent_price = aggregate(x=list_train$PRICE_RATE, by=list(list_train$ken_name, list_train$GENRE_NAME),FUN="mean")
 names(ken_percent_price) = c('Pref','Genre', 'Mean_Discount')
