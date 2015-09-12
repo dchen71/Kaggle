@@ -153,6 +153,19 @@ ken_percent_price = aggregate(x=list_train$PRICE_RATE, by=list(list_train$ken_na
 names(ken_percent_price) = c('Pref','Genre', 'Mean_Discount')
 ken_percent_price = ken_percent_price[order(ken_percent_price$Pref, ken_percent_price$Mean_Discount),]
 
+#Function to plot bar graphs comparing discount percentage against two prefectures
+plot_discount = function(df, prefs) {
+    filtered = filter(df, Pref %in% prefs)
+    plot = ggplot(data=filtered,aes(x=Genre,y=Mean_Discount,fill=Pref)) + 
+        geom_bar(stat='identity', position=position_dodge()) + 
+        labs(title="Comparsion of discount % between prefectures and categories",x="Categories", y="Avg price") + 
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    return(plot)
+}
+
+#Plot the comparasions of discount percentage bought between prefectures
+plot_discount(ken_percent_price, c('?????????','?????????'))
+
 #Contains the mean price distribution of ken/genre
 ken_price = aggregate(x=list_train$DISCOUNT_PRICE, by=list(list_train$ken_name, list_train$GENRE_NAME),FUN="mean")
 names(ken_price) = c('Pref','Genre', 'Mean_Price')
@@ -163,12 +176,12 @@ plot_mean = function(df, prefs) {
     filtered = filter(df, Pref %in% prefs)
     plot = ggplot(data=filtered,aes(x=Genre,y=Mean_Price,fill=Pref)) + 
                 geom_bar(stat='identity', position=position_dodge()) + 
-                labs(x="Categories", y="Avg price") + 
+                labs(title="Comparsion of mean price between prefectures and categories",x="Categories", y="Avg price") + 
                 theme(axis.text.x = element_text(angle = 45, hjust = 1))
     return(plot)
 }
 
-#Plot the comparasions of coupons bought between prefectures
+#Plot the comparasions of mean coupon price bought between prefectures
 plot_mean(ken_price, c('?????????','?????????'))
 
 
