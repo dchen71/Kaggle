@@ -2,6 +2,7 @@
 
 #Loads libraries
 library(ggplot2)
+library(dplyr)
 
 #Read input
 area_train      <<- read.csv('input/coupon_area_train.csv', encoding="UTF-8") #coupon per area
@@ -156,6 +157,19 @@ ken_percent_price = ken_percent_price[order(ken_percent_price$Pref, ken_percent_
 ken_price = aggregate(x=list_train$DISCOUNT_PRICE, by=list(list_train$ken_name, list_train$GENRE_NAME),FUN="mean")
 names(ken_price) = c('Pref','Genre', 'Mean_Price')
 ken_price = ken_price[order(ken_price$Pref, ken_price$Mean_Price),]
+
+#Function to plot bar graphs comparing values against two prefectures
+plot_mean = function(df, prefs) {
+    filtered = filter(df, Pref %in% prefs)
+    plot = ggplot(data=filtered,aes(x=Genre,y=Mean_Price,fill=Pref)) + 
+                geom_bar(stat='identity', position=position_dodge()) + 
+                labs(x="Categories", y="Avg price") + 
+                theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    return(plot)
+}
+
+#Plot the comparasions of coupons bought between prefectures
+plot_mean(ken_price, c('?????????','?????????'))
 
 
 #Restore locale
