@@ -143,6 +143,19 @@ area_distribution = aggregate(COUPON_ID_hash ~ large_area_name + GENRE_NAME, dat
 names(area_distribution) = c('Pref','Genre', 'Coupons')
 area_distribution = area_distribution[order(area_distribution$Pref, area_distribution$Coupons),]
 
+#Function to plot bar graphs comparing coupon distribution against two prefectures
+plot_area = function(df, prefs) {
+    filtered = filter(df, Pref %in% prefs)
+    plot = ggplot(data=filtered,aes(x=Genre,y=Coupons,fill=Pref)) + 
+        geom_bar(stat='identity', position=position_dodge()) + 
+        labs(title="Comparsion of coupon numbers between areas",x="Genre", y="Number of Coupons") + 
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    return(plot)
+}
+
+#Plot the comparasions of coupon distribution bought between prefectures
+plot_area(area_distribution, c('??????','??????'))
+
 #Contains distribution of coupon genre per ken
 ken_distribution = aggregate(COUPON_ID_hash ~ ken_name + GENRE_NAME, data=list_train, FUN="length")
 names(ken_distribution) = c('Pref','Genre', 'Coupons')
