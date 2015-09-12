@@ -89,6 +89,9 @@ female_age = ggplot(female_ages, aes(x = factor(1), y=Count,fill = factor(Group)
     scale_fill_discrete(name="Age groups")
 female_age + coord_polar(theta = "y")
 
+#Finds the total number of coupons bought per person and do the mean of all of them
+coupon_count = aggregate(ITEM_COUNT ~ USER_ID_hash, data=detail_train, FUN="sum")
+mean(coupon_count$ITEM_COUNT)
 
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
