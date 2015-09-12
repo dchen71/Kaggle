@@ -137,5 +137,10 @@ ggplot(data=list_train,aes(x=large_area_name)) + geom_bar(stat='bin') +
     labs(title="Number of Coupons per Prefecture" ,x="Prefecture", y="Number of coupons") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+#Contains distribution of coupon genre per prefecture
+coupon_distribution = aggregate(COUPON_ID_hash ~ large_area_name + GENRE_NAME, data=list_train, FUN="length")
+names(coupon_distribution) = c('Pref','Genre', 'Coupons')
+coupon_distribution = coupon_distribution[order(coupon_distribution$Pref, coupon_distribution$Coupons),]
+
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
