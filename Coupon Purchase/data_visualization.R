@@ -93,5 +93,39 @@ female_age + coord_polar(theta = "y")
 coupon_count = aggregate(ITEM_COUNT ~ USER_ID_hash, data=detail_train, FUN="sum")
 mean(coupon_count$ITEM_COUNT)
 
+#Male coupon data
+male_coupons = merge(males, coupon_count)
+mean(male_coupons$ITEM_COUNT)
+male_coupon_total = data.frame(matrix(nrow=6,ncol=2))
+names(male_coupon_total) = c('Group','Count')
+male_coupon_total$Group = c('under18','a18to25','a25to35','a35to50','a50to65','a65to80')
+male_coupon_total[1,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE < 18])
+male_coupon_total[2,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE[male_coupons$AGE <= 25] >= 18])
+male_coupon_total[3,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE[male_coupons$AGE <= 35] >= 25])
+male_coupon_total[4,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE[male_coupons$AGE <= 50] > 35])
+male_coupon_total[5,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE[male_coupons$AGE <= 65] > 50])
+male_coupon_total[6,2] = sum(male_coupons$ITEM_COUNT[male_coupons$AGE[male_coupons$AGE <= 80] > 65])
+
+ggplot(data=male_coupon_total,aes(x=Group,y=Count)) + geom_bar(stat='identity') + 
+    labs(title="Total number of coupons bought by men" ,x="Age Groups", y="Coupons bought") + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#Female coupon data
+female_coupons = merge(females, coupon_count)
+mean(female_coupons$ITEM_COUNT)
+female_coupon_total = data.frame(matrix(nrow=6,ncol=2))
+names(female_coupon_total) = c('Group','Count')
+female_coupon_total$Group = c('under18','a18to25','a25to35','a35to50','a50to65','a65to80')
+female_coupon_total[1,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE < 18])
+female_coupon_total[2,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE[female_coupons$AGE <= 25] >= 18])
+female_coupon_total[3,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE[female_coupons$AGE <= 35] >= 25])
+female_coupon_total[4,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE[female_coupons$AGE <= 50] > 35])
+female_coupon_total[5,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE[female_coupons$AGE <= 65] > 50])
+female_coupon_total[6,2] = sum(female_coupons$ITEM_COUNT[female_coupons$AGE[female_coupons$AGE <= 80] > 65])
+
+ggplot(data=female_coupon_total,aes(x=Group,y=Count)) + geom_bar(stat='identity') + 
+    labs(title="Total number of coupons bought by women" ,x="Age Groups", y="Coupons bought") + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
