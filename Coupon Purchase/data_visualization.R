@@ -132,5 +132,10 @@ ggplot(data=list_train,aes(x=GENRE_NAME)) + geom_bar(stat='bin') +
        labs(title="Number of Coupons per Genre" ,x="Genres", y="Number of coupons") + 
        theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+#Tallies number of coupons per prefecture
+ggplot(data=list_train,aes(x=large_area_name)) + geom_bar(stat='bin') + 
+    labs(title="Number of Coupons per Prefecture" ,x="Prefecture", y="Number of coupons") + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
