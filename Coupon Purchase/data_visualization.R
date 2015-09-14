@@ -3,6 +3,8 @@
 #Loads libraries
 library(ggplot2)
 library(dplyr)
+library(grid)
+library(gridExtra)
 
 #Read input
 area_train      <<- read.csv('input/coupon_area_train.csv', encoding="UTF-8") #coupon per area
@@ -269,27 +271,36 @@ plot_age_genre = function(df,age){
     filtered = subset(df, df$Group == age)
     plot = ggplot(data=filtered,aes(x=GENRE_NAME,fill=GENRE_NAME)) + 
         geom_bar(stat='bin') + 
-        labs(title="Comparasion of coupons bought per age group",x="Categories", y="# Coupons Bought") + 
+        labs(x="Categories", y="# Coupons Bought") + 
         theme(axis.text.x = element_text(angle = 45, hjust = 1))
     return(plot)
 }
 
 #Find male age group bought
-plot_age_genre(male_coupon_list,1)
-plot_age_genre(male_coupon_list,2)
-plot_age_genre(male_coupon_list,3)
-plot_age_genre(male_coupon_list,4)
-plot_age_genre(male_coupon_list,5)
-plot_age_genre(male_coupon_list,6)
+m1 = plot_age_genre(male_coupon_list,1)
+m2 = plot_age_genre(male_coupon_list,2)
+m3 = plot_age_genre(male_coupon_list,3)
+m4 = plot_age_genre(male_coupon_list,4)
+m5 = plot_age_genre(male_coupon_list,5)
+m6 = plot_age_genre(male_coupon_list,6)
 
 #Find female age group bought
-plot_age_genre(female_coupon_list,1)
-plot_age_genre(female_coupon_list,2)
-plot_age_genre(female_coupon_list,3)
-plot_age_genre(female_coupon_list,4)
-plot_age_genre(female_coupon_list,5)
-plot_age_genre(female_coupon_list,6)
+f1 = plot_age_genre(female_coupon_list,1)
+f2 = plot_age_genre(female_coupon_list,2)
+f3 = plot_age_genre(female_coupon_list,3)
+f4 = plot_age_genre(female_coupon_list,4)
+f5 = plot_age_genre(female_coupon_list,5)
+f6 = plot_age_genre(female_coupon_list,6)
 
+#Multi chart comparsions
+grid.arrange(f1,m1, main="Female <18 vs Male <18 Purchase Habits")
+grid.arrange(f2,m2, main="Female 18-25 vs Male 18-25 Purchase Habits")
+grid.arrange(f3,m3, main="Female 26-35 vs Male 26-35 Purchase Habits")
+grid.arrange(f4,m4, main="Female 36-50 vs Male 36-50 Purchase Habits")
+grid.arrange(f5,m5, main="Female 51-65 vs Male 51-65 Purchase Habits")
+grid.arrange(f6,m6, main="Female 66-80 vs Male 66-80 Purchase Habits")
+grid.arrange(m2,m3, main="Male 18-25 vs 26-35 Purchase Habits")
+grid.arrange(m3,m4, main="Male 26-35 vs 36-50 Purchase Habits")
 
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
