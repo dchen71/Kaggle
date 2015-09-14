@@ -219,14 +219,15 @@ male_coupon_list = merge(males[,c(2,3,6)], purchases)
 #Find coupons bought by female
 female_coupon_list = merge(females[,c(2,3,6)], purchases)
 
+#Creates new row which contains age group
+#1 = under18
+#2 = 18-25
+#3 = 26-35
+#4 = 36-50
+#5 = 51-65
+#6 = 66-80
 process_coupon_list = function(df){
-    #Initialize age groups
-    df$under18 = 0
-    df$a18to25 = 0
-    df$a25to35 = 0
-    df$a35to50 = 0
-    df$a50to65 = 0
-    df$a65to80 = 0
+    df$Group = 0
     #Logic to input 1 if matches age group
     for(i in 1:nrow(df)){
         if(df[i,3] < 18){
@@ -234,22 +235,22 @@ process_coupon_list = function(df){
         }
         else if(df[i,3] >= 18){
             if(df[i,3] <= 25){
-                df[i,13] = 1
+                df[i,12] = 2
             }
             else if (df[i,3] > 25){
                 if(df[i,3] <= 35){
-                    df[i,14] = 1
+                    df[i,12] = 3
                 }
                 else if(df[i,3] > 35){
                     if(df[i,3] <= 50){
-                        df[i,15] = 1
+                        df[i,12] = 4
                     }
                     else if(df[i,3] > 50){
                         if(df[i,3] <= 65){
-                            df[i,16] = 1
+                            df[i,12] = 5
                         }
                         else if (df[i,3] > 65){
-                            df[i,17] = 1
+                            df[i,12] = 6
                         }
                     }
                 }
@@ -263,9 +264,32 @@ process_coupon_list = function(df){
 male_coupon_list = process_coupon_list(male_coupon_list)
 female_coupon_list = process_coupon_list(female_coupon_list)
 
-#Find combined age group bracket bought
+#Function to return plot showing genres per age group
+plot_age_genre = function(df,age){
+    filtered = subset(df, df$Group == age)
+    plot = ggplot(data=filtered,aes(x=GENRE_NAME,fill=GENRE_NAME)) + 
+        geom_bar(stat='bin') + 
+        labs(title="Comparasion of coupons bought per age group",x="Categories", y="# Coupons Bought") + 
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    return(plot)
+}
+
 #Find male age group bought
+plot_age_genre(male_coupon_list,1)
+plot_age_genre(male_coupon_list,2)
+plot_age_genre(male_coupon_list,3)
+plot_age_genre(male_coupon_list,4)
+plot_age_genre(male_coupon_list,5)
+plot_age_genre(male_coupon_list,6)
+
 #Find female age group bought
+plot_age_genre(female_coupon_list,1)
+plot_age_genre(female_coupon_list,2)
+plot_age_genre(female_coupon_list,3)
+plot_age_genre(female_coupon_list,4)
+plot_age_genre(female_coupon_list,5)
+plot_age_genre(female_coupon_list,6)
+
 
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
