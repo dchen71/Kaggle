@@ -5,13 +5,15 @@ require(Matrix)
 library(caTools)
 
 #Read input
-#area_train      <<- read.csv('input/coupon_area_train.csv') #coupon per area
-#area_test       <<- read.csv('input/coupon_area_test.csv') #coupon per area
-detail_train    <<- read.csv('input/coupon_detail_train.csv') #details on bought or not
-list_train      <<- read.csv('input/coupon_list_train.csv') #coupon details
-list_test       <<- read.csv('input/coupon_list_test.csv') #coupon details
+detail_train    <<- read.csv('input/coupon_detail_train.csv', encoding="UTF-8") #details on bought or not
+list_train      <<- read.csv('input/coupon_list_train.csv', encoding="UTF-8") #coupon details
+list_test       <<- read.csv('input/coupon_list_test.csv', encoding="UTF-8") #coupon details
 visit_train     <<- read.csv('input/coupon_visit_train.csv') #referrers and bought or not
-user_list       <<- read.csv('input/user_list.csv') #user details
+user_list       <<- read.csv('input/user_list.csv', encoding="UTF-8") #user details
+
+#Change locale for characters
+Sys.setlocale(category="LC_ALL", locale = "japanese")
+
 
 #cluster coupons/pref/location/gender of user/age
 #Look up holidays/type of for major ones at least
@@ -48,7 +50,6 @@ train[is.na(train)] = 1
 #Setup feature to find difference from average of type in region
 #Feature engineering
 #train$AVG_RATE = 1/log10(mean(price_rate ~ location/genre))
-#Normalize it by subtracting nonblank by user buy
 train$DISCOUNT_PRICE = 1/log10(train$DISCOUNT_PRICE) #Normalizes value via divide by log
 train$PRICE_RATE = 1/log10(train$PRICE_RATE) #Normalizes value via divide by log
 train$VALIDPERIOD = 1/log10(train$VALIDPERIOD) #Normalizes value via divide by log
@@ -77,7 +78,7 @@ uchar$PRICE_RATE = 1
 #Change weights varaible
 #Figure out if possible to progmaticcaly determine weights
 #Weight Matrix: GENRE_NAME DISCOUNT_PRICE PRICE_RATE USABLE_DATE_ VALIDPERIOD small_area_name
-weights = c(2,1,0,0,0,4)
+weights = c(2.05,2.01,-0.13,0,0,4.85)
 
 W = as.matrix(Diagonal(x=c(rep(weights[1],13), rep(weights[2],1), rep(weights[3],1), 
                            rep(weights[4],9), rep(weights[5],1), rep(weights[6],55))))
@@ -95,3 +96,6 @@ uchar$PURCHASED_COUPONS = do.call(rbind, lapply(1:nrow(uchar),FUN=function(i){
 submission = merge(user_list, uchar, all.x=TRUE)
 submission = submission[,c("USER_ID_hash","PURCHASED_COUPONS")]
 write.csv(submission, file="recommended.csv", row.names=FALSE)
+
+#Restore locale
+Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
