@@ -219,6 +219,50 @@ male_coupon_list = merge(males[,c(2,3,6)], purchases)
 #Find coupons bought by female
 female_coupon_list = merge(females[,c(2,3,6)], purchases)
 
+process_coupon_list = function(df){
+    #Initialize age groups
+    df$under18 = 0
+    df$a18to25 = 0
+    df$a25to35 = 0
+    df$a35to50 = 0
+    df$a50to65 = 0
+    df$a65to80 = 0
+    #Logic to input 1 if matches age group
+    for(i in 1:nrow(df)){
+        if(df[i,3] < 18){
+            df[i,12] = 1
+        }
+        else if(df[i,3] >= 18){
+            if(df[i,3] <= 25){
+                df[i,13] = 1
+            }
+            else if (df[i,3] > 25){
+                if(df[i,3] <= 35){
+                    df[i,14] = 1
+                }
+                else if(df[i,3] > 35){
+                    if(df[i,3] <= 50){
+                        df[i,15] = 1
+                    }
+                    else if(df[i,3] > 50){
+                        if(df[i,3] <= 65){
+                            df[i,16] = 1
+                        }
+                        else if (df[i,3] > 65){
+                            df[i,17] = 1
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return(df)
+}
+
+#Process data by putting in age groups
+male_coupon_list = process_coupon_list(male_coupon_list)
+female_coupon_list = process_coupon_list(female_coupon_list)
+
 #Find combined age group bracket bought
 #Find male age group bought
 #Find female age group bought
