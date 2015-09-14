@@ -10,6 +10,9 @@ detail_train    <<- read.csv('input/coupon_detail_train.csv', encoding="UTF-8") 
 list_train      <<- read.csv('input/coupon_list_train.csv', encoding="UTF-8") #coupon details
 user_list       <<- read.csv('input/user_list.csv', encoding="UTF-8") #user details
 
+#Initialize variables
+purchases = merge(list_train[,c(2:5,21:24)], detail_train[,c(5,6)])
+
 #Change locale for characters
 Sys.setlocale(category="LC_ALL", locale = "japanese")
 
@@ -211,6 +214,14 @@ plot_mean = function(df, prefs) {
 #Plot the comparasions of mean coupon price bought between prefectures
 plot_mean(ken_price, c('?????????','?????????'))
 
+#Find coupons bought by male
+male_coupon_list = merge(males[,c(2,3,6)], purchases)
+#Find coupons bought by female
+female_coupon_list = merge(females[,c(2,3,6)], purchases)
+
+#Find combined age group bracket bought
+#Find male age group bought
+#Find female age group bought
 
 #Restore locale
 Sys.setlocale(category="LC_ALL", locale = "English_United States.1252")
