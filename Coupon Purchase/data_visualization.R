@@ -222,13 +222,15 @@ female_coupon_list = merge(females[,c(2,3,6)], purchases)
 
 #Shows the total number of coupons bought by gender
 #Male
-ggplot(data=male_coupon_list,aes(x=GENRE_NAME,fill=GENRE_NAME)) + geom_bar(stat='bin') + 
+male_total = ggplot(data=male_coupon_list,aes(x=GENRE_NAME,fill=GENRE_NAME)) + geom_bar(stat='bin') + 
     labs(title="Number of Coupons coupons bought by men" ,x="Genre", y="Number of coupons") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 #Female
-ggplot(data=female_coupon_list,aes(x=GENRE_NAME,fill=GENRE_NAME)) + geom_bar(stat='bin') + 
+female_total = ggplot(data=female_coupon_list,aes(x=GENRE_NAME,fill=GENRE_NAME)) + geom_bar(stat='bin') + 
     labs(title="Number of Coupons coupons bought by men" ,x="Genre", y="Number of coupons") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+grid.arrange(male_total, female_total, main="Male vs Female Purchasing Habits")
 
 #Creates new row which contains age group
 #1 = under18
