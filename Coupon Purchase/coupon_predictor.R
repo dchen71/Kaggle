@@ -9,7 +9,7 @@ detail_train = read.csv(paste0(dir,"coupon_detail_train.csv"), encoding="UTF-8")
 list_train = read.csv(paste0(dir,"coupon_list_train.csv"),encoding="UTF-8")
 list_test = read.csv(paste0(dir,"coupon_list_test.csv"),encoding="UTF-8")
 user_list = read.csv(paste0(dir,"user_list.csv"),encoding="UTF-8")
-visit_train = read.csv(paste0(dir,"coupon_visit_train.csv"),nrows=-1) # big file
+visit_train = read.csv(paste0(dir,"coupon_visit_train.csv"),nrows=-1)
 visit_train = visit_train[visit_train$PURCHASE_FLG!=1,c("VIEW_COUPON_ID_hash","USER_ID_hash")]
 
 #Change locale for characters
@@ -37,13 +37,13 @@ list_test$USABLE_DATE_sum = rowSums(list_test[,12:20])
 # to get USER_ID_hash by coupon
 train = merge(detail_train,list_train)
 train = train[,c("COUPON_ID_hash","USER_ID_hash",
-                 "GENRE_NAME","DISCOUNT_PRICE","DISPPERIOD",
-                 "large_area_name","small_area_name","VALIDPERIOD","USABLE_DATE_sum")]
+                  "GENRE_NAME","DISCOUNT_PRICE","DISPPERIOD",
+                  "large_area_name","small_area_name","VALIDPERIOD","USABLE_DATE_sum")]
 # Append test set to the training set for model.matrix factor column conversion
 list_test$USER_ID_hash = "dummyuser"
 cpchar = list_test[,c("COUPON_ID_hash","USER_ID_hash",
-                      "GENRE_NAME","DISCOUNT_PRICE","DISPPERIOD",
-                      "large_area_name","small_area_name","VALIDPERIOD","USABLE_DATE_sum")]
+                   "GENRE_NAME","DISCOUNT_PRICE","DISPPERIOD",
+                   "large_area_name","small_area_name","VALIDPERIOD","USABLE_DATE_sum")]
 train = rbind(train,cpchar)
 
 # NA imputation to values of 1
@@ -55,8 +55,8 @@ train$USABLE_DATE_sum = train$USABLE_DATE_sum/9
 
 # Convert the factors to columns of 0's and 1's
 train = cbind(train[,c(1,2)],model.matrix(~ -1 + .,train[,-c(1,2)],
-                                          contrasts.arg=lapply(train[,names(which(sapply(train[,-c(1,2)], is.factor)==TRUE))], 
-                                                               contrasts, contrasts=FALSE)))
+                                           contrasts.arg=lapply(train[,names(which(sapply(train[,-c(1,2)], is.factor)==TRUE))], 
+                                                                contrasts, contrasts=FALSE)))
 
 # Separate the test from train following factor column conversion
 test = train[train$USER_ID_hash=="dummyuser",]
@@ -86,13 +86,13 @@ while (i2 < imax) {  # this loop takes a few minutes
     cat("Merging coupon visit data i1=",i1," i2=",i2,"\n")
     trainv = merge(visit_train[i1:i2,],list_train, by.x="VIEW_COUPON_ID_hash", by.y="COUPON_ID_hash")
     trainv = trainv[,c("VIEW_COUPON_ID_hash","USER_ID_hash",
-                       "GENRE_NAME","DISCOUNT_PRICE","DISPPERIOD",                          
-                       "large_area_name","small_area_name","VALIDPERIOD","USABLE_DATE_sum")]
+                        "GENRE_NAME","DISCOUNT_PRICE","DISPPERIOD",                          
+                        "large_area_name","small_area_name","VALIDPERIOD","USABLE_DATE_sum")]
     # Same treatment as with coupon_detail train data
     trainv$DISCOUNT_PRICE = 1;train$DISPPERIOD = 1;train$USABLE_DATE_sum = 1;trainv[is.na(trainv)] = 1
     trainv = cbind(trainv[,c(1,2)],model.matrix(~ -1 + .,trainv[,-c(1,2)],
-                                                contrasts.arg=lapply(trainv[,names(which(sapply(trainv[,-c(1,2)], is.factor)==TRUE))], 
-                                                                     contrasts, contrasts=FALSE)))
+                                                 contrasts.arg=lapply(trainv[,names(which(sapply(trainv[,-c(1,2)], is.factor)==TRUE))], 
+                                                                      contrasts, contrasts=FALSE)))
     # Discount coupon visits relative to coupon purchases
     couponVisitFactor = .005      
     trainv[,3:dim(trainv)[2]] = trainv[,3:dim(trainv)[2]] * couponVisitFactor  
@@ -101,18 +101,42 @@ while (i2 < imax) {  # this loop takes a few minutes
 
 # Weight matrix with 7 factors, separate for male and female users 
 ## Male weight matrix
-Wm = as.matrix(Diagonal(x=c(rep(2.00,13), 		#GENRE_NAME
+Wm = as.matrix(Diagonal(x=c(rep(2.00,1), 		#GENRE_NAME - esute
+                            rep(2.00,1), 		#GENRE_NAME - gift card
+                            rep(2.00,1), 		#GENRE_NAME - grooming
+                            rep(2.00,1), 		#GENRE_NAME - others
+                            rep(2.00,1), 		#GENRE_NAME - nail art
+                            rep(2.00,1), 		#GENRE_NAME - beauty
+                            rep(2.00,1), 		#GENRE_NAME - hair salon
+                            rep(2.00,1), 		#GENRE_NAME - hotel/inn
+                            rep(2.00,1), 		#GENRE_NAME - relaxation
+                            rep(2.00,1), 		#GENRE_NAME - leisure
+                            rep(2.00,1), 		#GENRE_NAME - lesson
+                            rep(2.00,1), 		#GENRE_NAME - health
+                            rep(2.00,1), 		#GENRE_NAME - shipping
                             rep(1.25,1), 		#DISCOUNT_PRICE
-                            rep(1.25,1), 		#DISPPERIOD
-                            rep(1.00,9), 		#large_area_name
+						    rep(1.25,1), 		#DISPPERIOD
+						    rep(1.00,9), 		#large_area_name
                             rep(4.50,55),		#small_area_name
                             rep(0.625,2),		#VALIDPERIOD
                             rep(0.35,1))))		#USABLE_DATE_sum
 ## Female weight matrix
-Wf = as.matrix(Diagonal(x=c(rep(1.75,13), 		#GENRE_NAME
-                            rep(0.75,1), 		#DISCOUNT_PRICE
-                            rep(1.50,1), 		#DISPPERIOD
-                            rep(1.00,9), 		#large_area_name
+Wf = as.matrix(Diagonal(x=c(rep(1.75,1), 		#GENRE_NAME - esute
+                            rep(1.75,1), 		#GENRE_NAME - gift card
+                            rep(1.75,1), 		#GENRE_NAME - grooming
+                            rep(1.75,1), 		#GENRE_NAME - others
+                            rep(1.75,1), 		#GENRE_NAME - nail art
+                            rep(1.75,1), 		#GENRE_NAME - beauty
+                            rep(1.75,1), 		#GENRE_NAME - hair salon
+                            rep(1.75,1), 		#GENRE_NAME - hotel/inn
+                            rep(1.75,1), 		#GENRE_NAME - relaxation
+                            rep(1.75,1), 		#GENRE_NAME - leisure
+                            rep(1.75,1), 		#GENRE_NAME - lesson
+                            rep(1.75,1), 		#GENRE_NAME - health
+                            rep(1.75,1), 		#GENRE_NAME - shipping
+							rep(0.75,1), 		#DISCOUNT_PRICE
+							rep(1.50,1), 		#DISPPERIOD
+							rep(1.00,9), 		#large_area_name
                             rep(4.50,55),		#small_area_name
                             rep(0.625,2),		#VALIDPERIOD
                             rep(0.25,1))))		#USABLE_DATE_sum
