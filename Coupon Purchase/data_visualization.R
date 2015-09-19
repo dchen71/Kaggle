@@ -179,7 +179,6 @@ plot_ken = function(df, prefs) {
 #Plot the comparasions of coupon distribution bought between prefectures
 plot_ken(ken_distribution, c('?????????','?????????'))
 
-
 #Contains the mean percentage discount distribution of ken/genre
 ken_percent_price = aggregate(x=list_train$PRICE_RATE, by=list(list_train$ken_name, list_train$GENRE_NAME),FUN="mean")
 names(ken_percent_price) = c('Pref','Genre', 'Mean_Discount')
@@ -220,6 +219,16 @@ plot_mean(ken_price, c('?????????','?????????'))
 male_coupon_list = merge(males[,c(2,3,6)], purchases)
 #Find coupons bought by female
 female_coupon_list = merge(females[,c(2,3,6)], purchases)
+
+#Shows the total number of coupons bought by gender
+#Male
+ggplot(data=male_coupon_list,aes(x=GENRE_NAME,fill=GENRE_NAME)) + geom_bar(stat='bin') + 
+    labs(title="Number of Coupons coupons bought by men" ,x="Genre", y="Number of coupons") + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+#Female
+ggplot(data=female_coupon_list,aes(x=GENRE_NAME,fill=GENRE_NAME)) + geom_bar(stat='bin') + 
+    labs(title="Number of Coupons coupons bought by men" ,x="Genre", y="Number of coupons") + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 #Creates new row which contains age group
 #1 = under18
