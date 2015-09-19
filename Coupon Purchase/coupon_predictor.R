@@ -101,7 +101,7 @@ while (i2 < imax) {  # this loop takes a few minutes
 
 # Weight matrix with 7 factors, separate for male and female users 
 ## Male weight matrix
-Wm = as.matrix(Diagonal(x=c(rep(2.00,1), 		#GENRE_NAME - esute
+Wm = as.matrix(Diagonal(x=c(rep(0.5,1), 		#GENRE_NAME - massage/aesthetics
                             rep(2.00,1), 		#GENRE_NAME - gift card
                             rep(2.00,1), 		#GENRE_NAME - grooming
                             rep(2.00,1), 		#GENRE_NAME - others
@@ -121,7 +121,7 @@ Wm = as.matrix(Diagonal(x=c(rep(2.00,1), 		#GENRE_NAME - esute
                             rep(0.625,2),		#VALIDPERIOD
                             rep(0.35,1))))		#USABLE_DATE_sum
 ## Female weight matrix
-Wf = as.matrix(Diagonal(x=c(rep(1.75,1), 		#GENRE_NAME - esute
+Wf = as.matrix(Diagonal(x=c(rep(0.5,1), 		#GENRE_NAME - massage/aesthetics
                             rep(1.75,1), 		#GENRE_NAME - gift card
                             rep(1.75,1), 		#GENRE_NAME - grooming
                             rep(1.75,1), 		#GENRE_NAME - others
