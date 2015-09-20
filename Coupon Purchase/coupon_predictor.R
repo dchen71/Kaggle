@@ -106,7 +106,7 @@ Wm = as.matrix(Diagonal(x=c(rep(0.5,1), 		#GENRE_NAME - massage/aesthetics
                             rep(2.00,1), 		#GENRE_NAME - grooming
                             rep(2.00,1), 		#GENRE_NAME - others
                             rep(2.00,1), 		#GENRE_NAME - nail art
-                            rep(2.00,1), 		#GENRE_NAME - beauty
+                            rep(0.10,1), 		#GENRE_NAME - beauty
                             rep(2.00,1), 		#GENRE_NAME - hair salon
                             rep(2.00,1), 		#GENRE_NAME - hotel/inn
                             rep(2.00,1), 		#GENRE_NAME - relaxation
@@ -121,12 +121,12 @@ Wm = as.matrix(Diagonal(x=c(rep(0.5,1), 		#GENRE_NAME - massage/aesthetics
                             rep(0.625,2),		#VALIDPERIOD
                             rep(0.35,1))))		#USABLE_DATE_sum
 ## Female weight matrix
-Wf = as.matrix(Diagonal(x=c(rep(0.5,1), 		#GENRE_NAME - massage/aesthetics
+Wf = as.matrix(Diagonal(x=c(rep(0.4,1), 		#GENRE_NAME - massage/aesthetics
                             rep(1.75,1), 		#GENRE_NAME - gift card
                             rep(1.75,1), 		#GENRE_NAME - grooming
                             rep(1.75,1), 		#GENRE_NAME - others
                             rep(1.75,1), 		#GENRE_NAME - nail art
-                            rep(1.75,1), 		#GENRE_NAME - beauty
+                            rep(0.1,1), 		#GENRE_NAME - beauty
                             rep(1.75,1), 		#GENRE_NAME - hair salon
                             rep(1.75,1), 		#GENRE_NAME - hotel/inn
                             rep(1.75,1), 		#GENRE_NAME - relaxation
