@@ -227,7 +227,7 @@ male_total = ggplot(data=male_coupon_list,aes(x=GENRE_NAME,fill=GENRE_NAME)) + g
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 #Female
 female_total = ggplot(data=female_coupon_list,aes(x=GENRE_NAME,fill=GENRE_NAME)) + geom_bar(stat='bin') + 
-    labs(title="Number of Coupons coupons bought by men" ,x="Genre", y="Number of coupons") + 
+    labs(title="Number of Coupons coupons bought by women" ,x="Genre", y="Number of coupons") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 grid.arrange(male_total, female_total, main="Male vs Female Purchasing Habits")
