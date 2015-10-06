@@ -14,16 +14,20 @@ test$Open[which(is.na(test$Open))] = 0
 train = train[,c(-3,-5)]
 test = test[,-4]
 
-##Merge datasets together for feature engineering
-test$Sales = 'dummy'
-train$Id = 'dummyID'
-train = rbind(train, test)
+##Conversions to factors
+factorizeData = function(df){
+    df$SchoolHoliday = as.factor(df$SchoolHoliday)
+    df$Store = as.factor(df$Store)
+    df$DayOfWeek = as.factor(df$DayOfWeek)
+    df$Open = as.factor(df$Open)
+    df$Promo = as.factor(df$Promo)
+    return(df)
+}
 
-# Separate the test from train
-test = train[train$Sales=="dummy",]
-test$Sales = NULL
-train = train[train$Sales !="dummy",]
-train$Id = NULL
+train = factorizeData(train)
+test = factorizeData(test)
+
+##Feature engineering
 
 #Testing Model
 ##Setup cross validation set
