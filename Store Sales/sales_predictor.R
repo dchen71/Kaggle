@@ -16,6 +16,9 @@ part = createDataPartition(train$Sales, p = 0.6, list = FALSE)
 trainset = train[part,]
 testset = train[-part,]
 
+#Fix NAs in Open in test
+test$Open[which(is.na(test$Open))] = 0
+
 #Setup Linear model for CV
 lmTrain = lm(Sales ~ . - Date, trainset)
 predTrain = predict(lmTrain, trainset)
