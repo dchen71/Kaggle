@@ -21,8 +21,12 @@ lmTrain = lm(Sales ~ . - Date, trainset)
 predTrain = predict(lmTrain, trainset)
 predTest = predict(lmTrain, newdata=testset)
 
+#Remove Customers from train and date from both
+train = train[,c(-3,-5)]
+test = test[,-4]
+
 #Create a linear model
-lmModel = lm(Sales ~ . - Date - Customers, train)
+lmModel = lm(Sales ~ ., train)
 predModel = predict(lmModel, newdata = test)
 
 #Creates submission
