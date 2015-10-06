@@ -29,6 +29,8 @@ test = test[,-4]
 lmModel = lm(Sales ~ ., train)
 predModel = predict(lmModel, newdata = test)
 
+predModel[which(is.na(predModel))] = 0
+
 #Creates submission
 submission = data.frame(test$Id)
 names(submission) = 'ID'
