@@ -12,6 +12,8 @@ test = read.csv(paste0(dir,"test.csv"))
 ##Fix NAs in Open in test
 test$Open[which(is.na(test$Open))] = 0
 
+months = c('Jan', 'Feb', 'Mar', "Apr", "May", "Jun", 'Jul', "Aug", 'Sep', 'Oct', 'Nov', 'Dec')
+
 ##Conversions to factors
 factorizeData = function(df){
     df$SchoolHoliday = as.factor(df$SchoolHoliday)
