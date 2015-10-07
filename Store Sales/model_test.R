@@ -45,6 +45,9 @@ testset = train[-part,]
 lmTrain = lm(Sales ~ ., trainset)
 predTest = predict(lmTrain, newdata=testset)
 
+#Convert all predictors lower than 0 to 0
+predTest[predTest < 0] = 0
+
 ##Function to print out the number of Sales results within 10% of actual
 checkSales = function(pred,df){
     results = data.frame(pred)
@@ -65,6 +68,8 @@ checkSales(predTest, testset)
 lmCust = lm(Customers ~ ., trainset[,-3])
 predCust = predict(lmCust, newdata=testset)
 
+#Convert all predictors lower than 0 to 0
+predCust[predCust < 0] = 0
 
 ##Function to print out the number of Customers results within 10% of actual
 checkCust = function(pred,df){
