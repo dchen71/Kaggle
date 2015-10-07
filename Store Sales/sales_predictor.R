@@ -17,7 +17,6 @@ test = test[,-4]
 ##Conversions to factors
 factorizeData = function(df){
     df$SchoolHoliday = as.factor(df$SchoolHoliday)
-    df$Store = as.factor(df$Store)
     df$DayOfWeek = as.factor(df$DayOfWeek)
     df$Open = as.factor(df$Open)
     df$Promo = as.factor(df$Promo)
@@ -44,6 +43,22 @@ testset = train[-part,]
 lmTrain = lm(Sales ~ ., trainset)
 predTrain = predict(lmTrain, trainset)
 predTest = predict(lmTrain, newdata=testset)
+
+##Function to print out the number of results within 10% of actual
+checkAcc = function(pred,df){
+    results = data.frame(pred)
+    results$Sales = df$Sales
+    wrong = 0
+    for(i in 1:nrow(results)){
+        test = results[i,1]
+        actual = results[i,2]
+        if(!(test >= actual *0.9 && test <= actual * 1.1))
+            wrong = wrong + 1
+    }
+    print(paste0('The accuracy of values within 10% is ', (nrow(df) - wrong)/nrow(df)))
+}
+
+checkAcc(predTest, testset)
 
 #Prediction
 ##Create a linear model
