@@ -10,10 +10,6 @@ test = read.csv(paste0(dir,"test.csv"))
 ##Fix NAs in Open in test
 test$Open[which(is.na(test$Open))] = 0
 
-##Remove Customers from train and date from both
-train = train[,c(-3,-5)]
-test = test[,-4]
-
 ##Conversions to factors
 factorizeData = function(df){
     df$SchoolHoliday = as.factor(df$SchoolHoliday)
@@ -26,9 +22,18 @@ factorizeData = function(df){
 train = factorizeData(train)
 test = factorizeData(test)
 
+##Remove date from both
+train = train[,-3]
+test = test[,-4]
+
+#Add predicted number of customers for test
+lmCust = lm(Customers ~ ., train[,-3])
+predCust = predict(lmCust, newdata=test)
+test$Customers = predCust
+
 ##Feature engineering
 
-#Testing Model
+#Testing Model for sales
 ##Setup cross validation set
 library(caret)
 
@@ -44,8 +49,8 @@ lmTrain = lm(Sales ~ ., trainset)
 predTrain = predict(lmTrain, trainset)
 predTest = predict(lmTrain, newdata=testset)
 
-##Function to print out the number of results within 10% of actual
-checkAcc = function(pred,df){
+##Function to print out the number of Sales results within 10% of actual
+checkSales = function(pred,df){
     results = data.frame(pred)
     results$Sales = df$Sales
     wrong = 0
@@ -55,10 +60,10 @@ checkAcc = function(pred,df){
         if(!(test >= actual *0.9 && test <= actual * 1.1))
             wrong = wrong + 1
     }
-    print(paste0('The accuracy of values within 10% is ', (nrow(df) - wrong)/nrow(df)))
+    print(paste0('The accuracy of values within 10% is ', (nrow(df) - wrong)/nrow(df), '%'))
 }
 
-checkAcc(predTest, testset)
+checkSales(predTest, testset)
 
 #Prediction
 ##Create a linear model
