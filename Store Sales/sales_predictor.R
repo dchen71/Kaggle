@@ -25,8 +25,10 @@ processData = function(df){
     df$CompetitionDistance = NULL
     df$CompetitionOpenSinceYear = NULL
     df$CompetitionOpenSinceMonth = NULL
+    df$Promo2 = as.factor(df$Promo2)
     df$Promo2SinceWeek = NULL
     df$Promo2SinceYear = NULL
+    df$PromoInterval = NULL
     return(df)
 }
 
