@@ -6,23 +6,32 @@ store = read.csv(paste0(dir,"store.csv"))
 train = read.csv(paste0(dir,"train.csv"))
 test = read.csv(paste0(dir,"test.csv"))
 
+#Merge datasets
+train = merge(train, store)
+test = merge(test,store)
+
 #Data Cleanup
 ##Fix NAs in Open in test
 test$Open[which(is.na(test$Open))] = 0
 
 months = c('Jan', 'Feb', 'Mar', "Apr", "May", "Jun", 'Jul', "Aug", 'Sep', 'Oct', 'Nov', 'Dec')
 
-##Conversions to factors
-factorizeData = function(df){
+##Conversions to factors and removal of certain variables
+processData = function(df){
     df$SchoolHoliday = as.factor(df$SchoolHoliday)
     df$DayOfWeek = as.factor(df$DayOfWeek)
     df$Open = as.factor(df$Open)
     df$Promo = as.factor(df$Promo)
+    df$CompetitionDistance = NULL
+    df$CompetitionOpenSinceYear = NULL
+    df$CompetitionOpenSinceMonth = NULL
+    df$Promo2SinceWeek = NULL
+    df$Promo2SinceYear = NULL
     return(df)
 }
 
-train = factorizeData(train)
-test = factorizeData(test)
+train = processData(train)
+test = processData(test)
 
 ##Remove date from both
 train = train[,-3]
