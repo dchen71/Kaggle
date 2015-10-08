@@ -18,13 +18,13 @@ test$Open[which(is.na(test$Open))] = 0
 
 months = c('Jan', 'Feb', 'Mar', "Apr", "May", "Jun", 'Jul', "Aug", 'Sep', 'Oct', 'Nov', 'Dec')
 
-##Conversions to factors and removal of certain variables
+##Conversions to factors and NA imputation
 processData = function(df){
     df$SchoolHoliday = as.factor(df$SchoolHoliday)
     df$DayOfWeek = as.factor(df$DayOfWeek)
     df$Open = as.factor(df$Open)
     df$Promo = as.factor(df$Promo)
-    df$CompetitionDistance = NULL
+    df$CompetitionDistance[is.na(df$CompetitionDistance)] = max(df$CompetitionDistance[!is.na(df$CompetitionDistance)]) * 1.5
     df$CompetitionOpenSinceYear = NULL
     df$CompetitionOpenSinceMonth = NULL
     df$Promo2 = as.factor(df$Promo2)
