@@ -4,7 +4,7 @@
 
 #Read input
 dir = 'input/'
-store = read.csv(paste0(dir,"store.csv"))
+store = read.csv(paste0(dir,"store.csv"), na.strings = c("NA", ''))
 train = read.csv(paste0(dir,"train.csv"))
 test = read.csv(paste0(dir,"test.csv"))
 
