@@ -18,7 +18,7 @@ test$Open[which(is.na(test$Open))] = 0
 
 months = c('Jan', 'Feb', 'Mar', "Apr", "May", "Jun", 'Jul', "Aug", 'Sep', 'Oct', 'Nov', 'Dec')
 
-##Conversions to factors and NA imputation
+##Conversions to factors and removal of certain variables
 processData = function(df){
     df$SchoolHoliday = as.factor(df$SchoolHoliday)
     df$DayOfWeek = as.factor(df$DayOfWeek)
@@ -30,6 +30,16 @@ processData = function(df){
     df$Promo2 = as.factor(df$Promo2)
     df$Promo2SinceWeek = NULL
     df$Promo2SinceYear = NULL
+    
+    #Setup Promo Interval/month
+    for(i in months){
+        month = paste0('PromoInt', i)
+        add = data.frame(change=rep(0,nrow(df)))
+        names(add) = month
+        add[grep(i, df$PromoInterval),] = 1
+        add[,1] = as.factor(add[,1])
+        df = cbind(df, add)
+    }
     df$PromoInterval = NULL
     return(df)
 }
