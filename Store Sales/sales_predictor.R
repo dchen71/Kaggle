@@ -29,16 +29,8 @@ processData = function(df){
     df$Promo2SinceWeek = NULL
     df$Promo2SinceYear = NULL
     
-    #Setup Promo Interval/month
-    for(i in months){
-        month = paste0('PromoInt', i)
-        add = data.frame(change=rep(0,nrow(df)))
-        names(add) = month
-        add[grep(i, df$PromoInterval),] = 1
-        add[,1] = as.factor(add[,1])
-        df = cbind(df, add)
-    }
-    df$PromoInterval = NULL
+    #Convert NA into none for factoring in promointerval
+    df$PromoInterval = addNA(df$PromoInterval)
     return(df)
 }
 
