@@ -6,42 +6,34 @@
 dir = 'input/'
 store = read.csv(paste0(dir,"store.csv"), na.strings = c("NA", ''))
 train = read.csv(paste0(dir,"train.csv"))
-test = read.csv(paste0(dir,"test.csv"))
 
 #Merge datasets
 train = merge(train, store)
-test = merge(test,store)
 
 #Data Cleanup
-##Fix NAs in Open in test
-test$Open[which(is.na(test$Open))] = 0
-
-months = c('Jan', 'Feb', 'Mar', "Apr", "May", "Jun", 'Jul', "Aug", 'Sep', 'Oct', 'Nov', 'Dec')
-
-##Conversions to factors and removal of certain variables
+##Conversions to factors
 processData = function(df){
     df$SchoolHoliday = as.factor(df$SchoolHoliday)
     df$DayOfWeek = as.factor(df$DayOfWeek)
     df$Open = as.factor(df$Open)
     df$Promo = as.factor(df$Promo)
     df$CompetitionDistance[is.na(df$CompetitionDistance)] = max(df$CompetitionDistance[!is.na(df$CompetitionDistance)]) * 1.5
-    df$CompetitionOpenSinceYear = NULL
-    df$CompetitionOpenSinceMonth = NULL
     df$Promo2 = as.factor(df$Promo2)
-    df$Promo2SinceWeek = NULL
-    df$Promo2SinceYear = NULL
     
-    #Convert NA into none for factoring in promointerval
+    #Convert NA into factors
     df$PromoInterval = addNA(df$PromoInterval)
+    df$CompetitionOpenSinceYear = addNA(df$CompetitionOpenSinceYear)
+    df$CompetitionOpenSinceMonth = addNA(df$CompetitionOpenSinceMonth)
+    df$Promo2SinceWeek = addNA(df$Promo2SinceWeek)
+    df$Promo2SinceYear = addNA(df$Promo2SinceYear)
+    
     return(df)
 }
 
 train = processData(train)
-test = processData(test)
 
 ##Remove date from both
 train = train[,-3]
-test = test[,-4]
 
 ##Feature engineering
 
