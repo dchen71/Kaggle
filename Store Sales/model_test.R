@@ -49,7 +49,7 @@ trainset = train[part,]
 testset = train[-part,]
 
 ##Setup Linear model for CV
-lmTrain = lm(Sales ~ ., trainset)
+lmTrain = lm(Sales ~ . - Customers, trainset)
 predTest = predict(lmTrain, newdata=testset)
 
 #Convert all predictors lower than 0 to 0
@@ -70,6 +70,25 @@ checkSales = function(pred,df){
 }
 
 checkSales(predTest, testset)
+
+#Add predicted number of customers for test
+lmCust = lm(Customers ~ ., trainset[,-3])
+predCust = predict(lmCust, newdata=testset)
+
+#Convert all predictors lower than 0 to 0
+predCust[predCust < 0] = 0
+
+testCust = testset
+testCust$Customers = predCust
+
+##Setup Linear model for CV
+lmSalesCust = lm(Sales ~ ., trainset)
+predSalesCust = predict(lmSalesCust, newdata=testCust)
+
+#Convert all predictors lower than 0 to 0
+predSalesCust[predSalesCust < 0] = 0
+
+checkSales(predSalesCust,testset)
 
 #Add predicted number of customers for test
 lmCust = lm(Customers ~ ., trainset[,-3])
