@@ -92,4 +92,4 @@ checkCust = function(pred,df){
     print(paste0('The accuracy of values within 20% is ', (nrow(df) - wrong)/nrow(df), '%'))
 }
 
-checkCust(predTest, testset)
+checkCust(predCust, testset)
