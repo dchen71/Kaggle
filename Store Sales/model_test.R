@@ -39,6 +39,9 @@ processData = function(df){
     df$Week[df$Day >= 22 & df $Day <= 28] = 4
     df$Week[df$Day >= 29 & df $Day <= 31] = 5
     df$Day = NULL
+    df$Month = as.factor(df$Month)
+    df$Year = as.factor(df$Year)
+    df$Week = as.factor(df$Week)
     
     return(df)
 }
