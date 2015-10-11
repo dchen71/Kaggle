@@ -31,6 +31,14 @@ processData = function(df){
     df$Date = as.Date(df$Date)
     df$Month = as.integer(format(df$Date, "%m"))
     df$Year = as.integer(format(df$Date, "%y"))
+    df$Day = as.integer(format(df$Date, '%d'))
+    df$Week = 0
+    df$Week[df$Day >= 01 & df $Day <= 07] = 1
+    df$Week[df$Day >= 08 & df $Day <= 14] = 2
+    df$Week[df$Day >= 15 & df $Day <= 21] = 3
+    df$Week[df$Day >= 22 & df $Day <= 28] = 4
+    df$Week[df$Day >= 29 & df $Day <= 31] = 5
+    df$Day = NULL
     
     return(df)
 }
