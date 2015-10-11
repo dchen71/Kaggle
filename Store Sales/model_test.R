@@ -28,7 +28,7 @@ processData = function(df){
     df$Promo2SinceYear = addNA(df$Promo2SinceYear)
     
     #Parsing and conversion of dates to factors
-    df$Date = as.Date(train$Date)
+    df$Date = as.Date(df$Date)
     df$Month = as.integer(format(df$Date, "%m"))
     df$Year = as.integer(format(df$Date, "%y"))
     
