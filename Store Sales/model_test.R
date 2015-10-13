@@ -42,14 +42,12 @@ processData = function(df){
     df$Month = as.factor(df$Month)
     df$Year = as.factor(df$Year)
     df$Week = as.factor(df$Week)
+    df$Date = NULL
     
     return(df)
 }
 
 train = processData(train)
-
-##Remove date from both
-train = train[,-3]
 
 ##Feature engineering
 

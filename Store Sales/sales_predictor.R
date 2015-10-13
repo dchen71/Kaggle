@@ -45,16 +45,13 @@ processData = function(df){
     df$Month = as.factor(df$Month)
     df$Year = as.factor(df$Year)
     df$Week = as.factor(df$Week)
+    df$Date = NULL
     
     return(df)
 }
 
 train = processData(train)
 test = processData(test)
-
-##Remove date from both
-train = train[,-3]
-test = test[,-4]
 
 #Add predicted number of customers for test
 lmCust = lm(Customers ~ ., train[,-3])
