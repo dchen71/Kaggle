@@ -14,7 +14,6 @@ train = merge(train, store)
 ##Conversions to factors
 processData = function(df){
     df$SchoolHoliday = as.factor(df$SchoolHoliday)
-    df$DayOfWeek = as.factor(df$DayOfWeek)
     df$Open = as.factor(df$Open)
     df$Promo = as.factor(df$Promo)
     df$CompetitionDistance[is.na(df$CompetitionDistance)] = max(df$CompetitionDistance[!is.na(df$CompetitionDistance)]) * 1.5
@@ -44,12 +43,20 @@ processData = function(df){
     df$Week = as.factor(df$Week)
     df$Date = NULL
     
+    ##Feature engineering
+    ##Switch DayOFWeek into weekday/weekend
+    df$Weekday = 0
+    df$Weekend = 0
+    df$Weekday[df$DayOfWeek >= 1 & df$DayOfWeek <= 5] = 1
+    df$Weekend[df$DayOfWeek >= 6 & df$DayOfWeek <= 7] = 1
+    df$Weekday = as.factor(df$Weekday)
+    df$Weekend = as.factor(df$Weekend)
+    df$DayOfWeek = NULL
+    
     return(df)
 }
 
 train = processData(train)
-
-##Feature engineering
 
 #Testing Model for sales
 ##Setup cross validation set
