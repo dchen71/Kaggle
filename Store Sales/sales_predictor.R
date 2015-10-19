@@ -62,17 +62,9 @@ processData = function(df){
 train = processData(train)
 test = processData(test)
 
-#Add predicted number of customers for test
-lmCust = lm(Customers ~ ., train[,-2])
-predCust = predict(lmCust, newdata=test)
-predCust[predCust < 0] = 0
-test$Customers = predCust
-
-##Feature engineering
-
 #Prediction
 ##Create a linear model for Sales
-lmModel = lm(Sales ~ ., train)
+lmModel = lm(Sales ~ . - Customers, train)
 predModel = predict(lmModel, newdata = test)
 predModel[predModel < 0] = 0
 
