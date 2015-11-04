@@ -19,7 +19,14 @@ preProcess = function(df){
 test = preProcess(test)
 train = preProcess(train)
 
+# Create a corpus of terms for train and test
+ingred_corpus = c(Corpus(VectorSource(train$ingredients)), Corpus(VectorSource(test$ingredients)))
 
+# Create document term matrix
+##Maybe do preprocessing on documenttermmatrix
+ingred_DTM = DocumentTermMatrix(ingred_corpus)
+ingred_DTM = removeSparseTerms(ingred_DTM, 0.995) # 99.5% occurence only
+ingred_DTM = as.data.frame(as.matrix(ingred_DTM))
 
 
 #Write to csv
