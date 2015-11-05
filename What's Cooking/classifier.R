@@ -4,6 +4,7 @@
 #Init libraries
 library(jsonlite) #Read json
 library(tm) #Parse ingredients and get corpus
+library(randomForest) #randomForest
 
 #Read input
 test = fromJSON("test.json", flatten=TRUE)
@@ -40,8 +41,13 @@ word_test = ingred_DTM[-(1:nrow(train)), ]
 #Add back dependent variable
 word_train$cusine = train$cuisine
 
+#Random Forest model
+rfModel = randomForest(as.factor(cusine) ~ ., data = word_train)
+predictRF = predict(rfModel, newdata=word_test)
+
+
 #Write to csv
 submission = data.frame(test$id)
 names(submission) = 'id'
-#submission$cusine = predModel
-write.csv(submission,filename="submission.csv",row.names=FALSE)
+submission$cuisine = predictRF
+write.csv(submission,file="submission.csv",row.names=FALSE)
