@@ -13,7 +13,8 @@ train = fromJSON("train.json", flatten=TRUE)
 #Preprocesses the data
 preProcess = function(df){
     df$ingredients = lapply(df$ingredients, FUN=function(x) gsub("-", "_", x)) # Subs - with _
-    df$ingredients = lapply(df$ingredients, FUN=function(x) gsub("[^a-z0-9_ ]", "", x)) # Allow regular character and spaces    
+    df$ingredients = lapply(df$ingredients, FUN=function(x) gsub(" ", "_", x)) # Subs space with _
+    df$ingredients = lapply(df$ingredients, FUN=function(x) gsub("[^a-z0-9_]", "", x)) # Allow regular character    
     return(df)
 }
 
