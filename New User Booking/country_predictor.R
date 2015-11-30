@@ -11,7 +11,15 @@ sessions  = read.csv(paste0(dir,"sessions.csv"))
 #Preprocess data
 ##age - Merge age and train/test based on age bucket(not sure for na)
 ##countries - use distance, destination lang, destination, may have issues with test set
-##merge sessions with train/test and id/user_id
+
+#Preprocesses the data for both train and test
+preprocess = function(df){
+    df = merge(df, sessions, by.x="id", by.y="user_id")
+    return(df)
+}
+
+train = preprocess(train)
+test = preprocess(test)
 
 #Prediction
 
