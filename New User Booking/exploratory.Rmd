@@ -1,0 +1,49 @@
+---
+title: "New User Bookings Exploratory Analysis"
+output: html_document
+---
+
+This is just some quick exploratory analysis done on the data provided. Anyways, the data is first loaded.
+
+```{r}
+dir = 'input/'
+train = read.csv(paste0(dir,"train_users.csv"))
+test = read.csv(paste0(dir,"test_users.csv"))
+countries = read.csv(paste0(dir,"countries.csv"))
+age = read.csv(paste0(dir, "age_gender_bkts.csv"))
+sessions  = read.csv(paste0(dir,"sessions.csv"))
+```
+
+The training and testing data is merged together for future analysis
+
+```{r}
+train = merge(train, sessions, by.x="id", by.y="user_id")
+test = merge(test, sessions, by.x="id", by.y="user_id")
+```
+
+#Training/Testing data
+
+Create a quick function to show the head, tail, and number of na for each variable called
+
+```{r}
+printData = function(df, var){
+    print(table(is.na(df[var])))
+    print(head(table(df[var])))
+    print(tail(table(df[var])))
+}
+```
+
+
+#Age data
+
+```{r}
+
+```
+
+#Countries data
+
+```{r}
+countries
+```
+
+All the possible predictable country destinations are listed here. As the origin is the US, the distances are the distance between the US and the country of destination.
