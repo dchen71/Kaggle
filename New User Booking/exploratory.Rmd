@@ -6,6 +6,10 @@ output: html_document
 This is just some quick exploratory analysis done on the data provided. Anyways, the data is first loaded.
 
 ```{r}
+#Packages
+library(ggplot2)
+
+#Data
 dir = 'input/'
 train = read.csv(paste0(dir,"train_users.csv"))
 test = read.csv(paste0(dir,"test_users.csv"))
@@ -14,7 +18,7 @@ age = read.csv(paste0(dir, "age_gender_bkts.csv"))
 sessions  = read.csv(paste0(dir,"sessions.csv"))
 ```
 
-The training and testing data is merged together for future analysis
+The training and testing data is merged together to look at the data that will be used for prediction
 
 ```{r}
 train = merge(train, sessions, by.x="id", by.y="user_id")
@@ -36,8 +40,34 @@ printData = function(df, var){
 
 #Age data
 
-```{r}
+The age data shows age bucket groups of users going to certain country destinations in 2015. 
 
+```{r}
+#total male to female to destination places
+dest = unique(age$country_destination)
+total = data.frame(dest, matrix(ncol=2,nrow=20))
+names(total) = c("dest", "gender", "pop")
+total$gender = as.factor(c(rep("m", 10), rep("f",10)))
+total$dest = as.factor(total$dest)
+males = subset(age, gender == "male")
+females = subset(age, gender == "female")
+for(i in dest){
+    total[dest == i,][1,3] = sum(males$population_in_thousands[males$country_destination == i])
+    total[dest == i,][2,3] = sum(females$population_in_thousands[females$country_destination == i])
+}
+
+ggplot(total, aes(x=dest, y=pop, fill=gender)) + geom_bar(position ="dodge", stat="identity") + labs(title="Total population in thousands going to destinations separated by gender")
+```
+
+```{r}
+table(total[total$gender == "m",]$pop > total[total$gender == "f",]$pop)
+```
+
+As can be seen graph above, both genders go to the same destination at about the rate rate. Women do appear to travel more using AirBnb compared to men as can be seen in the chart.
+
+```{r}
+#separate down to age group
+#separate down to per location gender/age
 ```
 
 #Countries data
@@ -46,4 +76,4 @@ printData = function(df, var){
 countries
 ```
 
-All the possible predictable country destinations are listed here. As the origin is the US, the distances are the distance between the US and the country of destination.
+All the possible predictable country destinations are listed here. As the origin is the US, the distances are the distance between the US and the country of destination. In addition, the levenshtein distance should be the calculated edit distance of language similiarities. It might be interesting to feature engineer something using the latitude and longitude to estimate temperature.
