@@ -21,6 +21,7 @@ sessions  = read.csv(paste0(dir,"sessions.csv"))
 The training and testing data is merged together to look at the data that will be used for prediction
 
 ```{r}
+#needs to do merge all
 train = merge(train, sessions, by.x="id", by.y="user_id")
 test = merge(test, sessions, by.x="id", by.y="user_id")
 ```
@@ -30,11 +31,63 @@ test = merge(test, sessions, by.x="id", by.y="user_id")
 Create a quick function to show the head, tail, and number of na for each variable called
 
 ```{r}
-printData = function(df, var){
-    print(table(is.na(df[var])))
-    print(head(table(df[var])))
-    print(tail(table(df[var])))
-}
+sapply(train, function(y) sum(length(which(is.na(y)))))
+```
+
+```{r}
+sapply(test, function(y) sum(length(which(is.na(y)))))
+```
+
+```{r}
+head(train)
+```
+
+```{r}
+tail(train)
+```
+
+#Sessions
+```{r}
+#See which values have na
+sapply(sessions, function(y) sum(length(which(is.na(y)))))
+```
+
+The only columns with NA values is secs_elapsed.
+
+```{r}
+##Analyze the na sec
+na_secs = sessions[which(is.na(sessions$secs_elapsed)),]
+```
+
+```{r}
+##go take the top 10 actions
+ggplot(sessions,aes(action)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
+```
+
+
+
+```{r}
+##look into the blank actiontype
+#See the counts of action types
+ggplot(sessions,aes(action_type)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
+```
+
+The most popular action type is views, followed by data and click.
+
+```{r}
+##take the top 10
+ggplot(sessions,aes(action_detail)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
+```
+
+```{r}
+#Show the counts of device types
+ggplot(sessions,aes(device_type)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Counts of device types")
+```
+
+
+
+```{r}
+ggplot(sessions,aes(secs_elapsed)) + geom_dotplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Counts of device types")
 ```
 
 
