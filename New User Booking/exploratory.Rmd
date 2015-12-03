@@ -43,32 +43,30 @@ printData = function(df, var){
 The age data shows age bucket groups of users going to certain country destinations in 2015. 
 
 ```{r}
-#total male to female to destination places
-dest = unique(age$country_destination)
-total = data.frame(dest, matrix(ncol=2,nrow=20))
-names(total) = c("dest", "gender", "pop")
-total$gender = as.factor(c(rep("m", 10), rep("f",10)))
-total$dest = as.factor(total$dest)
-males = subset(age, gender == "male")
-females = subset(age, gender == "female")
-for(i in dest){
-    total[dest == i,][1,3] = sum(males$population_in_thousands[males$country_destination == i])
-    total[dest == i,][2,3] = sum(females$population_in_thousands[females$country_destination == i])
-}
+#switch 100+ age to 99+
+age = read.csv(paste0(dir, "age_gender_bkts.csv"))
+levels(age$age_bucket) = c(levels(age$age_bucket), "99+")
+age$age_bucket[age$age_bucket == "100+"] = "99+"
 
-ggplot(total, aes(x=dest, y=pop, fill=gender)) + geom_bar(position ="dodge", stat="identity") + labs(title="Total population in thousands going to destinations separated by gender")
+#plot destination vs population with gender as fill
+ggplot(age,aes(x=country_destination, y=population_in_thousands, fill=gender)) + geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Total population in thousands going to destinations separated by gender")
 ```
+
+This shows that the gender distribution towards countries are roughly the same. The most population destination is within the US with the second most being Germany.
 
 ```{r}
-table(total[total$gender == "m",]$pop > total[total$gender == "f",]$pop)
+#plot age vs population
+ggplot(age,aes(x=age_bucket, y=population_in_thousands, fill=gender)) + geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
 ```
 
-As can be seen graph above, both genders go to the same destination at about the rate rate. Women do appear to travel more using AirBnb compared to men as can be seen in the chart.
+As can be seen in the graph, there is an increase in travelers using the service in their 20s and begins to dip in the ages of 30-50. There is an upsurge in travel again in the travelers that are in their 50s and and begins to steadily decrease with age. There appears to be more males using the service that are in their mid-30s and below however begins to even out and become eclipsed by their female counterpart afterwards.
 
 ```{r}
-#separate down to age group
-#separate down to per location gender/age
+#plot destinatoin vs population with alpha of age and gender as fill
+ggplot(age,aes(x=country_destination, y=population_in_thousands, fill=gender, alpha=age_bucket)) + geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
 ```
+
+As can be seen in this graph, the distribution of travelers are roughly the same between their gender counterparts and age groups. 
 
 #Countries data
 
