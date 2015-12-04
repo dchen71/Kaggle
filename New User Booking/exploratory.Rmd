@@ -34,17 +34,23 @@ Create a quick function to show the head, tail, and number of na for each variab
 sapply(train, function(y) sum(length(which(is.na(y)))))
 ```
 
+The only column with NA values is age in train.
+
 ```{r}
 sapply(test, function(y) sum(length(which(is.na(y)))))
 ```
 
+The same can be seen in the test data set.
+
 ```{r}
-head(train)
+table(train$age)
 ```
 
 ```{r}
-tail(train)
+table(test$age)
 ```
+
+As can be seen in both the test and train set, the age variable will need some cleaning up. It is extremely unlikely that anyone 5 and under actually signed up and used the service. Because technically the rules state that you must be 18 to use the service, ages under 18 should be cleaned up. In addition, it appears that the ages variable has birth year data so those should be cleaned up accordingly. Although it would be hard to verify ages 100+, the oldest human recorded was around 117 so the outlier should be changed as well.
 
 #Sessions
 ```{r}
