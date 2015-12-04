@@ -8,8 +8,6 @@ This is just some quick exploratory analysis done on the data provided. Anyways,
 ```{r}
 #Packages
 library(ggplot2)
-library(grid)
-library(gridExtra)
 
 #Data
 dir = 'input/'
@@ -52,7 +50,7 @@ table(train$age)
 table(test$age)
 ```
 
-As can be seen in both the test and train set, the age variable will need some cleaning up. It is extremely unlikely that anyone 5 and under actually signed up and used the service. Because technically the rules state that you must be 18 to use the service, ages under 18 should be cleaned up. In addition, it appears that the ages variable has birth year data so those should be cleaned up accordingly. Although it would be hard to verify ages 100+, the oldest human recorded was around 117 so the outlier should be changed as well.
+As can be seen in both the test and train set, the age variable will need some cleaning up. It is extremely unlikely that anyone 5 and under actually signed up and used the service. Because technically the rules state that you must be 18 to use the service, ages under 18 should be cleaned up. In addition, it appears that the ages variable has birth year data so those should be cleaned up accordingly. Although it would be hard to verify ages 100+, the oldest human recorded was around 117 so the outlier should be changed as well. Because AirBnb currently allows up to age 100, likely any data above are outliers however will remain due to the uncertainty of the true age.
 
 ```{r}
 test$age[test$age > 150 & !is.na(test$age)] = 2015 - test$age[test$age > 150 & !is.na(test$age)]
@@ -62,12 +60,12 @@ train$age[train$age > 115 & !is.na(train$age)] = 115
 test$age[test$age < 18 & !is.na(test$age)] = 18
 train$age[train$age < 18 & !is.na(train$age)] = 18
 
-train_ages = ggplot(train,aes(age)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Distribution of ages in train")
-test_ages = ggplot(test,aes(age)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Distribution of ages in test")
+total = merge(train,test, all.x = TRUE, all.y=TRUE)
 
-grid.arrange(train_ages, test_ages, ncol = 2, main = "Main title")
-
+ggplot(total,aes(age)) + geom_line(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Distribution of ages")
 ```
+
+The distribution for ages appears right-skewed with the peak around 29. There is another peak for users past 100 which may be outliers due to how the signup systems may have changed overtime or people misrepresenting their age.
 
 #Sessions
 ```{r}
