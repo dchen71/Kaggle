@@ -87,6 +87,7 @@ table(na_secs$action_detail)[order(table(na_secs$action_detail))]
 It appears the the secs_elapsed are primarily NA values during creating and post requests.
 
 ```{r}
+#Look at values with recorded secs_elapsed
 no_na = sessions[which(!is.na(sessions$secs_elapsed)),]
 table(no_na$action)[order(table(no_na$action))]
 table(no_na$action_type)[order(table(no_na$action_type))]
@@ -94,6 +95,30 @@ table(no_na$action_detail)[order(table(no_na$action_detail))]
 ```
 
 The rest of the data appear to primarily record get requests.
+
+```{r}
+#Look at the actions
+table(sessions$action)[order(table(sessions$action))]
+```
+
+In general, it appears most of the actions are get queries. There is an odd value which appears to be blank done 51846 times.
+
+```{r}
+#Look at the action types
+table(sessions$action_type)[order(table(sessions$action_type))]
+```
+
+The action type are similar to the action dataset. Details also includes a blank variable type.
+
+```{r}
+#Look at the action details
+table(sessions$action_detail)[order(table(sessions$action_detail))]
+```
+
+The action follows the trend from the previous related variables and includes a blank variable.
+
+
+
 
 ```{r}
 ##go take the top 10 actions
