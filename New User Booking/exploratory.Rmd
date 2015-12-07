@@ -26,6 +26,9 @@ train = merge(train, sessions, by.x="id", by.y="user_id")
 test = merge(test, sessions, by.x="id", by.y="user_id")
 ```
 
+
+
+
 #Training/Testing data
 
 Create a quick function to show the head, tail, and number of na for each variable called
@@ -66,6 +69,9 @@ ggplot(total,aes(age)) + geom_line(stat="bin") + theme(axis.text.x = element_tex
 ```
 
 The distribution for ages appears right-skewed with the peak around 29. There is another peak for users past 100 which may be outliers due to how the signup systems may have changed overtime or people misrepresenting their age.
+
+
+
 
 #Sessions
 ```{r}
@@ -157,12 +163,19 @@ ggplot(sessions,aes(action_detail)) + geom_bar(stat="bin") + theme(axis.text.x =
 #Show the counts of device types
 ggplot(sessions,aes(device_type)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Counts of device types")
 ```
-
+It appears that primarily, users using the service are still using desktops. Thre is a good amount of mobile users distributed primarily iOS vs Android. 
 
 
 ```{r}
-ggplot(sessions,aes(secs_elapsed)) + geom_dotplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Counts of device types")
+#Look at the average time per action detail
+detailed_avg = aggregate(sessions, by=list(sessions$action_detail), function(x) mean(as.numeric(x[6]), na.rm=TRUE))
+detailed_avg = detailed_avg[,c(1,7)]
+names(detailed_avg) = c("action_detail", "secs_elapsed")
+detailed_avg[order(detailed_avg$secs_elapsed, na.last=FALSE),]
 ```
+As can be seen in the averages of seconds elapsed by action, the times that have the highest average seconds elapsed are related to actions that would require large amount of time such as deciding on a password or deciding to book.
+
+
 
 
 #Age data
@@ -194,6 +207,9 @@ ggplot(age,aes(x=country_destination, y=population_in_thousands, fill=gender, al
 ```
 
 As can be seen in this graph, the distribution of travelers are roughly the same between their gender counterparts and age groups. 
+
+
+
 
 #Countries data
 
