@@ -118,7 +118,20 @@ table(sessions$action_detail)[order(table(sessions$action_detail))]
 The action follows the trend from the previous related variables and includes a blank variable.
 
 
+```{r}
+#Examine the blanks
+table(sessions$action_detail[sessions$action_type == ""])[order(table(sessions$action_detail[sessions$action_type == ""]))]
+table(sessions$action_type[sessions$action_detail == ""])[order(table(sessions$action_type[sessions$action_detail == ""]))]
+```
+The blanks can be seen in both action detail and type variables.
 
+```{r}
+table(sessions$action[sessions$action_detail == ""])[order(table(sessions$action[sessions$action_detail == ""]))]
+table(sessions$device_type[sessions$action_detail == ""])[order(table(sessions$device_type[sessions$action_detail == ""]))]
+ggplot(sessions[sessions$action == "",],aes(secs_elapsed)) + geom_line(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Seconds elapsed for blank action types")
+
+```
+It looks like this blank action happens frequently when searching and getting infomration from the show action. It appears that it happens on every device that tries to use it. In addition, time elapsed appears right skewed.
 
 ```{r}
 ##go take the top 10 actions
