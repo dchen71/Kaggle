@@ -147,9 +147,8 @@ ggplot(sessions,aes(action)) + geom_bar(stat="bin") + theme(axis.text.x = elemen
 
 
 ```{r}
-##look into the blank actiontype
 #See the counts of action types
-ggplot(sessions,aes(action_type)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
+ggplot(sessions,aes(action_type)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Counts of action type recorded by sessions")
 ```
 
 The most popular action type is views, followed by data and click.
