@@ -128,19 +128,19 @@ ggplot(sessions[sessions$action == "",],aes(secs_elapsed)) + geom_line(stat="bin
 It looks like this blank action happens frequently when searching and getting infomration from the show action. It appears that it happens on every device that tries to use it. In addition, time elapsed appears right skewed.
 
 ```{r}
-##go take the top 10 actions
-ggplot(sessions,aes(action)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
-
-
+#Looks at the top 10 actions
+top_actions = aggregate(sessions, by=list(sessions$action), function(x) length(x))
+top_actions = top_actions[,c("Group.1", "action")]
+top_actions = top_actions[order(top_actions$action, na.last=FALSE),]
+ggplot(tail(top_actions,10),aes(x=Group.1, y=action)) + geom_bar(stat="identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Top 10 Action")
 ```
-
+The most popular action is show, by a large margin. Following show, index, personalize, and search_results are the next most popular actions. 
 
 
 ```{r}
 #See the counts of action types
 ggplot(sessions,aes(action_type)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Counts of action type recorded by sessions")
 ```
-
 The most popular action type is views, followed by data and click. There appears to be a fair amount of unknown action types being recorded.
 
 ```{r}
@@ -150,7 +150,6 @@ top_details = top_details[,c(1,5)]
 top_details = top_details[order(top_details$action_detail, na.last=FALSE),]
 ggplot(tail(top_details,10),aes(x=Group.1, y=action_detail)) + geom_bar(stat="identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Top 10 Action Details")
 ```
-
 The most popular action detailed type seems to be viewing search results. This makes sense as the service is heavily dependent on finding the right place to stay. In addition, the 2nd-4th most popular are p3, blank, and unknown. 
 
 ```{r}
