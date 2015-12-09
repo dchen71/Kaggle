@@ -130,6 +130,8 @@ It looks like this blank action happens frequently when searching and getting in
 ```{r}
 ##go take the top 10 actions
 ggplot(sessions,aes(action)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
+
+
 ```
 
 
@@ -142,9 +144,14 @@ ggplot(sessions,aes(action_type)) + geom_bar(stat="bin") + theme(axis.text.x = e
 The most popular action type is views, followed by data and click. There appears to be a fair amount of unknown action types being recorded.
 
 ```{r}
-##take the top 10
-ggplot(sessions,aes(action_detail)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Population of travelers in thousands traveling in 2015")
+##Takes the top 10 action detail info
+top_details = aggregate(sessions, by=list(sessions$action_detail), function(x) length(x))
+top_details = top_details[,c(1,5)]
+top_details = top_details[order(top_details$action_detail, na.last=FALSE),]
+ggplot(tail(top_details,10),aes(x=Group.1, y=action_detail)) + geom_bar(stat="identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Top 10 Action Details")
 ```
+
+The most popular action detailed type seems to be viewing search results. This makes sense as the service is heavily dependent on finding the right place to stay. In addition, the 2nd-4th most popular are p3, blank, and unknown. 
 
 ```{r}
 #Show the counts of device types
