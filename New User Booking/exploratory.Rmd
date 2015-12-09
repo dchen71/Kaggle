@@ -18,16 +18,6 @@ age = read.csv(paste0(dir, "age_gender_bkts.csv"))
 sessions  = read.csv(paste0(dir,"sessions.csv"))
 ```
 
-The training and testing data is merged together to look at the data that will be used for prediction
-
-```{r}
-#needs to do merge all
-train = merge(train, sessions, by.x="id", by.y="user_id")
-test = merge(test, sessions, by.x="id", by.y="user_id")
-```
-
-
-
 
 #Training/Testing data
 
@@ -69,8 +59,6 @@ ggplot(total,aes(age)) + geom_line(stat="bin") + theme(axis.text.x = element_tex
 ```
 
 The distribution for ages appears right-skewed with the peak around 29. There is another peak for users past 100 which may be outliers due to how the signup systems may have changed overtime or people misrepresenting their age.
-
-
 
 
 #Sessions
@@ -151,7 +139,7 @@ ggplot(sessions,aes(action)) + geom_bar(stat="bin") + theme(axis.text.x = elemen
 ggplot(sessions,aes(action_type)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Counts of action type recorded by sessions")
 ```
 
-The most popular action type is views, followed by data and click.
+The most popular action type is views, followed by data and click. There appears to be a fair amount of unknown action types being recorded.
 
 ```{r}
 ##take the top 10
@@ -162,7 +150,7 @@ ggplot(sessions,aes(action_detail)) + geom_bar(stat="bin") + theme(axis.text.x =
 #Show the counts of device types
 ggplot(sessions,aes(device_type)) + geom_bar(stat="bin") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title="Counts of device types")
 ```
-It appears that primarily, users using the service are still using desktops. Thre is a good amount of mobile users distributed primarily iOS vs Android. 
+It appears that primarily, users using the service are still using desktops. There is a good amount of mobile users distributed primarily as iOS vs Android with microsoft and blackberry as uncommon. There also appears to be some mystery androidos derivatives using the service.
 
 
 ```{r}
@@ -217,3 +205,16 @@ countries
 ```
 
 All the possible predictable country destinations are listed here. As the origin is the US, the distances are the distance between the US and the country of destination. In addition, the levenshtein distance should be the calculated edit distance of language similiarities. It might be interesting to feature engineer something using the latitude and longitude to estimate temperature.
+
+
+
+#Merging the data with sessions
+The training and testing data is merged together to look at the data that will be used for prediction
+
+```{r}
+#needs to do merge all
+#Not sure if x or y but ultimately will have to predit based on unique user id at this rate
+train = merge(train, sessions, by.x="id", by.y="user_id", all.y = TRUE)
+test = merge(test, sessions, by.x="id", by.y="user_id")
+```
+
