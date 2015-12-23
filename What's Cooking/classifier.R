@@ -40,7 +40,7 @@ word_train  = ingred_DTM[1:nrow(train), ]
 word_test = ingred_DTM[-(1:nrow(train)), ]
 
 #Add back dependent variable
-word_train$cusine = train$cuisine
+word_train$cusine = as.factor(train$cuisine)
 
 #Random Forest model
 rfModel = randomForest(as.factor(cusine) ~ ., data = word_train)
