@@ -40,15 +40,37 @@ word_train  = ingred_DTM[1:nrow(train), ]
 word_test = ingred_DTM[-(1:nrow(train)), ]
 
 #Add back dependent variable
-word_train$cusine = train$cuisine
+word_train$cuisine = as.factor(train$cuisine)
+
+#XGBoost model
+##Prepare matrix for boosting
+xgbMat = xgb.DMatrix(Matrix(data.matrix(word_train[,!colnames(word_train) %in% c("cuisine")])), 
+                     label=as.numeric(word_train$cuisine) - 1)
+
+##Train using softmax multi classiication
+xgb = xgboost(xgbMat, max.depth = 25, eta = 0.3, nround = 200, objective = "multi:softmax", num_class = 20)
+
+# Plot important features for boost
+names = colnames(word_train[, !colnames(word_train) %in% c("cuisine")])
+importance_matrix = xgb.importance(names, model = xgb)
+xgb.plot.importance(importance_matrix[1:30,])
+
+##Prediction dataset
+xgb.submit = predict(xgb, newdata = data.matrix(word_test[, !colnames(word_test) %in% c("cuisine")]))
+xgb.submit.text = levels(word_train$cuisine)[xgb.submit+1]
+
+#Write to csv for XgBoost
+submission = data.frame(test$id)
+names(submission) = 'id'
+submission$cuisine = xgb.submit.text
+write.csv(submission,file="xg.csv",row.names=FALSE)
 
 #Random Forest model
 rfModel = randomForest(as.factor(cusine) ~ ., data = word_train)
 predictRF = predict(rfModel, newdata=word_test)
 
-
-#Write to csv
+#Write to csv for RandomForest
 submission = data.frame(test$id)
 names(submission) = 'id'
 submission$cuisine = predictRF
-write.csv(submission,file="submission.csv",row.names=FALSE)
+write.csv(submission,file="rf.csv",row.names=FALSE)
