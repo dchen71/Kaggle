@@ -61,6 +61,20 @@ ggplot(total,aes(age)) + geom_line(stat="bin") + theme(axis.text.x = element_tex
 The distribution for ages appears right-skewed with the peak around 29. There is another peak for users past 100 which may be outliers due to how the signup systems may have changed overtime or people misrepresenting their age.
 
 
+```{r}
+#Look at signup methods recorded
+ggplot(total, aes(signup_method)) + geom_bar(stat="bin")
+```
+Seems like that the people who signup for the service already know about it. In addition, others signup through facebook and google.
+
+```{r}
+#Look at signup app recorded
+ggplot(total, aes(signup_app)) + geom_bar(stat="bin")
+```
+In addition, people primarily sign up via web with some amount of users on mobile devices.
+
+
+
 #Sessions
 ```{r}
 #See which values have na
