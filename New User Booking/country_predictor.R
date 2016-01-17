@@ -5,10 +5,10 @@ library(lubridate)
 #Read input
 dir = 'input/'
 train = read.csv(paste0(dir,"train_users.csv"))
-test = read.csv(paste0(dir,"test_users.csv"))
-countries = read.csv(paste0(dir,"countries.csv"))
+test = read.csv(paste0(dir,"test_users_2.csv"))
+#countries = read.csv(paste0(dir,"countries.csv"))
 
-sessions  = read.csv(paste0(dir,"sessions.csv"))
+#sessions  = read.csv(paste0(dir,"sessions.csv"))
 
 #Preprocess data
 ##countries - use distance, destination lang, destination, may have issues with test set

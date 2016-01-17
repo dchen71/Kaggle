@@ -44,6 +44,7 @@ word_train$cuisine = as.factor(train$cuisine)
 
 #XGBoost model
 ##Prepare matrix for boosting
+library(xgboost)
 xgbMat = xgb.DMatrix(Matrix(data.matrix(word_train[,!colnames(word_train) %in% c("cuisine")])), 
                      label=as.numeric(word_train$cuisine) - 1)
 
