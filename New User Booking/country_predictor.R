@@ -1,11 +1,12 @@
 #Kaggle Competition - New User Bookings
 
 library(lubridate)
+library(xgboost)
 
 #Read input
 dir = 'input/'
-train = read.csv(paste0(dir,"train_users.csv"))
-test = read.csv(paste0(dir,"test_users_2.csv"))
+train = read.csv(paste0(dir,"train_users_2.csv"))
+test = read.csv(paste0(dir,"test_users.csv"))
 #countries = read.csv(paste0(dir,"countries.csv"))
 
 #sessions  = read.csv(paste0(dir,"sessions.csv"))
@@ -51,8 +52,24 @@ train = preprocess(train)
 test = preprocess(test)
 
 #Prediction
+##Setting up the datamatrix for training
+xgbMat = xgb.DMatrix((data.matrix(train[,!colnames(train) %in% c("country_destination")])), 
+                     label=as.numeric(train$country_destination) - 1, missing=NaN)
 
+##Train using softmax multi classiication
+xgb = xgboost(xgbMat, max.depth = 25, eta = 0.3, nround = 200, objective = "multi:softmax", num_class = 12)
 
+# Plot important features for boost
+names = colnames(train[, !colnames(train) %in% c("country_destination")])
+importance_matrix = xgb.importance(names, model = xgb)
+xgb.plot.importance(importance_matrix[1:30,])
 
-#Creates submission
-write.csv(submission, "prediction.csv", row.names=FALSE)
+##Prediction dataset
+xgb.submit = predict(xgb, newdata = data.matrix(test[, !colnames(test) %in% c("country_destination")]), missing=NaN)
+xgb.submit.text = levels(train$country_destination)[xgb.submit+1]
+
+#Write to csv for XgBoost
+submission = data.frame(test$id)
+names(submission) = 'id'
+submission$cuisine = xgb.submit.text
+write.csv(submission,file="xg.csv",row.names=FALSE)
