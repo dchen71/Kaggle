@@ -43,11 +43,24 @@ preprocess = function(df){
     df$age[df$age > 115 & !is.na(df$age)] = 115
     df$age[df$age < 18 & !is.na(df$age)] = 18
     
+    #Part out the date the account was created
     df$dac_month = month(df$date_account_created)
     df$dac_year = year(df$date_account_created)
     df$dac_day = day(df$date_account_created)
     df$date_account_created = NULL
-        
+    
+    #Part out the timestamp of account's first activity
+    df$tfa_year = substr(df$timestamp_first_active,0,4)
+    df$tfa_month = substr(df$timestamp_first_active,5,6)
+    df$tfa_day = substr(df$timestamp_first_active,7,8)
+    df$tfa_hour = substr(df$timestamp_first_active,9,10)
+    df$tfa_min = substr(df$timestamp_first_active,11,12)
+    df$tfa_sec = substr(df$timestamp_first_active,13,14)
+    df$timestamp_first_active = NULL
+    
+    #Remove variable because test is all null
+    df$date_first_booking = NULL
+    
     return(df)
 }
 
@@ -57,7 +70,7 @@ test = preprocess(test)
 
 #Prediction
 ##Setting up the datamatrix for training
-xgbMat = xgb.DMatrix((data.matrix(train[,!colnames(train) %in% c("country_destination", "id", "date_first_booking")])), 
+xgbMat = xgb.DMatrix((data.matrix(train[,!colnames(train) %in% c("country_destination", "id")])), 
                      label=as.numeric(train$country_destination) - 1, missing=NaN)
 
 ##Train using softmax multi classiication
@@ -70,7 +83,7 @@ importance_matrix = xgb.importance(names, model = xgb)
 xgb.plot.importance(importance_matrix[1:10,])
 
 ##Prediction dataset
-xgb.submit = predict(xgb, newdata = data.matrix(test[, !colnames(test) %in% c("id", "date_first_booking")]), 
+xgb.submit = predict(xgb, newdata = data.matrix(test[, !colnames(test) %in% c("id")]), 
                      missing=NaN)
 xgb.submit.text = levels(train$country_destination)[xgb.submit+1]
 
