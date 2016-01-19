@@ -8,23 +8,11 @@ dir = 'input/'
 train = read.csv(paste0(dir,"train_users_2.csv"))
 test = read.csv(paste0(dir,"test_users.csv"))
 #countries = read.csv(paste0(dir,"countries.csv"))
-
 #sessions  = read.csv(paste0(dir,"sessions.csv"))
 
 #Preprocess data
 ##countries - use distance, destination lang, destination, may have issues with test set
 ###Consider adding in countries via columns with desitation, distance, language, levenshtein
-
-#convert dates to date format first
-
-#timestamp_firstactive seems be be setup yearmonthdayhourminutesecond
-##should sort before checking this
-##seems to be 20140101-20140331 for train
-##seems to be 20140401-20140630 for test
-
-#date_account_created and date_first_booking need to be converted into date
-##age seems to have na min age is 14 and max is 2014
-#table(train$age)
 
 #Preprocesses the data for both train and test
 #preprocess = function(df){
@@ -44,9 +32,9 @@ preprocess = function(df){
     df$age[df$age < 18 & !is.na(df$age)] = 18
     
     #Part out the date the account was created
-    df$dac_month = month(df$date_account_created)
-    df$dac_year = year(df$date_account_created)
-    df$dac_day = day(df$date_account_created)
+    df$dac_month = as.factor(month(df$date_account_created))
+    df$dac_year = as.factor(year(df$date_account_created))
+    df$dac_day = as.factor(day(df$date_account_created))
     df$date_account_created = NULL
     
     #Part out the timestamp of account's first activity
