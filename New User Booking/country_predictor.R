@@ -43,6 +43,10 @@ preprocess = function(df){
     df$age[df$age > 115 & !is.na(df$age)] = 115
     df$age[df$age < 18 & !is.na(df$age)] = 18
     
+    df$dac_month = month(df$date_account_created)
+    df$dac_year = year(df$date_account_created)
+    df$dac_day = day(df$date_account_created)
+    df$date_account_created = NULL
         
     return(df)
 }
@@ -53,23 +57,25 @@ test = preprocess(test)
 
 #Prediction
 ##Setting up the datamatrix for training
-xgbMat = xgb.DMatrix((data.matrix(train[,!colnames(train) %in% c("country_destination")])), 
+xgbMat = xgb.DMatrix((data.matrix(train[,!colnames(train) %in% c("country_destination", "id", "date_first_booking")])), 
                      label=as.numeric(train$country_destination) - 1, missing=NaN)
 
 ##Train using softmax multi classiication
-xgb = xgboost(xgbMat, max.depth = 25, eta = 0.3, nround = 200, objective = "multi:softmax", num_class = 12)
+xgb = xgb.train(data=xgbMat, max.depth = 6, eta = 0.3, nround = 100, objective = "multi:softmax", 
+                num_class = 12, subsample=0.5, colsample_bytree=0.5)
 
 # Plot important features for boost
-names = colnames(train[, !colnames(train) %in% c("country_destination")])
+names = colnames(train[, !colnames(train) %in% c("country_destination", "id")])
 importance_matrix = xgb.importance(names, model = xgb)
-xgb.plot.importance(importance_matrix[1:30,])
+xgb.plot.importance(importance_matrix[1:10,])
 
 ##Prediction dataset
-xgb.submit = predict(xgb, newdata = data.matrix(test[, !colnames(test) %in% c("country_destination")]), missing=NaN)
+xgb.submit = predict(xgb, newdata = data.matrix(test[, !colnames(test) %in% c("id", "date_first_booking")]), 
+                     missing=NaN)
 xgb.submit.text = levels(train$country_destination)[xgb.submit+1]
 
 #Write to csv for XgBoost
 submission = data.frame(test$id)
 names(submission) = 'id'
-submission$cuisine = xgb.submit.text
+submission$country = xgb.submit.text
 write.csv(submission,file="xg.csv",row.names=FALSE)
