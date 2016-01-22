@@ -43,7 +43,6 @@ preprocess = function(df){
     df$tfa_day = substr(df$timestamp_first_active,7,8)
     df$tfa_hour = substr(df$timestamp_first_active,9,10)
     df$tfa_min = substr(df$timestamp_first_active,11,12)
-    df$tfa_sec = substr(df$timestamp_first_active,13,14)
     df$timestamp_first_active = NULL
     
     #Remove variable because test is all null
@@ -62,13 +61,8 @@ xgbMat = xgb.DMatrix((data.matrix(train[,!colnames(train) %in% c("country_destin
                      label=as.numeric(train$country_destination) - 1, missing=NaN)
 
 ##Train using softmax multi classiication
-xgb = xgb.train(data=xgbMat, max.depth = 6, eta = 0.3, nround = 100, objective = "multi:softmax", 
+xgb = xgb.train(data=xgbMat, max.depth = 10, eta = 0.1, nround = 25, objective = "multi:softmax", 
                 num_class = 12, subsample=0.5, colsample_bytree=0.5)
-
-# Plot important features for boost
-names = colnames(train[, !colnames(train) %in% c("country_destination", "id")])
-importance_matrix = xgb.importance(names, model = xgb)
-xgb.plot.importance(importance_matrix[1:10,])
 
 ##Prediction dataset
 xgb.submit = predict(xgb, newdata = data.matrix(test[, !colnames(test) %in% c("id")]), 
@@ -80,3 +74,8 @@ submission = data.frame(test$id)
 names(submission) = 'id'
 submission$country = xgb.submit.text
 write.csv(submission,file="xg.csv",row.names=FALSE)
+
+# Plot important features for boost
+names = colnames(train[, !colnames(train) %in% c("country_destination", "id")])
+importance_matrix = xgb.importance(names, model = xgb)
+xgb.plot.importance(importance_matrix[1:10,])
