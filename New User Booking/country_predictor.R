@@ -2,6 +2,7 @@
 
 library(lubridate)
 library(xgboost)
+library(caret)
 
 #Read input
 dir = 'input/'
@@ -10,6 +11,8 @@ test = read.csv(paste0(dir,"test_users.csv"))
 
 #Preprocess data
 preprocess = function(df){
+    df[is.na(df)] = -1
+  
     #Normalizes some of the ages
     df$age[df$age > 150 & !is.na(df$age)] = 2015 - df$age[df$age > 150 & !is.na(df$age)]
     df$age[df$age > 115 & !is.na(df$age)] = 115
@@ -29,49 +32,15 @@ preprocess = function(df){
     df$timestamp_first_active = NULL
     
     #Remove variable because test is all null
-    df$date_first_booking = NULL
-    
-    #Convert ages into buckets
-    #1 - 18-19
-    #2 - 20-24
-    #3 - 25-29
-    #4 - 30-34
-    #5 - 35-39
-    #6 - 40-44
-    #7 - 45-49
-    #8 - 50-54
-    #9 - 55-59
-    #10 - 60-64
-    #11 - 65-69
-    #12 - 70-74
-    #13 - 75-79
-    #14 - 80-84
-    #15 - 85-89
-    #16 - 90-94
-    #17 - 95-99
-    #18 - 100+
-    df$age_group = 0
-    df$age_group[df$age <= 19 & df$age >= 18] = 1
-    df$age_group[df$age <= 20 & df$age >= 24] = 2
-    df$age_group[df$age <= 25 & df$age >= 29] = 3
-    df$age_group[df$age <= 30 & df$age >= 34] = 4
-    df$age_group[df$age <= 35 & df$age >= 39] = 5
-    df$age_group[df$age <= 40 & df$age >= 44] = 6
-    df$age_group[df$age <= 45 & df$age >= 49] = 7
-    df$age_group[df$age <= 50 & df$age >= 54] = 8
-    df$age_group[df$age <= 55 & df$age >= 59] = 9
-    df$age_group[df$age <= 60 & df$age >= 64] = 10
-    df$age_group[df$age <= 65 & df$age >= 69] = 11
-    df$age_group[df$age <= 70 & df$age >= 74] = 12
-    df$age_group[df$age <= 75 & df$age >= 79] = 13
-    df$age_group[df$age <= 80 & df$age >= 84] = 14
-    df$age_group[df$age <= 85 & df$age >= 89] = 15
-    df$age_group[df$age <= 90 & df$age >= 94] = 16
-    df$age_group[df$age <= 95 & df$age >= 99] = 17
-    df$age_group[df$age >= 100] = 18
-    df$age_group = as.factor(df$age_group)
-    df$age = NULL
+    df$date_first_booking = NULL    
 
+    #one hot encoding features
+    ohe_feats = c('gender', 'signup_method', 'signup_flow', 'language', 'affiliate_channel', 'affiliate_provider', 'first_affiliate_tracked', 'signup_app', 'first_device_type', 'first_browser')
+    dummies = dummyVars(~ gender + signup_method + signup_flow + language + affiliate_channel + affiliate_provider + first_affiliate_tracked + signup_app + first_device_type + first_browser, data = df)
+    
+    df_all_ohe = as.data.frame(predict(dummies, newdata = df))
+    df <- cbind(df[,-c(which(colnames(df) %in% ohe_feats))],df_all_ohe)
+    
     return(df)
 }
 
@@ -81,11 +50,11 @@ test = preprocess(test)
 #Prediction
 ##Setting up the datamatrix for training
 xgbMat = xgb.DMatrix((data.matrix(train[,!colnames(train) %in% c("country_destination", "id")])), 
-                     label=as.numeric(train$country_destination) - 1, missing=NaN)
+                     label=as.numeric(train$country_destination) - 1)
 
 ##Train using softmax multi classiication
 set.seed(1)
-xgb = xgb.train(data=xgbMat, max.depth = 10, eta = 0.1, nround = 25, objective = "multi:softmax", 
+xgb = xgboost(data=xgbMat, max.depth = 10, eta = 0.1, nround = 25, objective = "multi:softmax", 
                 num_class = 12, subsample=0.5, colsample_bytree=0.5)
 
 ##Prediction dataset
@@ -103,3 +72,6 @@ write.csv(submission,file="xg.csv",row.names=FALSE)
 names = colnames(train[, !colnames(train) %in% c("country_destination", "id")])
 importance_matrix = xgb.importance(names, model = xgb)
 xgb.plot.importance(importance_matrix[1:10,])
+
+
+
