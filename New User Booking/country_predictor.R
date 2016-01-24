@@ -7,24 +7,8 @@ library(xgboost)
 dir = 'input/'
 train = read.csv(paste0(dir,"train_users_2.csv"))
 test = read.csv(paste0(dir,"test_users.csv"))
-#countries = read.csv(paste0(dir,"countries.csv"))
-#sessions  = read.csv(paste0(dir,"sessions.csv"))
 
 #Preprocess data
-##countries - use distance, destination lang, destination, may have issues with test set
-###Consider adding in countries via columns with desitation, distance, language, levenshtein
-
-#Preprocesses the data for both train and test
-#preprocess = function(df){
-#    df = merge(df, sessions, by.x="id", by.y="user_id")
-#    df$month_created = month(df$date_account_created)
-#    df$year_created = year(df$date_account_created)
-#    df$year_booked = year(df$date_first_booking)
-#    df$month_booked = month(df$date_first_booking)
-#    df$diff_booked = as.Date(df$date_first_booking) - as.Date(df$date_account_created)
-#    return(df)
-#}
-
 preprocess = function(df){
     #Normalizes some of the ages
     df$age[df$age > 150 & !is.na(df$age)] = 2015 - df$age[df$age > 150 & !is.na(df$age)]
@@ -42,7 +26,6 @@ preprocess = function(df){
     df$tfa_month = substr(df$timestamp_first_active,5,6)
     df$tfa_day = substr(df$timestamp_first_active,7,8)
     df$tfa_hour = substr(df$timestamp_first_active,9,10)
-    df$tfa_min = substr(df$timestamp_first_active,11,12)
     df$timestamp_first_active = NULL
     
     #Remove variable because test is all null
