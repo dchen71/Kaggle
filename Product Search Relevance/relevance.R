@@ -4,9 +4,38 @@
 dir = 'input/'
 train = read.csv(paste0(dir,"train.csv"))
 test = read.csv(paste0(dir,"test.csv"))
-#attributes = read.csv(paste0(dir, "attributes.csv")) #seems to have snippets of descriptions
 descriptions = read.csv(paste0(dir, "product_descriptions.csv"))
 
 #Merged products with their descriptions
-mTrain = merge(train, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
-mTest = merge(test, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
+train = merge(train, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
+test = merge(test, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
+
+#plans
+#take whole words from search query and check name/description for it
+#might need to manually change data from predictions to not go over or under cap
+
+#Find matches between search_term and product_title/relevance, based on benchmark score script
+word_match = function(words, title, desc){
+  n_title = 0
+  n_desc = 0
+  words = unlist(strsplit(as.character(words)," "))
+  nwords = length(words)
+  for(i in 1:length(words)){
+    pattern = paste("(^| )",words[i],"($| )",sep="")
+    n_title = n_title + grepl(pattern,title,perl=TRUE,ignore.case=TRUE)
+    n_desc = n_desc + grepl(pattern,desc,perl=TRUE,ignore.case=TRUE)
+  }
+  return(c(n_title,nwords,n_desc))
+}
+
+train_words <- as.data.frame(t(mapply(word_match,train$search_term,train$product_title,train$product_description)))
+train$nmatch_title <- train_words[,1]
+train$nwords <- train_words[,2]
+train$nmatch_desc <- train_words[,3]
+
+test_words <- as.data.frame(t(mapply(word_match,test$search_term,test$product_title,test$product_description)))
+test$nmatch_title <- test_words[,1]
+test$nwords <- test_words[,2]
+test$nmatch_desc <- test_words[,3]
+
+rm(train_words,test_words)
