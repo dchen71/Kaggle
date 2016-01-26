@@ -8,5 +8,5 @@ test = read.csv(paste0(dir,"test.csv"))
 descriptions = read.csv(paste0(dir, "product_descriptions.csv"))
 
 #Merged products with their descriptions
-mTrain = merge(train, descriptions)
-mTest = merge(test, descriptions)
+mTrain = merge(train, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
+mTest = merge(test, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
