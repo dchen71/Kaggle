@@ -1,5 +1,7 @@
 #Kaggle Competition - Product Search Relevance
 
+library(readr)
+
 #Read input
 dir = 'input/'
 train = read.csv(paste0(dir,"train.csv"))
@@ -42,10 +44,12 @@ test$nmatch_desc = test_words[,3]
 
 rm(train_words,test_words)
 
+#Prediction using glm
 glm_model = glm(relevance~nmatch_title+nmatch_desc+nwords,data=train)
 test_relevance = predict(glm_model,test)
 test_relevance = ifelse(test_relevance>3,3,test_relevance)
 test_relevance = ifelse(test_relevance<1,1,test_relevance)
 
+#Create submission
 submission = data.frame(id=test$id, relevance=test_relevance)
 write_csv(submission,"benchmark_submission.csv")
