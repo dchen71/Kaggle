@@ -7,6 +7,32 @@ dir = 'input/'
 train = read.csv(paste0(dir,"train.csv"))
 test = read.csv(paste0(dir,"test.csv"))
 descriptions = read.csv(paste0(dir, "product_descriptions.csv"))
+attr = read.csv(paste0(dir, "attributes.csv"))
+
+#Reshape the attribute dataset
+reshape = function(df){
+  uniques = unique(df$product_uid[!is.na(df$name)])
+  uniques[80] = NULL #manually removing the NA value
+  new_attr = data.frame(product_uid = uniques)
+  for(i in 1:length(uniques)){
+    product = subset(df, df$product_uid == uniques[i])
+    for(j in 1:length(product$name)){
+      category = as.character(product$name[j])
+      if(category %in% names(new_attr)){
+        new_attr[j, category] = as.character(product$value[j])
+      } else{
+        new_attr[, ncol(new_attr) + 1] = NA
+        names(new_attr)[ncol(new_attr)] = category
+        new_attr[j, category] = as.character(product$value[j])
+      }
+    }
+    print(uniques[i])
+  }
+  
+  return(new_attr)
+}
+
+test = reshape(attr)
 
 #Merged products with their descriptions
 train = merge(train, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
@@ -45,11 +71,11 @@ test$nmatch_desc = test_words[,3]
 rm(train_words,test_words)
 
 #Prediction using glm
-glm_model = glm(relevance~nmatch_title+nmatch_desc+nwords,data=train)
+glm_model = glm(relevance ~ nmatch_title + nmatch_desc + nwords,data=train)
 test_relevance = predict(glm_model,test)
 test_relevance = ifelse(test_relevance>3,3,test_relevance)
 test_relevance = ifelse(test_relevance<1,1,test_relevance)
 
 #Create submission
 submission = data.frame(id=test$id, relevance=test_relevance)
-write_csv(submission,"benchmark_submission.csv")
+write_csv(submission,"submission.csv")
