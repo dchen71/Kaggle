@@ -9,30 +9,31 @@ test = read.csv(paste0(dir,"test.csv"))
 descriptions = read.csv(paste0(dir, "product_descriptions.csv"))
 attr = read.csv(paste0(dir, "attributes.csv"))
 
-#Reshape the attribute dataset
+#will need to parse num x num as well as 1 in/1 inch like stuff
+
+#Reshape the attribute dataset with the top 10 attributes
 reshape = function(df){
-  uniques = unique(df$product_uid[!is.na(df$name)])
-  uniques[80] = NULL #manually removing the NA value
-  new_attr = data.frame(product_uid = uniques)
+  uniques = unique(df$product_uid)
+  uniques = uniques[!is.na(uniques)]
+  new_attr = data.frame(product_uid = uniques, brand=NA, bullet01=NA, bullet02=NA, bullet03=NA,bullet04=NA, 
+                        bullet05=NA, p_width=NA, p_height=NA, p_depth=NA, p_weight=NA)
+  attr_data = subset(attr, name %in% c("Bullet01", "Bullet02", "Bullet03", "Bullet04", "Bullet05","Bullet06", 
+                                       "MFG Brand Name", "Product Width (in.)", "Product Height (in.)", 
+                                       "Product Depth (in.)", "Product Weight (lb.)"))
   for(i in 1:length(uniques)){
     product = subset(df, df$product_uid == uniques[i])
     for(j in 1:length(product$name)){
       category = as.character(product$name[j])
       if(category %in% names(new_attr)){
         new_attr[j, category] = as.character(product$value[j])
-      } else{
-        new_attr[, ncol(new_attr) + 1] = NA
-        names(new_attr)[ncol(new_attr)] = category
-        new_attr[j, category] = as.character(product$value[j])
-      }
+      } 
     }
-    print(uniques[i])
   }
   
   return(new_attr)
 }
 
-test = reshape(attr)
+wow = reshape(attr)
 
 #Merged products with their descriptions
 train = merge(train, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
