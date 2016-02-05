@@ -39,7 +39,7 @@ reshape = function(df){
   attr_data$name[grep("Product Depth", attr_data$name)] = "p_depth"  
   attr_data$name[grep("Product Weight", attr_data$name)] = "p_weight"   
   
-  for(i in 1:3){
+  for(i in 1:length(uniques)){
     product = subset(attr_data, attr_data$product_uid == uniques[i])
     for(j in 1:length(product$name)){
       category = as.character(product$name[j])
@@ -52,7 +52,7 @@ reshape = function(df){
   return(new_attr)
 }
 
-wow = reshape(attr)
+top_attr = reshape(attr)
 
 #Merged products with their descriptions
 train = merge(train, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
