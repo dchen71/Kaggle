@@ -34,17 +34,17 @@ reshape = function(df){
   attr_data$name[grep("Bullet05", attr_data$name)] = "bullet05"
   attr_data$name[grep("Bullet06", attr_data$name)] = "bullet06"
   attr_data$name[grep("MFG Brand Name", attr_data$name)] = "brand"
-  attr_data$name[grep("Product Width (in.)", attr_data$name)] = "p_width"
-  attr_data$name[grep("Product Height (in.)", attr_data$name)] = "p_height"
-  attr_data$name[grep("Product Depth (in.)", attr_data$name)] = "p_depth"  
-  attr_data$name[grep("Product Weight (lb.)", attr_data$name)] = "p_weight"   
+  attr_data$name[grep("Product Width", attr_data$name)] = "p_width"
+  attr_data$name[grep("Product Height", attr_data$name)] = "p_height"
+  attr_data$name[grep("Product Depth", attr_data$name)] = "p_depth"  
+  attr_data$name[grep("Product Weight", attr_data$name)] = "p_weight"   
   
-  for(i in 1:length(uniques)){
+  for(i in 1:3){
     product = subset(attr_data, attr_data$product_uid == uniques[i])
     for(j in 1:length(product$name)){
       category = as.character(product$name[j])
       if(category %in% names(new_attr)){
-        new_attr[j, category] = as.character(product$value[j])
+        new_attr[i, category] = as.character(product$value[j])
       } 
     }
   }
