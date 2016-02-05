@@ -13,15 +13,34 @@ attr = read.csv(paste0(dir, "attributes.csv"))
 
 #Reshape the attribute dataset with the top 10 attributes
 reshape = function(df){
+  #Subset out the product ids
   uniques = unique(df$product_uid)
   uniques = uniques[!is.na(uniques)]
+  
+  #Init new data frame containing the top ten values from attr
   new_attr = data.frame(product_uid = uniques, brand=NA, bullet01=NA, bullet02=NA, bullet03=NA,bullet04=NA, 
                         bullet05=NA, p_width=NA, p_height=NA, p_depth=NA, p_weight=NA)
-  attr_data = subset(attr, name %in% c("Bullet01", "Bullet02", "Bullet03", "Bullet04", "Bullet05","Bullet06", 
-                                       "MFG Brand Name", "Product Width (in.)", "Product Height (in.)", 
-                                       "Product Depth (in.)", "Product Weight (lb.)"))
+  spec_names = c("Bullet01", "Bullet02", "Bullet03", "Bullet04", "Bullet05","Bullet06", 
+                 "MFG Brand Name", "Product Width (in.)", "Product Height (in.)", 
+                 "Product Depth (in.)", "Product Weight (lb.)")
+  
+  #Subset and change names row to match col names
+  attr_data = subset(attr, name %in% spec_names)
+  attr_data$name = as.character(attr_data$name)
+  attr_data$name[grep("Bullet01", attr_data$name)] = "bullet01"
+  attr_data$name[grep("Bullet02", attr_data$name)] = "bullet02"
+  attr_data$name[grep("Bullet03", attr_data$name)] = "bullet03"
+  attr_data$name[grep("Bullet04", attr_data$name)] = "bullet04"
+  attr_data$name[grep("Bullet05", attr_data$name)] = "bullet05"
+  attr_data$name[grep("Bullet06", attr_data$name)] = "bullet06"
+  attr_data$name[grep("MFG Brand Name", attr_data$name)] = "brand"
+  attr_data$name[grep("Product Width (in.)", attr_data$name)] = "p_width"
+  attr_data$name[grep("Product Height (in.)", attr_data$name)] = "p_height"
+  attr_data$name[grep("Product Depth (in.)", attr_data$name)] = "p_depth"  
+  attr_data$name[grep("Product Weight (lb.)", attr_data$name)] = "p_weight"   
+  
   for(i in 1:length(uniques)){
-    product = subset(df, df$product_uid == uniques[i])
+    product = subset(attr_data, attr_data$product_uid == uniques[i])
     for(j in 1:length(product$name)){
       category = as.character(product$name[j])
       if(category %in% names(new_attr)){
