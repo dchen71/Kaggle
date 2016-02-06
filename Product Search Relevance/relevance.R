@@ -58,6 +58,8 @@ top_attr = reshape(attr)
 train = merge(train, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
 test = merge(test, descriptions, by.x = "product_uid", by.y = "product_uid", all.x = TRUE, all.y = FALSE)
 
+#Merge training and test data with attr
+
 #plans
 #take whole words from search query and check name/description for it
 #might need to manually change data from predictions to not go over or under cap
