@@ -42,12 +42,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Analytic Edge Data
+# Hide data for Kaggle contests
 Analytic Edge/eBayiPadTest.csv
 Analytic Edge/eBayiPadTrain.csv
-
-#SF Crime Prevention Data
 San Francisco Crime Classification/Data/
-
-#Product Search Relevance
 Product Search Relevance/input/
+World Ranking/input/
