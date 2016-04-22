@@ -53,6 +53,48 @@ kyoto_ucsf.cwur = kyoto_ucsf.cwur[order(kyoto_ucsf.cwur$institution, kyoto_ucsf.
 kyoto_ucsf.times = kyoto_ucsf.times[order(kyoto_ucsf.times$university_name, kyoto_ucsf.times$year),]
   
 #Look at the times rating for Kyoto University
+ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) + 
+    geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$international)[as.numeric(kyoto_ucsf.times$international)]), color="international")) + 
+    geom_line(aes(y=research, color="research")) + 
+    geom_line(aes(y=citations, color="citations")) + 
+    geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$income)[as.numeric(kyoto_ucsf.times$income)]), color="income")) +
+    labs(x="Year", y="Score", title="Times rating") +
+    theme(
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size=14, face="bold"),
+        legend.title = element_blank()
+    )
+
+#Look at CWUR rating
+ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) + 
+    geom_line(aes(y=quality_of_faculty)) + 
+    geom_line(aes(y=publications)) + 
+    geom_line(aes(y=influence)) + 
+    geom_line(aes(y=citations)) + 
+    geom_line(aes(y=broad_impact)) +
+    labs(x="Year", y="Score", title="CWUR rating") +
+    theme(
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size=14, face="bold")
+    )
+
+#Look at the Shanghai rating
+##Ignore alumni as UCSF has 0s
+###Need to probably split into 2 graphs for each school
+ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) + 
+    geom_line(aes(y=total_score)) + 
+    geom_line(aes(y=hici)) + 
+    geom_line(aes(y=ns)) + 
+    geom_line(aes(y=pub)) + 
+    geom_line(aes(y=award)) +
+    labs(x="Year", y="Score", title="Shanghai rating") +
+    theme(
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size=14, face="bold")
+    )
 
 #3
 #maybe checkout the impact of research after crispr paper 2012-2013
