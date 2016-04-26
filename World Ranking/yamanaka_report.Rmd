@@ -1,0 +1,30 @@
+---
+title: "Did Shinya Yamanaka's Nobel Prize Award in 2012 change the research scores of his affiliated schools?"
+output: html_document
+---
+
+##Introduction
+
+In 2012, Shinya Yamanaka was awarded the Nobel Peace prize for his discovery of induced pluripotent stem cells(iPS cells). His research, revolutionized stem cell research due to the simplicity and strengths of iPS cells.
+
+iPS cells are a type of stem cell coming from adult stem cells. They are reverted from adult cell back into a pluripotent stem cell stage in which it can turn into any cell type. These cells are revolutionary due to the fact that they are very similar to embryonic stem cells, bypassing the need for any controversy involved with collecting embryonic stem cells. As these cells are capable of giving rise to every other cell type, they are being used in numerous stem cell research including stem cell therapy and organogenesis.
+
+The question now is, did Yamanaka's award change any of the research related scores in either the Times, Shanghai, or the CWUR rankings?
+
+##Rankings
+The rankings being looked at are from Times Higher Education World University Rankings, the Center for World University Rankings(CWUR), and the Shanghai Ranking. They are all similar in that they all look into similar factors including the research and number of publications from a school. They all have different weights to how they rank schools, with strong weights towards research.
+
+The range of years for the data vary. Shanghai has the longest range, followed by Times, and finally CWUR. CWUR begins from 2012, as it was established that year. Times begins from 2011, likely due to their reorganization and re-evaluation of their metrics. 
+
+### Talk about which rows are being used per rank
+
+
+###CWUR
+
+###Shanghai
+
+
+
+###Times
+
+
