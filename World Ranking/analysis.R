@@ -1,5 +1,5 @@
 ##
-## Kaggle World Rankning Analysis
+## Kaggle World Ranking Analysis
 ##
 
 #Load libraries

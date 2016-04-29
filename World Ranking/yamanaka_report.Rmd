@@ -22,8 +22,12 @@ The range of years for the data vary. Shanghai has the longest range, followed b
 ###CWUR
 
 ###Shanghai
+The relevant criteria that Shanghai rates it's scores that will be examined are the following:
 
-
+* Alumni as Nobel Laureates/Fields medalist - 10%
+* Staff as Nobel Laureates/Fields medalists - 20%
+* Highly cited researchers in 21 broad subjects - 20%
+* Papers published in Nature and Science(big science publications) - 20%
 
 ###Times
 
