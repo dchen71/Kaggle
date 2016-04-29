@@ -16,9 +16,6 @@ The rankings being looked at are from Times Higher Education World University Ra
 
 The range of years for the data vary. Shanghai has the longest range, followed by Times, and finally CWUR. CWUR begins from 2012, as it was established that year. Times begins from 2011, likely due to their reorganization and re-evaluation of their metrics. 
 
-### Talk about which rows are being used per rank
-
-
 ###CWUR
 CWUR is appears to be graded primarily based on the faculty and future prospects for the students attending school there. The relevant scores that will be looked at will be the following:
 
@@ -39,4 +36,7 @@ The relevant criteria that Shanghai rates it's scores that will be examined are 
 ###Times
 The relevant columns for Times and it's breakdown is the following:
 
+* Research reputation/research income/papers and staff/public research income/total research income - 30%
+* Citation impact - 32.5%
 
+##Results
