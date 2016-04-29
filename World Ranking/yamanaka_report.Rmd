@@ -20,6 +20,13 @@ The range of years for the data vary. Shanghai has the longest range, followed b
 
 
 ###CWUR
+CWUR is appears to be graded primarily based on the faculty and future prospects for the students attending school there. The relevant scores that will be looked at will be the following:
+
+* Number of alumni who went on to win international awards/medals - 25%
+* Number of faculty who have won international awards/medals - 25%
+* Number of research papers in reputable journals - 5%
+* Number of research papers in highly influential journals - 5%
+* Number of highly cited research papers - 5%
 
 ###Shanghai
 The relevant criteria that Shanghai rates it's scores that will be examined are the following:
@@ -30,5 +37,6 @@ The relevant criteria that Shanghai rates it's scores that will be examined are 
 * Papers published in Nature and Science(big science publications) - 20%
 
 ###Times
+The relevant columns for Times and it's breakdown is the following:
 
 
