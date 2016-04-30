@@ -38,5 +38,6 @@ The relevant columns for Times and it's breakdown is the following:
 
 * Research reputation/research income/papers and staff/public research income/total research income - 30%
 * Citation impact - 32.5%
+* International outlook - 7.5%
 
 ##Results
