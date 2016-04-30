@@ -55,9 +55,8 @@ kyoto_ucsf.times = kyoto_ucsf.times[order(kyoto_ucsf.times$university_name, kyot
 #Look at the times rating for Kyoto University
 ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) + 
     geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$international)[as.numeric(kyoto_ucsf.times$international)]), color="international")) + 
-    geom_line(aes(y=research, color="research")) + 
+    geom_line(aes(y=research, color="research"), size=14) + 
     geom_line(aes(y=citations, color="citations")) + 
-    geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$income)[as.numeric(kyoto_ucsf.times$income)]), color="income")) +
     labs(x="Year", y="Score", title="Times rating") +
     theme(
         axis.text = element_text(size = 14),
