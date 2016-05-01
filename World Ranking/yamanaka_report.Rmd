@@ -41,3 +41,18 @@ The relevant columns for Times and it's breakdown is the following:
 * International outlook(collaboration/international staff/student ratio) - 7.5%
 
 ##Results
+
+```{r}
+#Look at the times rating for Kyoto University
+ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) + 
+    geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$international)[as.numeric(kyoto_ucsf.times$international)]), color="international")) + 
+    geom_line(aes(y=research, color="research"), size=1) + 
+    geom_line(aes(y=citations, color="citations"), size=1) + 
+    labs(x="Year", y="Score", title="Times rating", size=1) +
+    theme(
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size=14, face="bold"),
+        legend.title = element_blank()
+    )
+```

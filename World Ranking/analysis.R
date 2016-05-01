@@ -22,19 +22,6 @@ shanghai$university_name[shanghai$university_name == "University of California-B
 ##Lost datasets due to naming issues with school_country, as well as not in dataset
 shanghai = merge(shanghai, school_country, by.x = "university_name", by.y = "school_name")
 
-#shanghai is more raw research base
-##40% based on research, +30% for having nobel laureatesa and awarded people
-#times seems to be biased non english colleges
-##32% based on research impact, ~+10%  research monies and papers
-#cwur saudi arabia made one
-##25% on quality of staff(awards,etc), 5% pub, 5% influ, 5% cit, 5% patent
-
-#1
-#ghetto see if yamanaka paper and 2012 nobel did anything to enrolllment or whatever
-#2006
-#Assocaited with UCSF and Kyoto dai
-#2012 got nobel
-
 ##
 ## Investigate the ratings of both Kyoto and UCSF in regards to Yamanaka's first paper on iPS cells and nobel prize
 ##
@@ -55,9 +42,9 @@ kyoto_ucsf.times = kyoto_ucsf.times[order(kyoto_ucsf.times$university_name, kyot
 #Look at the times rating for Kyoto University
 ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) + 
     geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$international)[as.numeric(kyoto_ucsf.times$international)]), color="international")) + 
-    geom_line(aes(y=research, color="research"), size=14) + 
-    geom_line(aes(y=citations, color="citations")) + 
-    labs(x="Year", y="Score", title="Times rating") +
+    geom_line(aes(y=research, color="research"), size=1) + 
+    geom_line(aes(y=citations, color="citations"), size=1) + 
+    labs(x="Year", y="Score", title="Times rating", size=1) +
     theme(
         axis.text = element_text(size = 14),
         axis.title = element_text(size = 14),
@@ -67,33 +54,31 @@ ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) +
 
 #Look at CWUR rating
 ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) + 
-    geom_line(aes(y=quality_of_faculty)) + 
-    geom_line(aes(y=publications)) + 
-    geom_line(aes(y=influence)) + 
-    geom_line(aes(y=citations)) + 
-    geom_line(aes(y=broad_impact)) +
+    geom_line(aes(y=quality_of_faculty, color="quality_of_faculty"), size=1) + 
+    geom_line(aes(y=publications, color="publications"), size=1) + 
+    geom_line(aes(y=influence, color="influence"), size=1) + 
+    geom_line(aes(y=citations, color="citations"), size=1) + 
+    geom_line(aes(y=broad_impact, color="broad_impact"), size=1) +
     labs(x="Year", y="Score", title="CWUR rating") +
     theme(
         axis.text = element_text(size = 14),
         axis.title = element_text(size = 14),
         plot.title = element_text(size=14, face="bold")
-    )
+    ) + 
+    facet_grid(institution~.,scales="free_x")
+
 
 #Look at the Shanghai rating
 ##Ignore alumni as UCSF has 0s
-###Need to probably split into 2 graphs for each school
 ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) + 
-    geom_line(aes(y=total_score)) + 
-    geom_line(aes(y=hici)) + 
-    geom_line(aes(y=ns)) + 
-    geom_line(aes(y=pub)) + 
-    geom_line(aes(y=award)) +
+    geom_line(aes(y=hici, group=university_name, color="hici"), size=1) + 
+    geom_line(aes(y=ns, group=university_name, color="ns"), size=1) + 
+    geom_line(aes(y=pub, group=university_name, color="pub"), size=1) + 
+    geom_line(aes(y=award, group=university_name, color="award"), size=1) +
     labs(x="Year", y="Score", title="Shanghai rating") +
     theme(
         axis.text = element_text(size = 14),
         axis.title = element_text(size = 14),
         plot.title = element_text(size=14, face="bold")
-    )
-
-#3
-#maybe checkout the impact of research after crispr paper 2012-2013
+    ) + 
+    facet_grid(university_name~.,scales="free_x")
