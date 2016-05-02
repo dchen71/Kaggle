@@ -47,9 +47,9 @@ The data comparing the relevant ratings are below:
 ```{r}
 #Look at the times rating for Kyoto University
 ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) + 
-    geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$international)[as.numeric(kyoto_ucsf.times$international)]), color="international")) + 
-    geom_line(aes(y=research, color="research"), size=1) + 
-    geom_line(aes(y=citations, color="citations"), size=1) + 
+    geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$international)[as.numeric(kyoto_ucsf.times$international)]), color="International Outlook")) + 
+    geom_line(aes(y=research, color="Research"), size=1) + 
+    geom_line(aes(y=citations, color="Citations"), size=1) + 
     labs(x="Year", y="Score", title="Times rating", size=1) +
     theme(
         axis.text = element_text(size = 14),
@@ -64,10 +64,10 @@ The above graph shows the data from the Times Ranking for Kyoto University as Un
 ```{r}
 #Look at CWUR rating
 ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) + 
-    geom_line(aes(y=publications, color="publications"), size=1) + 
-    geom_line(aes(y=influence, color="influence"), size=1) + 
-    geom_line(aes(y=citations, color="citations"), size=1) + 
-    geom_line(aes(y=broad_impact, color="broad_impact"), size=1) +
+    geom_line(aes(y=publications, color="Publications"), size=1) + 
+    geom_line(aes(y=influence, color="Influence"), size=1) + 
+    geom_line(aes(y=citations, color="Citations"), size=1) + 
+    geom_line(aes(y=broad_impact, color="Broad impact"), size=1) +
     labs(x="Year", y="Score", title="CWUR rating") +
     theme(
         axis.text = element_text(size = 14),
@@ -82,10 +82,10 @@ The above graph shows the scores taken from CWUR between 2012 and 2015 for both 
 ```{r}
 #Look at Shanghai data
 ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) + 
-    geom_line(aes(y=hici, group=university_name, color="hici"), size=1) + 
-    geom_line(aes(y=ns, group=university_name, color="ns"), size=1) + 
-    geom_line(aes(y=pub, group=university_name, color="pub"), size=1) + 
-    geom_line(aes(y=award, group=university_name, color="award"), size=1) +
+    geom_line(aes(y=hici, group=university_name, color="Highly Cited"), size=1) + 
+    geom_line(aes(y=ns, group=university_name, color="Nature/Science"), size=1) + 
+    geom_line(aes(y=pub, group=university_name, color="Publication"), size=1) + 
+    geom_line(aes(y=award, group=university_name, color="Num. of Award"), size=1) +
     labs(x="Year", y="Score", title="Shanghai rating") +
     theme(
         axis.text = element_text(size = 14),
