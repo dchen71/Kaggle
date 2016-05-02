@@ -94,4 +94,4 @@ ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) +
     ) + 
     facet_grid(university_name~.,scales="free_x")
 ```
-
+Shanghai is markedly different as it contains data all the way back in 2005. The original paper published by Yamanaka was released in 2006. In both universities, the publication scores are trending downwards in both the release year of the publication as well as after the Nobel Prize. Kyoto University appears to have an upward trend in highly cited scores the year of the release of the paper with a dip about after the Nobel Prize. UCSF follows a gradual downward trend followed by a sharp decrease in 2013-2014. There appears to be a small jump in the award score following 2012. The number of papers in Nature or Science does not appear different due to the paper.
