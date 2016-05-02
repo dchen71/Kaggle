@@ -44,7 +44,51 @@ The relevant columns for Times and it's breakdown is the following:
 
 The data comparing the relevant ratings are below:
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
+##
+## Kaggle World Ranking Analysis
+##
+
+#Load libraries
+library(ggplot2)
+
+#Read data
+input_dir = "input/"
+cwurData = read.csv(paste0(input_dir, "cwurData.csv")) #CWUR rating
+#ed_attain_sup = read.csv(paste0(input_dir, "educational_attainment_supplementary_data.csv")) #Population schooling
+#ed_expen_sup = read.csv(paste0(input_dir, "education_expenditure_supplementary_data.csv")) #Funding for schools
+school_country = read.csv(paste0(input_dir, "school_and_country_table.csv")) #Country/School table
+shanghai = read.csv(paste0(input_dir, "shanghaiData.csv")) #Shanghai rating
+times = read.csv(paste0(input_dir, "timesData.csv")) #Times rating
+
+#Fix some of the names for the shanghai scores
+school_country = rbind(school_country, data.frame(school_name = "University of California, San Francisco", country = "United States of America"))
+shanghai$university_name[shanghai$university_name == "University of California-Berkeley"] = "University of California, Berkeley"
+
+#Merge the shanghai data to get countries
+##Lost datasets due to naming issues with school_country, as well as not in dataset
+shanghai = merge(shanghai, school_country, by.x = "university_name", by.y = "school_name")
+
+##
+## Investigate the ratings of both Kyoto and UCSF in regards to Yamanaka's first paper on iPS cells and nobel prize
+##
+
+#Subset out data pertaining to UCSF and Kyoto Dai
+kyoto_ucsf.shang = shanghai[shanghai$university_name == "University of California, San Francisco" | 
+                        shanghai$university_name == "Kyoto University",]
+kyoto_ucsf.cwur = cwurData[cwurData$institution == "University of California, San Francisco" | 
+                             cwurData$institution == "Kyoto University",]
+kyoto_ucsf.times = times[times$university_name == "University of California, San Francisco" | 
+                             times$university_name == "Kyoto University",]
+
+#Sort based on institute and year
+kyoto_ucsf.shang = kyoto_ucsf.shang[order(kyoto_ucsf.shang$university_name,kyoto_ucsf.shang$year),]
+kyoto_ucsf.cwur = kyoto_ucsf.cwur[order(kyoto_ucsf.cwur$institution, kyoto_ucsf.cwur$year),]
+kyoto_ucsf.times = kyoto_ucsf.times[order(kyoto_ucsf.times$university_name, kyoto_ucsf.times$year),]
+  
+```
+
+```{r, echo=FALSE, warning=FALSE}
 #Look at the times rating for Kyoto University
 ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) + 
     geom_line(aes(y=as.numeric(levels(kyoto_ucsf.times$international)[as.numeric(kyoto_ucsf.times$international)]), color="International Outlook")) + 
@@ -61,7 +105,7 @@ ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) +
 
 The above graph shows the data from the Times Ranking for Kyoto University as University of California, San Francisco was not part of its data. As the Nobel Prize was awarded in 2012, there appears to be a downward trend until a slight resurgence the year of the prize. The score with citations rises from 2011-2012 and plateaus until 2015. The international ratings rises greatest from 2012-2013 and reaches a high point until 2015-2016.
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 #Look at CWUR rating
 ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) + 
     geom_line(aes(y=publications, color="Publications"), size=1) + 
@@ -79,7 +123,7 @@ ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) +
 
 The above graph shows the scores taken from CWUR between 2012 and 2015 for both Kyoto University and UCSF. The scores vary depending on the universities. Part of broad impact is missing due to issues with the data. In both schools, citations appear to raise from 2012-2013. In UCSF, it begins to taper off after 2013 and begins to decline while Kyoto sharply raises again after 2014. The scores for publications both rise a bit after 2012 with higher scores seen in Kyoto Unversity. In 2012-2013, an increase in the scores for influence can be seen in Kyoto University. The metrics given by CWUR deems UCSF to not nearly be as influential as Kyoto University.
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 #Look at Shanghai data
 ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) + 
     geom_line(aes(y=hici, group=university_name, color="Highly Cited"), size=1) + 
@@ -94,6 +138,7 @@ ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) +
     ) + 
     facet_grid(university_name~.,scales="free_x")
 ```
+
 Shanghai is markedly different as it contains data all the way back in 2005. The original paper published by Yamanaka was released in 2006. In both universities, the publication scores are trending downwards in both the release year of the publication as well as after the Nobel Prize. Kyoto University appears to have an upward trend in highly cited scores the year of the release of the paper with a dip about after the Nobel Prize. UCSF follows a gradual downward trend followed by a sharp decrease in 2013-2014. There appears to be a small jump in the award score following 2012. The number of papers in Nature or Science does not appear different due to the paper.
 
 
