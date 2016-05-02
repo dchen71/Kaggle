@@ -9,7 +9,7 @@ In 2012, Shinya Yamanaka was awarded the Nobel Peace prize for his discovery of 
 
 iPS cells are a type of stem cell coming from adult stem cells. They are reverted from adult cell back into a pluripotent stem cell stage in which it can turn into any cell type. These cells are revolutionary due to the fact that they are very similar to embryonic stem cells, bypassing the need for any controversy involved with collecting embryonic stem cells. As these cells are capable of giving rise to every other cell type, they are being used in numerous stem cell research including stem cell therapy and organogenesis.
 
-The question now is, did Yamanaka's award change any of the research related scores in either the Times, Shanghai, or the CWUR rankings?
+The question now is, did Yamanaka's award change any of the research related scores in either the Times, Shanghai, or the CWUR rankings for either Kyoto Univeristy or University of California, San Francisco(UCSF)?
 
 ##Rankings
 The rankings being looked at are from Times Higher Education World University Rankings, the Center for World University Rankings(CWUR), and the Shanghai Ranking. They are all similar in that they all look into similar factors including the research and number of publications from a school. They all have different weights to how they rank schools, with strong weights towards research.
@@ -58,6 +58,8 @@ ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) +
         legend.title = element_blank()
     )
 ```
+
+The above graph shows the data from the Times Ranking for Kyoto University as University of California, San Francisco was not part of its data.
 
 ```{r}
 #Look at CWUR rating
