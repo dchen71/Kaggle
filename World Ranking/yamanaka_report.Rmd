@@ -80,7 +80,7 @@ ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) +
 The above graph shows the scores taken from CWUR between 2012 and 2015 for both Kyoto University and UCSF. The scores vary depending on the universities. Part of broad impact is missing due to issues with the data. In both schools, citations appear to raise from 2012-2013. In UCSF, it begins to taper off after 2013 and begins to decline while Kyoto sharply raises again after 2014. The scores for publications both rise a bit after 2012 with higher scores seen in Kyoto Unversity. In 2012-2013, an increase in the scores for influence can be seen in Kyoto University. The metrics given by CWUR deems UCSF to not nearly be as influential as Kyoto University.
 
 ```{r}
-#Look at kyoto data
+#Look at Shanghai data
 ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) + 
     geom_line(aes(y=hici, group=university_name, color="hici"), size=1) + 
     geom_line(aes(y=ns, group=university_name, color="ns"), size=1) + 
@@ -95,3 +95,6 @@ ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) +
     facet_grid(university_name~.,scales="free_x")
 ```
 Shanghai is markedly different as it contains data all the way back in 2005. The original paper published by Yamanaka was released in 2006. In both universities, the publication scores are trending downwards in both the release year of the publication as well as after the Nobel Prize. Kyoto University appears to have an upward trend in highly cited scores the year of the release of the paper with a dip about after the Nobel Prize. UCSF follows a gradual downward trend followed by a sharp decrease in 2013-2014. There appears to be a small jump in the award score following 2012. The number of papers in Nature or Science does not appear different due to the paper.
+
+
+Yamanaka's reward appears to have affected the scores related in research in both CWUR and Times. The data from Shanghai's rating appeared to show no major changes to the scores after his Nobel Prize. The data overall from Shanghai appear to be consistent throughout the years. It should be noted that a single person is unlikely to be able to drastically change the scores for any of the college rankings and should be considered correlation.
