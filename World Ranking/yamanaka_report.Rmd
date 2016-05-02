@@ -59,12 +59,11 @@ ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) +
     )
 ```
 
-The above graph shows the data from the Times Ranking for Kyoto University as University of California, San Francisco was not part of its data. As the Nobel Prize was awarded in 2012, there appears to be a downward trend until a slight resurgence the year of the prize. The score with citations rises from 2011-2012 and plateaus until 2015. 
+The above graph shows the data from the Times Ranking for Kyoto University as University of California, San Francisco was not part of its data. As the Nobel Prize was awarded in 2012, there appears to be a downward trend until a slight resurgence the year of the prize. The score with citations rises from 2011-2012 and plateaus until 2015. The international ratings rises greatest from 2012-2013 and reaches a high point until 2015-2016.
 
 ```{r}
 #Look at CWUR rating
 ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) + 
-    geom_line(aes(y=quality_of_faculty, color="quality_of_faculty"), size=1) + 
     geom_line(aes(y=publications, color="publications"), size=1) + 
     geom_line(aes(y=influence, color="influence"), size=1) + 
     geom_line(aes(y=citations, color="citations"), size=1) + 
@@ -76,8 +75,9 @@ ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) +
         plot.title = element_text(size=14, face="bold")
     ) + 
     facet_grid(institution~.,scales="free_x")
-
 ```
+
+The above graph shows the scores taken from CWUR between 2012 and 2015 for both Kyoto University and UCSF. The scores vary depending on the universities. Part of broad impact is missing due to issues with the data. In both schools, citations appear to raise from 2012-2013. In UCSF, it begins to taper off after 2013 and begins to decline while Kyoto sharply raises again after 2014. The scores for publications both rise a bit after 2012 with higher scores seen in Kyoto Unversity. In 2012-2013, an increase in the scores for influence can be seen in Kyoto University. The metrics given by CWUR deems UCSF to not nearly be as influential as Kyoto University.
 
 ```{r}
 #Look at kyoto data
@@ -94,3 +94,4 @@ ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) +
     ) + 
     facet_grid(university_name~.,scales="free_x")
 ```
+
