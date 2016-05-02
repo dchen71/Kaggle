@@ -59,7 +59,7 @@ ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) +
     )
 ```
 
-The above graph shows the data from the Times Ranking for Kyoto University as University of California, San Francisco was not part of its data.
+The above graph shows the data from the Times Ranking for Kyoto University as University of California, San Francisco was not part of its data. As the Nobel Prize was awarded in 2012, there appears to be a downward trend until a slight resurgence the year of the prize. The score with citations rises from 2011-2012 and plateaus until 2015. 
 
 ```{r}
 #Look at CWUR rating
