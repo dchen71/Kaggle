@@ -42,6 +42,8 @@ The relevant columns for Times and it's breakdown is the following:
 
 ##Results
 
+The data comparing the relevant ratings are below:
+
 ```{r}
 #Look at the times rating for Kyoto University
 ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) + 
@@ -55,4 +57,38 @@ ggplot(data=kyoto_ucsf.times, aes(x=year, group=university_name)) +
         plot.title = element_text(size=14, face="bold"),
         legend.title = element_blank()
     )
+```
+
+```{r}
+#Look at CWUR rating
+ggplot(data=kyoto_ucsf.cwur, aes(x=year, col=institution)) + 
+    geom_line(aes(y=quality_of_faculty, color="quality_of_faculty"), size=1) + 
+    geom_line(aes(y=publications, color="publications"), size=1) + 
+    geom_line(aes(y=influence, color="influence"), size=1) + 
+    geom_line(aes(y=citations, color="citations"), size=1) + 
+    geom_line(aes(y=broad_impact, color="broad_impact"), size=1) +
+    labs(x="Year", y="Score", title="CWUR rating") +
+    theme(
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size=14, face="bold")
+    ) + 
+    facet_grid(institution~.,scales="free_x")
+
+```
+
+```{r}
+#Look at kyoto data
+ggplot(data=kyoto_ucsf.shang, aes(x=year, col=university_name)) + 
+    geom_line(aes(y=hici, group=university_name, color="hici"), size=1) + 
+    geom_line(aes(y=ns, group=university_name, color="ns"), size=1) + 
+    geom_line(aes(y=pub, group=university_name, color="pub"), size=1) + 
+    geom_line(aes(y=award, group=university_name, color="award"), size=1) +
+    labs(x="Year", y="Score", title="Shanghai rating") +
+    theme(
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size=14, face="bold")
+    ) + 
+    facet_grid(university_name~.,scales="free_x")
 ```
