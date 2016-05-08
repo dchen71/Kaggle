@@ -16,11 +16,11 @@ shinyServer(function(input, output) {
     #Initializes data
     data = read.csv("Input/train.csv")
 
-    
+    #Render checkbox group based on data from choices
     output$crimeSelector <- renderUI({
         checkboxGroupInput("checkGroup", 
-        label = h3("Crime Categories"), 
-        choices = list(unique(data$Category)))
+                            h3("Crime Categories"), 
+                            levels(data$Category))
     })
     
     #Convert dates into year value

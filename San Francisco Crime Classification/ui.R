@@ -15,10 +15,7 @@ shinyUI(fluidPage(
     sidebarLayout(
         sidebarPanel(
             helpText("Choose the categories of crimes to display on the map as well as the year"),
-            checkboxGroupInput("checkGroup", 
-                               label = h3("Crime Categories"), 
-                               choices = list("Warrants" = 'WARRANTS', "Vandalism" = 'VANDALISM',
-                                              "Prostitution" = 'PROSTITUTION', "Bribery" = 'BRIBERY')),
+            uiOutput("crimeSelector"),
             sliderInput("range", 
                         label = "Year of interest:",
                         min = 2003, max = 2015, value = 2003)
