@@ -26,6 +26,13 @@ shinyServer(function(input, output) {
     #Convert dates into year value
     data$Dates = year(data$Dates)
     
+    #Render slider based on data from years
+    output$yearSlider <- renderUI({
+        sliderInput("range", 
+                    label = "Year of interest:",
+                    min = min(data$Dates), max = max(data$Dates), value = min(data$Dates))
+    })
+    
     #Setup maps of San Francisco
     map = get_map(location="sanfrancisco",zoom=12,source="osm")
         

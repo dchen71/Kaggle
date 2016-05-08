@@ -16,9 +16,7 @@ shinyUI(fluidPage(
         sidebarPanel(
             helpText("Choose the categories of crimes to display on the map as well as the year"),
             uiOutput("crimeSelector"),
-            sliderInput("range", 
-                        label = "Year of interest:",
-                        min = 2003, max = 2015, value = 2003)
+            uiOutput("yearSlider")
         ),
         
         # Show a plot of the generated distribution of crimes on a map of SF
