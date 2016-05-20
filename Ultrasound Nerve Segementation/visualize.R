@@ -55,5 +55,5 @@ display_mri = function(entry){
   
   #Paint overlay and display
   overlaid_mri = paintObjects(mask , img, col=c("red"))
-  display(overlaid_mri)
+  display(overlaid_mri, method = "raster")
 }
