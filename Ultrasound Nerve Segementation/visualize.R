@@ -10,14 +10,50 @@
 library("EBImage")
 
 #Read file
-train1 = readImage('input/train/1_8.tif')
-train1.mask = readImage('input/train/1_8_mask.tif')
+input_dir = "input/train/"
+files = dir("input/train/")
+masks = files[seq(1, length(files), 2)]
+imgs = files[seq(2, length(files), 2)]
+train1 = readImage(paste0(input_dir, imgs[1]))
+train1.mask = readImage(paste0(input_dir, masks[1]))
 
-#Convert to rgb
-train1 = toRGB(train1)
+#Get back all image entries by metaprogramming
+get_images <- function() {
+  for(i in 1:length(imgs)) {
+    fName <- paste("imgs.", i, sep="")
+    assign(fName, eval(
+      substitute(
+        toRGB(readImage(paste0(input_dir, imgs[i]))) #Read and convert to rgb
+      )
+    ),
+    envir=parent.frame()
+    )
+  }
+}
+get_images()
 
-#Overlay mask
-segmented = paintObjects(train1.mask, train1, col=c('red'))
+#Get back all masks entries by metaprogramming
+get_masks <- function() {
+  for(i in 1:length(imgs)) {
+    fName <- paste("imgs_masks.", i, sep="")
+    assign(fName, eval(
+      substitute(
+        readImage(paste0(input_dir, masks[i]))
+      )
+    ),
+    envir=parent.frame()
+    )
+  }
+}
+get_masks()
 
-#Display image
-display(segmented)
+#Display overlaid mri
+display_mri = function(entry){
+  #Prep data
+  mask = get(paste0("imgs_masks.", entry))
+  img = get(paste0("imgs.", entry))
+  
+  #Paint overlay and display
+  overlaid_mri = paintObjects(mask , img, col=c("red"))
+  display(overlaid_mri)
+}
