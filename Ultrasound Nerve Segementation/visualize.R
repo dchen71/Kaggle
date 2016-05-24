@@ -11,15 +11,14 @@ library("EBImage")
 
 #Read file
 input_dir = "input/train/"
-files = dir("input/train/")
-masks = files[seq(1, length(files), 2)]
-imgs = files[seq(2, length(files), 2)]
-train1 = readImage(paste0(input_dir, imgs[1]))
-train1.mask = readImage(paste0(input_dir, masks[1]))
+files = dir(input_dir)
+imgs = files[seq(1, length(files), 2)]
+masks = files[seq(2, length(files), 2)]
 
 #Get back all image entries by metaprogramming
 get_images <- function() {
   for(i in 1:length(imgs)) {
+    print(paste0("Assigning image: ", imgs[i]) )
     fName <- paste("imgs.", i, sep="")
     assign(fName, eval(
       substitute(
@@ -35,6 +34,7 @@ get_images()
 #Get back all masks entries by metaprogramming
 get_masks <- function() {
   for(i in 1:length(imgs)) {
+    print(paste0("Assigning mask: ", imgs[i]) )
     fName <- paste("imgs_masks.", i, sep="")
     assign(fName, eval(
       substitute(
