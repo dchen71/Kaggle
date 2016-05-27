@@ -9,17 +9,16 @@
 ##biocLite("EBImage")
 library("EBImage")
 
-#Read file
+#Read file and create listing for training imgs and assocaiated masks
 input_dir = "input/train/"
-files = dir("input/train/")
-masks = files[seq(1, length(files), 2)]
-imgs = files[seq(2, length(files), 2)]
-train1 = readImage(paste0(input_dir, imgs[1]))
-train1.mask = readImage(paste0(input_dir, masks[1]))
+input_list = read.csv("input/train_masks.csv")
+imgs = paste0(input_list$subject, "_", input_list$img, ".tif")
+masks = paste0(input_list$subject, "_", input_list$img, "_mask.tif")
 
 #Get back all image entries by metaprogramming
 get_images <- function() {
   for(i in 1:length(imgs)) {
+    print(paste0("Assigning image: ", imgs[i]) )
     fName <- paste("imgs.", i, sep="")
     assign(fName, eval(
       substitute(
@@ -35,6 +34,7 @@ get_images()
 #Get back all masks entries by metaprogramming
 get_masks <- function() {
   for(i in 1:length(imgs)) {
+    print(paste0("Assigning mask: ", imgs[i]) )
     fName <- paste("imgs_masks.", i, sep="")
     assign(fName, eval(
       substitute(
