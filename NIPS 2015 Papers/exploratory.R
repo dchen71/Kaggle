@@ -20,3 +20,8 @@ findLastName = function(fullname){
   return(fullname[length(fullname)])
 }
 lastNames = lapply(authorNames, findLastName)
+lastNames = as.character(lastNames)
+
+#Count number of each last name
+lastNamesCount = as.data.frame(table(lastNames))
+lastNamesCount = lastNamesCount[order(lastNamesCount$Freq),]
