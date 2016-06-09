@@ -12,4 +12,11 @@ papers = read_csv("input/Papers.csv")
 #Look at type of events at NIPS
 table(papers$EventType)
 
+#Check last names
+authorNames = strsplit(authors$Name, " ")
 
+#Function to find last name for each row
+findLastName = function(fullname){
+  return(fullname[length(fullname)])
+}
+lastNames = lapply(authorNames, findLastName)
