@@ -41,11 +41,11 @@ lastNamesCount = lastNamesCount[order(lastNamesCount$Freq),]
 lastNamesCount
 ```
 
-TO DO
+As can be seen from the list, the most popular surnames that have published papers are Wang, Li, and Chen. 
 
 ##Authors and their published works
 
-Now, we take a look into the authors and the number of papers they ahve published.
+Now, we take a look into the authors and the number of papers they have published.
 
 ```{r}
 #Find who wrote papers
@@ -59,4 +59,8 @@ lastNamesPub = as.character(lastNamesPub)
 #Count number of each last name
 lastNamesPubCount = as.data.frame(table(lastNamesPub))
 lastNamesPubCount = lastNamesPubCount[order(lastNamesPubCount$Freq),]
+
+lastNamesPubCount
 ```
+
+This list shows the number of a given surname that had published papers for this event. As can be seen in this list, the top publishers are Wang, Li, and Zhang.
