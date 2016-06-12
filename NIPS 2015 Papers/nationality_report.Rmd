@@ -1,0 +1,62 @@
+---
+title: "What are the nationalities of the writers"
+output: html_document
+---
+
+## Introduction
+
+Neural Information Processing Systems (NIPS) is one of the top machine learning conferences in the world. I was wondering, in general, which nationalities are represented in the event as authors of research papers? This is a generalization and done just for fun.
+
+```{r}
+# Packages
+library(readr)
+library(dplyr)
+
+# Read input data
+authors = read_csv("input/Authors.csv")
+paperAuthors = read_csv("input/PaperAuthors.csv")
+
+#Function to find last name for each row
+findLastName = function(fullname){
+  return(fullname[length(fullname)])
+}
+```
+
+
+##Authors of papers
+
+The authors dataset contains the authors that have wrote papers. First, we take a quick look:
+
+```{r}
+#Check last names
+authorNames = strsplit(authors$Name, " ")
+
+lastNames = lapply(authorNames, findLastName)
+lastNames = as.character(lastNames)
+
+#Count number of each last name
+lastNamesCount = as.data.frame(table(lastNames))
+lastNamesCount = lastNamesCount[order(lastNamesCount$Freq),]
+
+lastNamesCount
+```
+
+TO DO
+
+##Authors and their published works
+
+Now, we take a look into the authors and the number of papers they ahve published.
+
+```{r}
+#Find who wrote papers
+publishers = merge(authors, paperAuthors, by.x = "Id", by.y="AuthorId")
+
+#Check last names
+authorNames = strsplit(publishers$Name, " ")
+lastNamesPub = lapply(authorNames, findLastName)
+lastNamesPub = as.character(lastNamesPub)
+
+#Count number of each last name
+lastNamesPubCount = as.data.frame(table(lastNamesPub))
+lastNamesPubCount = lastNamesPubCount[order(lastNamesPubCount$Freq),]
+```
