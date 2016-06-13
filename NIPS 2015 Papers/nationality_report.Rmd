@@ -22,7 +22,6 @@ findLastName = function(fullname){
 }
 ```
 
-
 ##Authors of papers
 
 The authors dataset contains the authors that have wrote papers. First, we take a quick look:
@@ -39,6 +38,16 @@ lastNamesCount = as.data.frame(table(lastNames))
 lastNamesCount = lastNamesCount[order(lastNamesCount$Freq),]
 
 lastNamesCount
+```
+
+
+The origins was manually curated to guess the nationality of each author. The origins was created using a mixture of hits from wikipedia as well as through searches such as through ancestry.com. 
+
+```{r, echo=FALSE}
+origins = data.frame(
+  lastName = lastNames,
+  origin = c("Chinese", "Spanish", "German/Chinese", "Chinese", "German", "Ireland")
+)
 ```
 
 As can be seen from the list, the most popular surnames that have published papers are Wang, Li, and Chen. 
