@@ -11,6 +11,7 @@ Neural Information Processing Systems (NIPS) is one of the top machine learning 
 # Packages
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 # Read input data
 authors = read_csv("input/Authors.csv")
@@ -22,7 +23,7 @@ findLastName = function(fullname){
 }
 ```
 
-##Authors of papers
+## Authors of papers
 
 The authors dataset contains the authors that have wrote papers. First, we take a quick look:
 
@@ -36,23 +37,40 @@ lastNames = as.character(lastNames)
 #Count number of each last name
 lastNamesCount = as.data.frame(table(lastNames))
 lastNamesCount = lastNamesCount[order(lastNamesCount$Freq),]
-
-lastNamesCount
 ```
 
+```{r}
+ggplot(lastNamesCount, aes(factor(Freq), fill=factor(Freq))) + geom_bar() + 
+  scale_fill_brewer(palette="Spectral") + 
+  ggtitle("Number of published papers vs Number of Authors") + 
+  xlab("Number of papers published") + 
+  ylab("Number of authors")
+```
+
+As can be seen by the distribution, the distribution of unique surnames in the conference is right skewed with most authors being unique.
+
+Now to see the top 10 author surnames.
+
+```{r}
+tail(lastNamesCount, 10)
+```
+
+The question at this point is, what could the nationalities of the top 10 authors be?
 
 The origins was manually curated to guess the nationality of the top 10 authors who had published papers for the event. The origins were found using wikipedia and deriving it from origin tabs for surnames. 
 
 ```{r, echo=FALSE}
 lastNameOrigins = data.frame(
     lastName = tail(lastNamesCount$lastNames,10),
-    origin = c("Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese")
+    origin = c("Chinese", "Chinese", "Chinese", "Chinese", "Chinese/English/Korean", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese")
 )
 ```
 
-As can be seen from the list, the most popular surnames that have published papers for NIPS2015 are Chinese. Now the question is, if there is any difference based on the numbers of papers that they have published.
+As can be seen from the list, the most popular surnames that have published papers for NIPS2015 are Chinese. Lee is also a common surname in Korea and English so there can be some ambiguity there.
 
-##Authors and their published works
+Now the question is, if there is any difference based on the numbers of papers that they have published.
+
+## Authors and their published works
 
 Now, we take a look into the authors and the number of papers they have published.
 
@@ -69,7 +87,7 @@ lastNamesPub = as.character(lastNamesPub)
 lastNamesPubCount = as.data.frame(table(lastNamesPub))
 lastNamesPubCount = lastNamesPubCount[order(lastNamesPubCount$Freq),]
 
-lastNamesPubCount
+tail(lastNamesPubCount)
 ```
 
 This list shows the number of a given surname that had published papers for this event. As can be seen in this list, the top publishers are Wang, Li, and Zhang.
