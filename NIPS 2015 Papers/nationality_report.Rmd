@@ -41,16 +41,16 @@ lastNamesCount
 ```
 
 
-The origins was manually curated to guess the nationality of each author. The origins was created using a mixture of hits from wikipedia as well as through searches such as through ancestry.com. 
+The origins was manually curated to guess the nationality of the top 10 authors who had published papers for the event. The origins were found using wikipedia and deriving it from origin tabs for surnames. 
 
 ```{r, echo=FALSE}
-origins = data.frame(
-  lastName = lastNames,
-  origin = c("Chinese", "Spanish", "German/Chinese", "Chinese", "German", "Ireland")
+lastNameOrigins = data.frame(
+    lastName = tail(lastNamesCount$lastNames,10),
+    origin = c("Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese")
 )
 ```
 
-As can be seen from the list, the most popular surnames that have published papers are Wang, Li, and Chen. 
+As can be seen from the list, the most popular surnames that have published papers for NIPS2015 are Chinese. Now the question is, if there is any difference based on the numbers of papers that they have published.
 
 ##Authors and their published works
 
