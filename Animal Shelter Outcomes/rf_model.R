@@ -3,6 +3,7 @@
 
 #Libraries
 library(randomForest)
+library(lubridate)
 
 #Read input data
 raw_train = read.csv("input/train.csv", stringsAsFactors = FALSE)
@@ -16,14 +17,24 @@ raw_test$OutcomeSubtype = "test"
 #Take in all values, and convert to new factors
 train = rbind(raw_train, raw_test)
 train = lapply(train, as.factor)
+train = as.data.frame(train)
 
 #Resubset the test and training data
 test = tail(train, nrow(raw_test))
-train = train[1:nrow(raw_train),]
+train = head(train, nrow(raw_train))
 
 #Remove predictor variable
 test$OutcomeType = NULL
 test$OutcomeSubtype = NULL
 
 #Convert datetime into year, day of week
+train$Year = as.factor(year(train$DateTime))
+train$Month = as.factor(month(train$DateTime))
+train$Day = as.factor(day(train$DateTime))
+train$Weekdate = as.factor(weekdays(as.Date(train$DateTime)))
+
 #Convert ageuponoutcome into float
+#Segregate sex
+#Make column based on spayed/neutered/etc
+#possibly make column based on mix or /
+#Consider checking the time(at least am pm or hour wise)
