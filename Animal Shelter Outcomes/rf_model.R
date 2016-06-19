@@ -19,6 +19,14 @@ train = rbind(raw_train, raw_test)
 train = lapply(train, as.factor)
 train = as.data.frame(train)
 
+##Feature Engineering
+#Convert datetime into year, day of week, hour
+train$Year = as.factor(year(train$DateTime))
+train$Month = as.factor(month(train$DateTime))
+train$Day = as.factor(day(train$DateTime))
+train$Weekdate = as.factor(weekdays(as.Date(train$DateTime)))
+train$Hour = hour(train$DateTime)
+
 #Resubset the test and training data
 test = tail(train, nrow(raw_test))
 train = head(train, nrow(raw_train))
@@ -26,12 +34,6 @@ train = head(train, nrow(raw_train))
 #Remove predictor variable
 test$OutcomeType = NULL
 test$OutcomeSubtype = NULL
-
-#Convert datetime into year, day of week
-train$Year = as.factor(year(train$DateTime))
-train$Month = as.factor(month(train$DateTime))
-train$Day = as.factor(day(train$DateTime))
-train$Weekdate = as.factor(weekdays(as.Date(train$DateTime)))
 
 #Convert ageuponoutcome into float
 #Segregate sex
