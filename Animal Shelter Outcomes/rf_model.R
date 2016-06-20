@@ -27,6 +27,9 @@ train$Day = as.factor(day(train$DateTime))
 train$Weekdate = as.factor(weekdays(as.Date(train$DateTime)))
 train$Hour = hour(train$DateTime)
 
+#Clean up data on sexuponoutcome
+train$SexuponOutcome[train$SexuponOutcome == ""] = "Unknown"
+
 #Resubset the test and training data
 test = tail(train, nrow(raw_test))
 train = head(train, nrow(raw_train))
@@ -37,6 +40,5 @@ test$OutcomeSubtype = NULL
 
 #Convert ageuponoutcome into float
 #Segregate sex
-#Make column based on spayed/neutered/etc
 #possibly make column based on mix or /
 #Consider checking the time(at least am pm or hour wise)
