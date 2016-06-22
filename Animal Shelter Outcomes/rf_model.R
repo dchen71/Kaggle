@@ -17,7 +17,6 @@ raw_test$OutcomeSubtype = "test"
 
 #Take in all values, and convert to new factors
 train = rbind(raw_train, raw_test)
-train = lapply(train, as.factor)
 train = as.data.frame(train)
 
 ##Feature Engineering
@@ -44,7 +43,12 @@ train$Mix = FALSE
 train$Mix[grep("/", train$Breed)] = TRUE
 train$Mix[grep("Mix", train$Breed)] = TRUE
 
+#Convert ageuponoutcome into float based on years
+train$AgeuponOutcome[train$AgeuponOutcome == "1 weeks"] = "1 week"
+train$AgeuponOutcome[train$AgeuponOutcome == ""] = NA
+
 #Resubset the test and training data
+train = lapply(train, as.factor)
 test = tail(train, nrow(raw_test))
 train = head(train, nrow(raw_train))
 
@@ -52,4 +56,3 @@ train = head(train, nrow(raw_train))
 test$OutcomeType = NULL
 test$OutcomeSubtype = NULL
 
-#Convert ageuponoutcome into float
