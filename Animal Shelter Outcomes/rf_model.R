@@ -4,6 +4,7 @@
 #Libraries
 library(randomForest)
 library(lubridate)
+library(caret)
 
 #Read input data
 raw_train = read.csv("input/train.csv", stringsAsFactors = FALSE)
@@ -29,6 +30,19 @@ train$Hour = hour(train$DateTime)
 
 #Clean up data on sexuponoutcome
 train$SexuponOutcome[train$SexuponOutcome == ""] = "Unknown"
+#train$Gender = "Unknown"
+#train$Gender[grep("Male", train$SexuponOutcome)] = "Male"
+#train$Gender[grep("Female", train$SexuponOutcome)] = "Female"
+#train$Fertile = "Unknown" #Neutered/Spayed = FALSE
+#train$Fertile[grep("Intact", train$SexuponOutcome)] = TRUE
+#train$Fertile[grep("Neutered", train$SexuponOutcome)] = FALSE
+#train$Fertile[grep("Spayed", train$SexuponOutcome)] = FALSE
+#train$SexuponOutcome = NULL
+
+#Deal with potential mixes, anything with mix or / = mix
+train$Mix = FALSE
+train$Mix[grep("/", train$Breed)] = TRUE
+train$Mix[grep("Mix", train$Breed)] = TRUE
 
 #Resubset the test and training data
 test = tail(train, nrow(raw_test))
@@ -39,6 +53,3 @@ test$OutcomeType = NULL
 test$OutcomeSubtype = NULL
 
 #Convert ageuponoutcome into float
-#Segregate sex
-#possibly make column based on mix or /
-#Consider checking the time(at least am pm or hour wise)
