@@ -46,6 +46,17 @@ train$Mix[grep("Mix", train$Breed)] = TRUE
 #Convert ageuponoutcome into float based on years
 train$AgeuponOutcome[train$AgeuponOutcome == "1 weeks"] = "1 week"
 train$AgeuponOutcome[train$AgeuponOutcome == ""] = NA
+train$AgeuponOutcome[train$AgeuponOutcome == "1 day"] = "<1 week" #Segregate 1-6 days as <1 week
+train$AgeuponOutcome[train$AgeuponOutcome == "2 days"] = "<1 week"
+train$AgeuponOutcome[train$AgeuponOutcome == "3 days"] = "<1 week"
+train$AgeuponOutcome[train$AgeuponOutcome == "4 days"] = "<1 week"
+train$AgeuponOutcome[train$AgeuponOutcome == "5 days"] = "<1 week"
+train$AgeuponOutcome[train$AgeuponOutcome == "6 days"] = "<1 week"
+train$AgeuponOutcome[train$AgeuponOutcome == "1 week"] = "<1 month" #Segregate 1-3 weeks as   <1 month
+train$AgeuponOutcome[train$AgeuponOutcome == "2 weeks"] = "<1 month" #Segregate 1-3 weeks as   <1 month
+train$AgeuponOutcome[train$AgeuponOutcome == "3 weeks"] = "<1 month" #Segregate 1-3 weeks as   <1 month
+train$AgeuponOutcome[train$AgeuponOutcome == "4 weeks"] = "1 month" #4 weeks cleaned to 1 month
+
 
 #Resubset the test and training data
 train = lapply(train, as.factor)
