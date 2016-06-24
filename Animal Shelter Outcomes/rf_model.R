@@ -56,7 +56,7 @@ train$AgeuponOutcome[train$AgeuponOutcome == "1 week"] = "<1 month" #Segregate 1
 train$AgeuponOutcome[train$AgeuponOutcome == "2 weeks"] = "<1 month" #Segregate 1-3 weeks as   <1 month
 train$AgeuponOutcome[train$AgeuponOutcome == "3 weeks"] = "<1 month" #Segregate 1-3 weeks as   <1 month
 train$AgeuponOutcome[train$AgeuponOutcome == "4 weeks"] = "1 month" #4 weeks cleaned to 1 month
-
+train$AgeuponOutcome[train$AgeuponOutcome == "5 weeks"] = "1 month"
 
 #Resubset the test and training data
 train = lapply(train, as.factor)
