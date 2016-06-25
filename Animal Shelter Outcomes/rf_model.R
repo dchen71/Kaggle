@@ -44,6 +44,7 @@ train$Mix[grep("/", train$Breed)] = TRUE
 train$Mix[grep("Mix", train$Breed)] = TRUE
 
 #Convert ageuponoutcome into float based on years
+#Consider simply converting this to be based on days rather than factor
 train$AgeuponOutcome[train$AgeuponOutcome == "1 weeks"] = "1 week"
 train$AgeuponOutcome[train$AgeuponOutcome == ""] = NA
 train$AgeuponOutcome[train$AgeuponOutcome == "1 day"] = "<1 week" #Segregate 1-6 days as <1 week
@@ -58,6 +59,12 @@ train$AgeuponOutcome[train$AgeuponOutcome == "3 weeks"] = "<1 month" #Segregate 
 train$AgeuponOutcome[train$AgeuponOutcome == "4 weeks"] = "1 month" #4 weeks cleaned to 1 month
 train$AgeuponOutcome[train$AgeuponOutcome == "5 weeks"] = "1 month"
 
+#Column to check basically if an animal has a name
+train$HasName = ifelse(nchar(train$Name) == 0, FALSE, TRUE)
+
+#Deal with blank value in outcomesubtype
+train$OutcomeSubtype = ifelse(nchar(train$OutcomeSubtype) == 0, NA, train$OutcomeSubtype)
+
 #Resubset the test and training data
 train = lapply(train, as.factor)
 test = tail(train, nrow(raw_test))
@@ -67,3 +74,7 @@ train = head(train, nrow(raw_train))
 test$OutcomeType = NULL
 test$OutcomeSubtype = NULL
 
+## Modeling
+
+#Create model using randomForest
+#rfModel = randomForest(OutcomeType ~ OutcomeSubtype + AnimalType + SexuponOutcome + AgeuponOutcome + Breed + Color + Year + Month + Day + Weedkdate + Hour + Mix + HasName, data=train, ntree=200)
