@@ -21,11 +21,11 @@ train = as.data.frame(train)
 
 ##Feature Engineering
 #Convert datetime into year, day of week, hour
-train$Year = as.factor(year(train$DateTime))
-train$Month = as.factor(month(train$DateTime))
-train$Day = as.factor(day(train$DateTime))
-train$Weekdate = as.factor(weekdays(as.Date(train$DateTime)))
-train$Hour = hour(train$DateTime)
+train$OutcomeYear = as.factor(year(train$DateTime))
+train$OutcomeMonth = as.factor(month(train$DateTime))
+train$OutcomeDay = as.factor(day(train$DateTime))
+train$OutcomeWeekdate = as.factor(weekdays(as.Date(train$DateTime)))
+train$OutcomeHour = hour(train$DateTime)
 
 #Clean up data on sexuponoutcome
 train$SexuponOutcome[train$SexuponOutcome == ""] = "Unknown"
@@ -67,6 +67,7 @@ train$OutcomeSubtype = ifelse(nchar(train$OutcomeSubtype) == 0, NA, train$Outcom
 
 #Resubset the test and training data
 train = lapply(train, as.factor)
+train = as.data.frame(train)
 test = tail(train, nrow(raw_test))
 train = head(train, nrow(raw_train))
 
@@ -77,4 +78,5 @@ test$OutcomeSubtype = NULL
 ## Modeling
 
 #Create model using randomForest
-#rfModel = randomForest(OutcomeType ~ OutcomeSubtype + AnimalType + SexuponOutcome + AgeuponOutcome + Breed + Color + Year + Month + Day + Weedkdate + Hour + Mix + HasName, data=train, ntree=200)
+rfModel = randomForest(OutcomeType ~ OutcomeSubtype + AnimalType + SexuponOutcome + AgeuponOutcome +  Color + OutcomeYear + OutcomeMonth + OutcomeDay + OutcomeWeekdate + OutcomeHour + Mix + HasName, data=train, ntree=200)
+
