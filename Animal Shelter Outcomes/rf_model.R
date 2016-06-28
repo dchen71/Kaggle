@@ -46,7 +46,7 @@ train$Mix[grep("Mix", train$Breed)] = TRUE
 #Convert ageuponoutcome into float based on years
 #Consider simply converting this to be based on days rather than factor
 train$AgeuponOutcome[train$AgeuponOutcome == "1 weeks"] = "1 week"
-train$AgeuponOutcome[train$AgeuponOutcome == ""] = NA
+train$AgeuponOutcome[train$AgeuponOutcome == ""] = "Unknown"
 train$AgeuponOutcome[train$AgeuponOutcome == "1 day"] = "<1 week" #Segregate 1-6 days as <1 week
 train$AgeuponOutcome[train$AgeuponOutcome == "2 days"] = "<1 week"
 train$AgeuponOutcome[train$AgeuponOutcome == "3 days"] = "<1 week"
@@ -63,13 +63,17 @@ train$AgeuponOutcome[train$AgeuponOutcome == "5 weeks"] = "1 month"
 train$HasName = ifelse(nchar(train$Name) == 0, FALSE, TRUE)
 
 #Deal with blank value in outcomesubtype
-train$OutcomeSubtype = ifelse(nchar(train$OutcomeSubtype) == 0, NA, train$OutcomeSubtype)
+train$OutcomeSubtype = ifelse(nchar(train$OutcomeSubtype) == 0, "Unknown", train$OutcomeSubtype)
 
 #Resubset the test and training data
 train = lapply(train, as.factor)
 train = as.data.frame(train)
 test = tail(train, nrow(raw_test))
 train = head(train, nrow(raw_train))
+
+#Remove extra test factor from OutcomeType
+train$OutcomeType = droplevels(train$OutcomeType)
+train$OutcomeSubtype = droplevels(train$OutcomeSubtype)
 
 #Remove predictor variable
 test$OutcomeType = NULL
@@ -78,5 +82,5 @@ test$OutcomeSubtype = NULL
 ## Modeling
 
 #Create model using randomForest
-rfModel = randomForest(OutcomeType ~ OutcomeSubtype + AnimalType + SexuponOutcome + AgeuponOutcome +  Color + OutcomeYear + OutcomeMonth + OutcomeDay + OutcomeWeekdate + OutcomeHour + Mix + HasName, data=train, ntree=200)
+rfModel = randomForest(OutcomeType ~ OutcomeSubtype + AnimalType + SexuponOutcome + AgeuponOutcome +  OutcomeYear + OutcomeMonth + OutcomeDay + OutcomeWeekdate + OutcomeHour + Mix + HasName, data=train, ntree=200)
 
