@@ -82,5 +82,29 @@ test$OutcomeSubtype = NULL
 ## Modeling
 
 #Create model using randomForest
-rfModel = randomForest(OutcomeType ~ OutcomeSubtype + AnimalType + SexuponOutcome + AgeuponOutcome +  OutcomeYear + OutcomeMonth + OutcomeDay + OutcomeWeekdate + OutcomeHour + Mix + HasName, data=train, ntree=200)
+rfModel = randomForest(OutcomeType ~ AnimalType + SexuponOutcome + AgeuponOutcome +  OutcomeYear + OutcomeMonth + OutcomeDay + OutcomeWeekdate + OutcomeHour + Mix + HasName, data=train, ntree=200)
+PredTest = predict(rfModel, newdata=test, type="class")
 
+#Preps file for kaggle submission
+MySubmission = data.frame(ID = 1:nrow(test), 
+                          Adoption = 0, 
+                          Died = 0, 
+                          Return_to_owner = 0, 
+                          Transfer = 0)
+
+for(i in 1:nrow(test)){
+  if(as.character(PredTest[i]) == "Adoption"){
+    MySubmission$Adoption[i] = 1
+  } else if(as.character(PredTest[i]) == "Adoption"){
+    MySubmission$Adoption[i] = 1
+  } else if(as.character(PredTest[i]) == "Died"){
+    MySubmission$Died[i] = 1
+  } else if(as.character(PredTest[i]) == "Return_to_owner"){
+    MySubmission$Return_to_owner[i] = 1
+  } else if(as.character(PredTest[i]) == "Transfer"){
+    MySubmission$Transfer[i] = 1
+  }
+}
+
+#Creates csv for kaggle
+write.csv(MySubmission, "prediction.csv", row.names=FALSE)
