@@ -4,7 +4,6 @@
 #Libraries
 library(randomForest)
 library(lubridate)
-library(caret)
 
 #Read input data
 raw_train = read.csv("input/train.csv", stringsAsFactors = FALSE)
@@ -43,21 +42,30 @@ train$Mix = FALSE
 train$Mix[grep("/", train$Breed)] = TRUE
 train$Mix[grep("Mix", train$Breed)] = TRUE
 
-#Convert ageuponoutcome into float based on years
-#Consider simply converting this to be based on days rather than factor
-train$AgeuponOutcome[train$AgeuponOutcome == "1 weeks"] = "1 week"
+#Find number of days from AgeuponOutcome
+#365 days = 1 year, 30 days = 1 month, 7 days = 1 week
 train$AgeuponOutcome[train$AgeuponOutcome == ""] = "Unknown"
-train$AgeuponOutcome[train$AgeuponOutcome == "1 day"] = "<1 week" #Segregate 1-6 days as <1 week
-train$AgeuponOutcome[train$AgeuponOutcome == "2 days"] = "<1 week"
-train$AgeuponOutcome[train$AgeuponOutcome == "3 days"] = "<1 week"
-train$AgeuponOutcome[train$AgeuponOutcome == "4 days"] = "<1 week"
-train$AgeuponOutcome[train$AgeuponOutcome == "5 days"] = "<1 week"
-train$AgeuponOutcome[train$AgeuponOutcome == "6 days"] = "<1 week"
-train$AgeuponOutcome[train$AgeuponOutcome == "1 week"] = "<1 month" #Segregate 1-3 weeks as   <1 month
-train$AgeuponOutcome[train$AgeuponOutcome == "2 weeks"] = "<1 month" #Segregate 1-3 weeks as   <1 month
-train$AgeuponOutcome[train$AgeuponOutcome == "3 weeks"] = "<1 month" #Segregate 1-3 weeks as   <1 month
-train$AgeuponOutcome[train$AgeuponOutcome == "4 weeks"] = "1 month" #4 weeks cleaned to 1 month
-train$AgeuponOutcome[train$AgeuponOutcome == "5 weeks"] = "1 month"
+train$AgeuponOutcome[train$AgeuponOutcome == "1 weeks"] = "1 week"
+
+train$AgeInDaysUponOutcome = NA
+#Hash table for days
+daysTable = list(days = 1,
+                 day = 1,
+                 weeks = 7,
+                 week = 7,
+                 months = 30,
+                 month = 30,
+                 year = 365,
+                 years = 365)
+for(i in 1:nrow(train)){
+  if(train$AgeuponOutcome[i] != "Unknown"){
+    row = strsplit(train$AgeuponOutcome[i], " ")
+    train$AgeInDaysUponOutcome[i] = as.integer(row[[1]][1]) * as.integer(daysTable[row[[1]][2]]) * 7
+  }
+}
+#Compensate for the 0 years with average days for those under 1 year
+train$AgeInDaysUponOutcome[which(train$AgeInDaysUponOutcome == 0)] = mean(train$AgeInDaysUponOutcome[which(train$AgeInDaysUponOutcome < 365)])
+train$AgeInDaysUponOutcome[which(is.na(train$AgeInDaysUponOutcome))] = "Unknown"
 
 #Column to check basically if an animal has a name
 train$HasName = ifelse(nchar(train$Name) == 0, FALSE, TRUE)
@@ -80,31 +88,14 @@ test$OutcomeType = NULL
 test$OutcomeSubtype = NULL
 
 ## Modeling
-
 #Create model using randomForest
-rfModel = randomForest(OutcomeType ~ AnimalType + SexuponOutcome + AgeuponOutcome +  OutcomeYear + OutcomeMonth + OutcomeDay + OutcomeWeekdate + OutcomeHour + Mix + HasName, data=train, ntree=200)
-PredTest = predict(rfModel, newdata=test, type="class")
+set.seed(1)
+rfModel = randomForest(OutcomeType ~ AnimalType + SexuponOutcome + AgeInDaysUponOutcome +  OutcomeYear + OutcomeMonth + OutcomeDay + OutcomeWeekdate + OutcomeHour + Mix + HasName, data=train, ntree=200)
+PredTest = predict(rfModel, newdata=test, type="vote")
 
 #Preps file for kaggle submission
 MySubmission = data.frame(ID = 1:nrow(test), 
-                          Adoption = 0, 
-                          Died = 0, 
-                          Return_to_owner = 0, 
-                          Transfer = 0)
-
-for(i in 1:nrow(test)){
-  if(as.character(PredTest[i]) == "Adoption"){
-    MySubmission$Adoption[i] = 1
-  } else if(as.character(PredTest[i]) == "Adoption"){
-    MySubmission$Adoption[i] = 1
-  } else if(as.character(PredTest[i]) == "Died"){
-    MySubmission$Died[i] = 1
-  } else if(as.character(PredTest[i]) == "Return_to_owner"){
-    MySubmission$Return_to_owner[i] = 1
-  } else if(as.character(PredTest[i]) == "Transfer"){
-    MySubmission$Transfer[i] = 1
-  }
-}
+                          PredTest)
 
 #Creates csv for kaggle
 write.csv(MySubmission, "prediction.csv", row.names=FALSE)
