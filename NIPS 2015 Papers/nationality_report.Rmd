@@ -5,7 +5,9 @@ output: html_document
 
 ## Introduction
 
-Neural Information Processing Systems (NIPS) is one of the top machine learning conferences in the world. My question is, in general, which nationalities are represented in the event as authors of research papers? This is a generalization and done just for fun as there are many things that can easily affect the nationality or obscure whatever it is.
+Neural Information Processing Systems (NIPS) is one of the top machine learning conferences in the world. My question is, in general, which nationalities are represented in the event as authors of research papers? This is a generalization and done just for fun as there are many things that can easily affect the nationality or obscure whatever it could be.
+
+Anyways, libraries and the data are first initialized and loaded.
 
 ```{r, message=FALSE}
 # Packages
@@ -69,7 +71,7 @@ lastNameOrigins = data.frame(
 )
 ```
 
-As can be seen from the list, the most popular surnames that have published papers for NIPS2015 are Chinese. Lee is also a common surname in Korea and English so there can be some ambiguity there.
+As can be seen from the list, the most popular surnames that have published papers for NIPS2015 are Chinese. Lee is also a common surname in Korea and in England so there can be some ambiguity there.
 
 Now the question is, if there is any difference based on the numbers of papers that they have published.
 
@@ -115,3 +117,7 @@ lastNamePubOrigins = data.frame(
     origin = c("Chinese", "Indian", "Chinese/Korean/African", "Chinese", "Chinese/English/Korean", "Chinese", "Chinese", "Chinese", "Chinese", "Chinese")
 )
 ```
+
+##Conclusion
+
+It appears that Asians publish the most for this event. The surnames of the top publishers are very common surnames in China so it should not be a suprise that those surnames top the list. It would be interesting to see a breakdown based on everyone who participated but unforunately, there are no easy databases to query and would require a fair amount of work to manually annotate each surname if they can be found as well as the large amount of ambiguity that surname origins can bring. 
