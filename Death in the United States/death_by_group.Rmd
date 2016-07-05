@@ -5,18 +5,23 @@ output: html_document
 
 ## Introduction
 
-I'm interested in finding out how the differences in deaths are between education groups. 
+I'm interested in finding out what the differences in deaths are between education groups. I assume, that the more educated that one is, the less likely one will die by non-natural causes. 
+
+First, the input data is loaded in.
 
 ```{r}
 # Packages
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 # Read input data
 deathRecords = read_csv("input/DeathRecords.csv")
 mannerOfDeath = read_csv("input/MannerOfDeath.csv")
 education2003 = read_csv("input/Education2003Revision.csv")
 ```
+
+Next, the dataset is subset and merged with the manner of death and education to determine the actual description of the data.
 
 ```{r}
 filteredRecords = deathRecords[,c('Id', "MannerOfDeath", "Education2003Revision")]
@@ -30,10 +35,12 @@ filteredRecords$Education2003Revision = filteredRecords$Description
 filteredRecords$Description = NULL
 ```
 
+Next, the data is aggregated based on education and manner of death to show the number of deaths for each manner of death in each education group.
+
 ```{r}
 #Group by education and manner of death
 grouped_data = aggregate(filteredRecords, 
-                         by=list(filteredRecords$Education2003Revision, filteredRecords$MannerOfDeath), 
+                         by=list(filteredRecords$Education2003Revision, filteredRecords$MannerOfDeath),
                          FUN=length)
 
 grouped_data$Id = NULL
@@ -43,6 +50,8 @@ grouped_data$Education = as.factor(grouped_data$Education)
 grouped_data$MannerOfDeath = as.factor(grouped_data$MannerOfDeath)
 
 ```
+
+An additional column is created to help determine the percentage of deaths per each education group.
 
 ```{r}
 #Want to normalize to group to find percentage of count/total # in group
