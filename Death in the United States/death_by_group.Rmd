@@ -35,6 +35,18 @@ filteredRecords$Education2003Revision = filteredRecords$Description
 filteredRecords$Description = NULL
 ```
 
+First, we take a quick look at the distribution of manner of deaths listed in the data.
+
+```{r}
+#Check the distribution of manner of death in the dataset
+ggplot(filteredRecords, aes(x=MannerOfDeath, color=MannerOfDeath, fill=MannerOfDeath)) + 
+  geom_bar(stat="count") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle("The Counts of the Manner of Deaths")
+```
+
+The majority of the deaths listed by a wide margin, appear to be natural deaths followed by not specified, accident, and suicide. 
+
 Next, the data is aggregated based on education and manner of death to show the number of deaths for each manner of death in each education group.
 
 ```{r}
