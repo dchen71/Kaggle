@@ -63,6 +63,23 @@ grouped_data$MannerOfDeath = as.factor(grouped_data$MannerOfDeath)
 
 ```
 
+```{r}
+#Print bar graphs for the counts based on death type
+for(i in levels(grouped_data$MannerOfDeath)){
+  subset_level = subset(grouped_data, MannerOfDeath == i)
+  titleCount = paste("The number of deaths per education for", i)
+  #Print counts
+  print(ggplot(subset_level, aes(x=Education, y=Count, color=Education, fill=Education)) + 
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(titleCount))
+}
+```
+
+
+#Something about counts
+
+
 An additional column is created to help determine the percentage of deaths per each education group.
 
 ```{r}
@@ -105,5 +122,33 @@ grouped_data$PercentGroup = grouped_data$PercentGroup * 100
 ```
 
 ```{r}
+#Print bar graphs for the counts/percentage based on death type
+for(i in levels(grouped_data$MannerOfDeath)){
+  subset_level = subset(grouped_data, MannerOfDeath == i)
+  titleCount = paste("The number of deaths per education of", i)
+  titlePer = paste("The percentage of deaths per education of", i)
+  #Print counts
+  print(ggplot(subset_level, aes(x=Education, y=Count, color=Education, fill=Education)) + 
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(titleCount))
+  
+  #Print percentage
+  print(ggplot(subset_level, aes(x=Education, y=PercentGroup, color=Education, fill=Education)) + 
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(titlePer))
+}
+```
 
+```{r}
+#Print bar graphs for the percentages based on death type
+for(i in levels(grouped_data$MannerOfDeath)){
+  subset_level = subset(grouped_data, MannerOfDeath == i)
+  title = paste("The percentage of deaths per education for", i)
+  print(ggplot(subset_level, aes(x=Education, y=PercentGroup, color=Education, fill=Education)) + 
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(title))
+}
 ```
