@@ -68,6 +68,7 @@ grouped_data$MannerOfDeath = as.factor(grouped_data$MannerOfDeath)
 for(i in levels(grouped_data$MannerOfDeath)){
   subset_level = subset(grouped_data, MannerOfDeath == i)
   titleCount = paste("The number of deaths per education for", i)
+  print(titleCount)
   #Print counts
   print(ggplot(subset_level, aes(x=Education, y=Count, color=Education, fill=Education)) + 
     geom_bar(stat="identity") +
@@ -141,6 +142,7 @@ for(i in levels(grouped_data$MannerOfDeath)){
 }
 ```
 
+
 ```{r}
 #Print bar graphs for the percentages based on death type
 for(i in levels(grouped_data$MannerOfDeath)){
@@ -150,5 +152,22 @@ for(i in levels(grouped_data$MannerOfDeath)){
     geom_bar(stat="identity") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     ggtitle(title))
+}
+```
+
+```{r}
+#Method to print both the count based and percentage based graphs
+plotGraph = function(df, manner){
+  subset_level = subset(df, MannerOfDeath == manner)
+  titlePer = paste("The percentage of deaths per education for", manner)
+  print(ggplot(subset_level, aes(x=Education, y=PercentGroup, color=Education, fill=Education)) + 
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(titlePer))
+  titleCount = paste("The number of deaths per education for", manner)
+  print(ggplot(subset_level, aes(x=Education, y=Count, color=Education, fill=Education)) + 
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(titleCount))
 }
 ```
