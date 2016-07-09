@@ -47,7 +47,19 @@ ggplot(filteredRecords, aes(x=MannerOfDeath, color=MannerOfDeath, fill=MannerOfD
   ggtitle("The Counts of the Manner of Deaths")
 ```
 
-The majority of the deaths listed by a wide margin, appear to be natural deaths followed by not specified, accident, and suicide. 
+The data shows that the majority of the dataset that was collected, died of natural causes. The next highest values are not specified and accidental.
+
+Next, we take a look at the different levels of education for each death.
+
+```{r}
+#Check the distribution of education in the dataset
+ggplot(filteredRecords, aes(x=Education2003Revision, color=Education2003Revision, fill=Education2003Revision)) + 
+  geom_bar(stat="count") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle("The Counts of the Education Levels")
+```
+
+The data collected shows that much of the deaths in the dataset are from high school/ged completed people. The least are those with doctorate or professional degrees.
 
 Next, the data is aggregated based on education and manner of death to show the number of deaths for each manner of death in each education group.
 
@@ -106,7 +118,11 @@ for(i in 1:nrow(grouped_data)){
 grouped_data$PercentGroup = grouped_data$PercentGroup * 100
 ```
 
-A function is used to help display the counts and the percentages.
+## So how are people dying?
+
+To explore how people are dying, we can compare based on the numbers of people who are dying as well as the percentage. 
+
+First, we wrun a helper function to help display the counts and the percentages.
 
 ```{r}
 #Method to print both the count based and percentage based graphs
@@ -125,5 +141,12 @@ plotGraph = function(df, manner){
 }
 ```
 
-## So how do people go?
-
+```{r}
+plotGraph(grouped_data, "Accident")
+plotGraph(grouped_data, "Could not determine")
+plotGraph(grouped_data, "Homicide")
+plotGraph(grouped_data, "Natural")
+plotGraph(grouped_data, "Not specified")
+plotGraph(grouped_data, "Pending investigation")
+plotGraph(grouped_data, "Suicide")
+```
