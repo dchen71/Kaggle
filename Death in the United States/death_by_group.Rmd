@@ -141,9 +141,25 @@ plotGraph = function(df, manner){
 }
 ```
 
+Now we finally take a look at the data. First, we will take a look at the accidents.
+
+###Accidents
+
 ```{r}
 plotGraph(grouped_data, "Accident")
+```
+
+Based on the count data, there are a lot of accidental deaths coming from the high school/ged group. However, when we actualy look at the percentage of the group that actually dies from accidents, we see that it drops to roughly similar levels with the other groups. The highest percentage group that has accidental deaths are unknown, with 9-12th grade and some college closeby. The lower groups include 8th grade and less, bachelor's degree holders, doctorates, and master's degree holders.
+
+###Unknown
+
+```{r}
 plotGraph(grouped_data, "Could not determine")
+```
+
+The number of deaths, that could not be determined is lower compared to accidents. Regardless, high school graduates are still top of the list which is unsurprising due to the sheer number that was collected in the data set. The overall percentage that die in a way that could not be determined is relatively low with most of the groups under 0.5%. The exceptions are 8th grade and less and unknown education people.
+
+```{r}
 plotGraph(grouped_data, "Homicide")
 plotGraph(grouped_data, "Natural")
 plotGraph(grouped_data, "Not specified")
