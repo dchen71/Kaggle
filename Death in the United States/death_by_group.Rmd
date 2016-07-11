@@ -159,10 +159,36 @@ plotGraph(grouped_data, "Could not determine")
 
 The number of deaths, that could not be determined is lower compared to accidents. Regardless, high school graduates are still top of the list which is unsurprising due to the sheer number that was collected in the data set. The overall percentage that die in a way that could not be determined is relatively low with most of the groups under 0.5%. The exceptions are 8th grade and less and unknown education people.
 
+###Homicide
+
 ```{r}
 plotGraph(grouped_data, "Homicide")
+```
+
+The highest number of recorded homicides were high school graduates followed by 9th-12th graders. The least number of deaths comes from doctorates, followed by master's degree holders, and then roughly between associate degree and bachelor degree holders. Switching it over to percentages, we see a different picture. It appears that people who dropped out of high school without a diploma, had almost a 1.5% deaths attributed to homicides. In addition, we see clearly that doctorate degree holders and to a slightly lesser degree, bachelor's degree and master's degree holders were murdered the least.
+
+###Natural
+
+```{r}
 plotGraph(grouped_data, "Natural")
+```
+
+###Not specified
+
+```{r}
 plotGraph(grouped_data, "Not specified")
+
+```
+
+###Pending investigation
+
+```{r}
 plotGraph(grouped_data, "Pending investigation")
+
+```
+
+###Suicide
+
+```{r}
 plotGraph(grouped_data, "Suicide")
 ```
