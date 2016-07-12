@@ -173,12 +173,16 @@ The highest number of recorded homicides were high school graduates followed by 
 plotGraph(grouped_data, "Natural")
 ```
 
+The highest numbers of deaths in the dataset are due to natural causes. When we look at the percentages within education groups, we see that they are all roughly about the same with the outlier being unknown. This is expected as most people will die of natural causes.
+
 ###Not specified
 
 ```{r}
 plotGraph(grouped_data, "Not specified")
 
 ```
+
+The count data follows the trends as the other dataset with high school graudates leading in numbers. The percentages show that unknown education group die in a not specified way. The other groups roughly die by not specified ways at least 10% with interestingly doctorate/professional degree holders dying at least 20% from this.
 
 ###Pending investigation
 
@@ -192,3 +196,5 @@ plotGraph(grouped_data, "Pending investigation")
 ```{r}
 plotGraph(grouped_data, "Suicide")
 ```
+
+##Conclusion
