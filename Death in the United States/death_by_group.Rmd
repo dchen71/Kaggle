@@ -188,8 +188,9 @@ The count data follows the trends as the other dataset with high school graudate
 
 ```{r}
 plotGraph(grouped_data, "Pending investigation")
-
 ```
+
+The count data for deaths pending investigation follow similar trends as the other factors of death such as the higher number of high school graduate/GED completed people and low number of doctoral degree holders dying deaths pending investigation. Looking at the actual percentage, a very low percentage of each group dies a death that was pending investigation. The highest is unknown, with a percentage of 0.44%.
 
 ###Suicide
 
@@ -197,4 +198,11 @@ plotGraph(grouped_data, "Pending investigation")
 plotGraph(grouped_data, "Suicide")
 ```
 
+The count data shows similar trends as the other death types. When we look at the percentage, we see a different picture. From the data gathered, we see that most groups seem to suicide at around 1.5-2%. We see the minimum of about 0.5% coming from the 8th grade or less group and a high of about 2.25% coming from the some college credit people.
+
+
+///put in pie graphs or something of each group showing distrubiton
+
 ##Conclusion
+
+
