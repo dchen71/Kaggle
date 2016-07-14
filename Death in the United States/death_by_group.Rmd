@@ -74,7 +74,6 @@ grouped_data$MannerOfDeath = NULL
 names(grouped_data) = c("Education", "MannerOfDeath", "Count")
 grouped_data$Education = as.factor(grouped_data$Education)
 grouped_data$MannerOfDeath = as.factor(grouped_data$MannerOfDeath)
-
 ```
 
 In addition, an extra column is created to help determine the percentage of deaths per each education group.
@@ -201,7 +200,29 @@ plotGraph(grouped_data, "Suicide")
 The count data shows similar trends as the other death types. When we look at the percentage, we see a different picture. From the data gathered, we see that most groups seem to suicide at around 1.5-2%. We see the minimum of about 0.5% coming from the 8th grade or less group and a high of about 2.25% coming from the some college credit people.
 
 
-///put in pie graphs or something of each group showing distrubiton
+###Per education distrubtion
+
+The following shows the distribution based on the education groups for the deceased.
+
+```{r}
+#Plots per group distrubtion based on percentage
+plotPercentDeath = function(df,group){
+    subset_level = subset(df, Education == group)
+    title = paste("Distribution of death for", group)
+    print(ggplot(subset_level, aes(x=MannerOfDeath, y=PercentGroup, color=MannerOfDeath, fill=MannerOfDeath)) + 
+      geom_bar(stat="identity") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      ggtitle(title))
+}
+```
+
+```{r}
+for(i in 1:length(levels(grouped_data$Education))){
+  plotPercentDeath(grouped_data, levels(grouped_data$Education)[i])
+}
+```
+
+As can be seen by the graphs above, every group had a good chunk of people die by natural causes, followed by not specified at a much lower rate, and finally by accidents. 
 
 ##Conclusion
 
