@@ -1,0 +1,32 @@
+---
+title: "Kaggle - Bimbo Group Inventory Demand"
+output: html_document
+---
+
+```{r}
+# Packages
+library(readr)
+library(dplyr)
+
+# Read input data
+test = read_csv("input/test.csv")
+train = read_csv("input/train.csv")
+clients = read_csv("input/cliente_tabla.csv")
+products = read_csv("input/producto_tabla.csv")
+town_state = read_csv("input/town_state.csv")
+```
+
+```{r}
+names(train)
+names(test)
+```
+
+Train has extra columns and test is trying to determine what Demanda_uni_equil is. Will need to look into what Venta_uni_hoy, Venta_hoy, Dev_uni_proxima mean.
+
+```{r}
+head(products)
+head(town_state)
+head(clients)
+```
+
+These are simply the join tables to find out what hte codes are. Might be useful to extra state from town_state otherwise could probably just leave it or merge it over and convert to factor.
