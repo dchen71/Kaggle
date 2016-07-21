@@ -13,7 +13,8 @@ phone_brand_model = read.csv("input/phone_brand_device_model.csv", colClasses = 
 test = read.csv("input/gender_age_test.csv", colClasses = "character", stringsAsFactors = TRUE)
 train = read.csv("input/gender_age_train.csv", colClasses = "character", stringsAsFactors = TRUE)
 
-sample = read_csv('input/sample_submission.csv')
+#Rename the dashes and pluses as . for submission
+train$group = gsub("[^a-zA-Z0-9_]",".", train$group)
 
 #Remove columsn that won't be used(memory considerations)
 events$timestamp = NULL
