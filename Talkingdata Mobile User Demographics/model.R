@@ -5,13 +5,13 @@
 library(dplyr)
 
 # Read input data
-app_events = read.csv("input/app_events.csv", colClasses = "character")
-app_labels = read.csv("input/app_labels.csv", colClasses = "character")
-events = read.csv("input/events.csv", colClasses = "character")
-labels = read.csv("input/label_categories.csv", colClasses = "character")
-phone_brand_model = read.csv("input/phone_brand_device_model.csv", colClasses = "character")
-test = read.csv("input/gender_age_test.csv", colClasses = "character")
-train = read.csv("input/gender_age_train.csv", colClasses = "character")
+app_events = read.csv("input/app_events.csv", colClasses = "character", stringsAsFactors = TRUE)
+app_labels = read.csv("input/app_labels.csv", colClasses = "character", stringsAsFactors = TRUE)
+events = read.csv("input/events.csv", colClasses = "character", stringsAsFactors = TRUE)
+labels = read.csv("input/label_categories.csv", colClasses = "character", stringsAsFactors = TRUE)
+phone_brand_model = read.csv("input/phone_brand_device_model.csv", colClasses = "character", stringsAsFactors = TRUE)
+test = read.csv("input/gender_age_test.csv", colClasses = "character", stringsAsFactors = TRUE)
+train = read.csv("input/gender_age_train.csv", colClasses = "character", stringsAsFactors = TRUE)
 
 sample = read_csv('input/sample_submission.csv')
 
