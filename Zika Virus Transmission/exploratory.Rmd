@@ -1,0 +1,36 @@
+---
+title: "Exploratory"
+output: html_document
+---
+
+```{r}
+#Read the data
+zika = read.csv("input/cdc_zika.csv")
+```
+
+```{r}
+table(zika$location)
+```
+Seems to be South America and parts of the US
+
+```{r}
+table(zika$report_date)
+```
+
+Looks like it's relatively recent data, being from late 2015 to very early July 2016. 
+
+```{r}
+table(zika$location_type)
+```
+Location type wise, it appears zika is mostly in minicipalities. There are 7 blank entries to take note of.
+
+```{r}
+table(zika$time_period)
+table(zika$time_period_type)
+```
+Seems like the time period variables have no data.
+
+```{r}
+table(zika$unit)
+```
+There are 7 blank values again. The units appear to be split up into caseas and municipalities.
