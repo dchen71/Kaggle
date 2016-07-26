@@ -1,0 +1,29 @@
+---
+title: "Exploratory"
+output: html_document
+---
+
+```{r}
+#Read the data
+proteome = read.csv("input/77_cancer_proteomes_CPTAC_itraq.csv")
+clinical_data = read.csv("input/clinical_data_breast_cancer.csv")
+proteins = read.csv("input/PAM50_proteins.csv")
+```
+
+```{r}
+head(proteome)
+```
+
+tail(proteome)
+
+```{r}
+head(clinical_data)
+```
+
+Should match up with proteome.
+
+```{r}
+head(proteins)
+```
+
+Can match with proteome. Seems like PAM50 classification is based on RT-qPCR assay and a minimal gene set for classifying intrinsic subtypes of breast cancer.
