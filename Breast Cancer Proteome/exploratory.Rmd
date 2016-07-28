@@ -27,3 +27,23 @@ head(proteins)
 ```
 
 Can match with proteome. Seems like PAM50 classification is based on RT-qPCR assay and a minimal gene set for classifying intrinsic subtypes of breast cancer.
+
+```{r}
+nrow(proteome)
+nrow(clinical_data)
+nrow(proteins)
+```
+
+12553 protein/protein isoforms were detected. 100 proteins. 105 patients.
+
+```{r}
+table(clinical_data$Gender)
+table(clinical_data$Tumor)
+table(clinical_data$Vital.Status)
+table(clinical_data$Metastasis)
+table(clinical_data$Node)
+table(clinical_data$AJCC.Stage)
+table(clinical_data$Survival.Data.Form)
+```
+
+The data is mostly derived from women. Most of them survived when this data was gathered. Most of the tumors were in T2 stage. The majority of these patients did not have metastasis. About half the patients had cancer in lymph nodes and the other without. It also looks like half the data was people enrolling into this study.
