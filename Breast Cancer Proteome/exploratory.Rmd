@@ -47,3 +47,15 @@ table(clinical_data$Survival.Data.Form)
 ```
 
 The data is mostly derived from women. Most of them survived when this data was gathered. Most of the tumors were in T2 stage. The majority of these patients did not have metastasis. About half the patients had cancer in lymph nodes and the other without. It also looks like half the data was people enrolling into this study.
+
+```{r}
+table(clinical_data$Tumor, clinical_data$Vital.Status)
+```
+The deaths in this dataset come mostly from T2 tumors, and a single T3.
+
+```{r}
+table(clinical_data$Tumor, clinical_data$Converted.Stage)
+```
+
+It looks like a lot of the tumors did not change stages.
+
