@@ -34,3 +34,42 @@ Seems like the time period variables have no data.
 table(zika$unit)
 ```
 There are 7 blank values again. The units appear to be split up into caseas and municipalities.
+
+```{r}
+table(zika$data_field)
+```
+
+Seems to show results of each case municipality. The types seem to range from possible zika, zika suspicion, birth defects, and confirmations.
+
+```{r}
+#Clean up location to get country/area
+for(i in 1:nrow(zika)){
+  splitted = strsplit(as.character(zika$location[i]),"-")[[1]]
+  zika$Country[i] = splitted[1]
+  if(length(splitted) > 1){
+    zika$Area[i] = paste(splitted[2:length(splitted)], collapse = "-")
+  } else {
+    zika$Area[i] = splitted[1]
+  }
+}
+
+#Splits location based on -
+split_location = function(x){
+  
+}
+
+tapply(zika$location, zika$location, split_location)
+```
+
+```{r}
+#Load libraries
+library(ggplot2)
+library(maps)
+
+#Load state data
+all_states = map_data("state")
+
+#Plot all states with ggplot
+p = ggplot() + geom_polygon( data=all_states, aes(x=long, y=lat, group = group),colour="white", fill="grey10" )
+
+```
