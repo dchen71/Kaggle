@@ -11,7 +11,7 @@ zika = read.csv("input/cdc_zika.csv")
 ```{r}
 table(zika$location)
 ```
-Seems to be South America and parts of the US
+Seems to be South America and parts of the US. Seems to have 7 missing locations.
 
 ```{r}
 table(zika$report_date)
@@ -33,13 +33,19 @@ Seems like the time period variables have no data.
 ```{r}
 table(zika$unit)
 ```
-There are 7 blank values again. The units appear to be split up into caseas and municipalities.
+There are 7 blank values again. The units appear to be split up into cases and municipalities.
 
 ```{r}
 table(zika$data_field)
 ```
 
 Seems to show results of each case municipality. The types seem to range from possible zika, zika suspicion, birth defects, and confirmations.
+
+```{r}
+#Clean up the 7 na rows
+zika = zika[!(zika$location == ""),]
+levels(zika$location) = droplevels(zika$location)
+```
 
 ```{r}
 #Clean up location to get country/area
@@ -53,12 +59,24 @@ for(i in 1:nrow(zika)){
   }
 }
 
-#Splits location based on -
-split_location = function(x){
-  
+#Splits location based on - for country
+split_country = function(x){
+  splitted = strsplit(as.character(x),"-")
+  return((splitted[[1]][1]))
 }
 
-tapply(zika$location, zika$location, split_location)
+#Splits location based on - for province?/state
+split_province = function(x){
+  splitted = strsplit(as.character(x),"-")
+  if(length(splitted[[1]]) > 1){
+    return(paste(splitted[[1]][2:length(splitted[[1]])], collapse = "-"))
+  } else {
+    return(splitted[[1]][1])
+  }
+}
+
+countries = tapply(levels(zika$location), levels(zika$location), split_country)
+provinces = tapply(levels(zika$location), levels(zika$location), split_province)
 ```
 
 ```{r}
