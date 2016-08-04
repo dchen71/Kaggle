@@ -4,6 +4,9 @@ output: html_document
 ---
 
 ```{r}
+#Load libraries
+library(dplyr)
+
 #Read the data
 zika = read.csv("input/cdc_zika.csv")
 ```
@@ -49,16 +52,6 @@ levels(zika$location) = droplevels(zika$location)
 
 ```{r}
 #Clean up location to get country/area
-for(i in 1:nrow(zika)){
-  splitted = strsplit(as.character(zika$location[i]),"-")[[1]]
-  zika$Country[i] = splitted[1]
-  if(length(splitted) > 1){
-    zika$Area[i] = paste(splitted[2:length(splitted)], collapse = "-")
-  } else {
-    zika$Area[i] = splitted[1]
-  }
-}
-
 #Splits location based on - for country
 split_country = function(x){
   splitted = strsplit(as.character(x),"-")
@@ -77,6 +70,11 @@ split_province = function(x){
 
 countries = tapply(levels(zika$location), levels(zika$location), split_country)
 provinces = tapply(levels(zika$location), levels(zika$location), split_province)
+
+#Join table for locations
+area_table = data.frame(Primary = dimnames(countries)[[1]], country = as.character(countries), provinces = as.character(provinces))
+
+zika = inner_join(zika, area_table, by=c("location" =  "Primary"))
 ```
 
 ```{r}
