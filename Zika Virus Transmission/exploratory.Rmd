@@ -6,6 +6,8 @@ output: html_document
 ```{r}
 #Load libraries
 library(dplyr)
+library(ggplot2)
+library(googleVis)
 
 #Read the data
 zika = read.csv("input/cdc_zika.csv")
@@ -69,23 +71,24 @@ split_province = function(x){
 }
 
 countries = tapply(levels(zika$location), levels(zika$location), split_country)
-provinces = tapply(levels(zika$location), levels(zika$location), split_province)
+provinces = tapply(levels(zika$location), levels(zika$location), split_province) #Still seemingly has state-county
 
 #Join table for locations
 area_table = data.frame(Primary = dimnames(countries)[[1]], country = as.character(countries), provinces = as.character(provinces))
 
-zika = inner_join(zika, area_table, by=c("location" =  "Primary"))
+zika = left_join(zika, area_table, by=c("location" =  "Primary"))
 ```
 
 ```{r}
-#Load libraries
-library(ggplot2)
-library(maps)
+table(zika$country)
+table(zika$province)
+```
 
-#Load state data
-all_states = map_data("state")
+Zika cases have been primarily reported in South America, in particular, Colombia. The most number of incidents reported comes from the United States Virgin Islands, followed by El Salvador.
 
-#Plot all states with ggplot
-p = ggplot() + geom_polygon( data=all_states, aes(x=long, y=lat, group = group),colour="white", fill="grey10" )
 
+```{r}
+#Plot data with googleVis
+#Seems to truncate to the first 400 rows
+plot(gvisMap(zika, "location", "report_date"))
 ```
