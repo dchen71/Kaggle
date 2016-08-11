@@ -88,6 +88,24 @@ table(zika$country)
 table(zika$province)
 ```
 
+There appears to be Spanish direction words also mixed into location such as Norte, Centro, and Nordeste. There oddly appears to be 7 incidents in each of those directions.
+
+```{r}
+#Plot the country/incident count
+countries = zika[!(zika$country %in% c("Centro", 'Nordeste', 'Norte', 'Sudeste', 'Sul')),]
+countries$country = gsub("_", " ", countries$country)
+ggplot(countries, aes(x=countries$country, fill=countries$country)) + 
+  geom_bar() + 
+  labs(x= "Country", y = "Count", title = "Number of incidents per country") +
+  scale_fill_discrete(name = "Country") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        text = element_text(size=15))
+```
+
+```{r}
+
+```
+
 Zika cases have been primarily reported in South America, in particular, Colombia. The most number of incidents reported comes from the United States Virgin Islands, followed by El Salvador.
 
 ```{r}
