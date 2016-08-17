@@ -8,10 +8,52 @@ output: html_document
 library(dplyr)
 library(ggplot2)
 library(googleVis)
+library(lubridate)
+library(data.table)
 
 #Read the data
 zika = read.csv("input/cdc_zika.csv")
 ```
+
+```{r}
+#Clean up the 7 na rows
+zika = zika[!(zika$location == ""),]
+zika$location = droplevels(zika$location)
+
+#Remove time_period/time_period_type variable
+zika$time_period = NULL
+zika$time_period_type = NULL
+```
+
+```{r}
+#Preprocessing
+#Clean up location to get country/area
+
+#Splits location based on - for country
+split_country = function(x){
+  splitted = strsplit(as.character(x),"-")
+  return((splitted[[1]][1]))
+}
+
+#Splits location based on - for province?/state
+split_province = function(x){
+  splitted = strsplit(as.character(x),"-")
+  if(length(splitted[[1]]) > 1){
+    return(paste(splitted[[1]][2:length(splitted[[1]])], collapse = "-"))
+  } else {
+    return(splitted[[1]][1])
+  }
+}
+
+countries = tapply(levels(zika$location), levels(zika$location), split_country)
+provinces = tapply(levels(zika$location), levels(zika$location), split_province) #Still seemingly has state-county
+
+#Join table for locations
+area_table = data.frame(Primary = dimnames(countries)[[1]], country = as.character(countries), provinces = as.character(provinces))
+
+zika = inner_join(zika, area_table, by=c("location" =  "Primary"))
+```
+
 
 ```{r}
 table(zika$location)
@@ -47,41 +89,13 @@ table(zika$data_field)
 Seems to show results of each case municipality. The types seem to range from possible zika, zika suspicion, birth defects, and confirmations.
 
 ```{r}
-#Clean up the 7 na rows
-zika = zika[!(zika$location == ""),]
-zika$location = droplevels(zika$location)
-
-#Remove time_period/time_period_type variable
-zika$time_period = NULL
-zika$time_period_type = NULL
+muni_data = as.data.frame(table(zika$data_field[zika$unit == "municipalities"]))
+muni_data[order(muni_data$Freq),]
+as.data.frame(table(zika$location_type[zika$unit == "municipalities"]))
+as.data.frame(table(zika$country[zika$unit == "municipalities"]))
 ```
 
-```{r}
-#Clean up location to get country/area
-#Splits location based on - for country
-split_country = function(x){
-  splitted = strsplit(as.character(x),"-")
-  return((splitted[[1]][1]))
-}
-
-#Splits location based on - for province?/state
-split_province = function(x){
-  splitted = strsplit(as.character(x),"-")
-  if(length(splitted[[1]]) > 1){
-    return(paste(splitted[[1]][2:length(splitted[[1]])], collapse = "-"))
-  } else {
-    return(splitted[[1]][1])
-  }
-}
-
-countries = tapply(levels(zika$location), levels(zika$location), split_country)
-provinces = tapply(levels(zika$location), levels(zika$location), split_province) #Still seemingly has state-county
-
-#Join table for locations
-area_table = data.frame(Primary = dimnames(countries)[[1]], country = as.character(countries), provinces = as.character(provinces))
-
-zika = inner_join(zika, area_table, by=c("location" =  "Primary"))
-```
+For the reported incidents that are in municipalities, each of them suspect microcephaly or have cases of it. In addition, they are all reported in Brazil in states.
 
 ```{r}
 table(zika$country)
@@ -89,6 +103,12 @@ table(zika$province)
 ```
 
 There appears to be Spanish direction words also mixed into location such as Norte, Centro, and Nordeste. There oddly appears to be 7 incidents in each of those directions.
+
+```{r}
+head(zika[zika$country == "United_States",])
+```
+
+The cases in the US started near the end of Feburary in 2016.
 
 ```{r}
 #Plot the country/incident count
@@ -102,14 +122,30 @@ ggplot(countries, aes(x=countries$country, fill=countries$country)) +
         text = element_text(size=15))
 ```
 
-```{r}
-
-```
-
 Zika cases have been primarily reported in South America, in particular, Colombia. The most number of incidents reported comes from the United States Virgin Islands, followed by El Salvador.
 
 ```{r}
+#Process in date info
+zika$Year = NA
+zika$Month = NA
+zika$Day = NA
+
+zika$Year = year(as.Date(zika$report_date))
+zika$Month = month(as.Date(zika$report_date))
+zika$Day = day(as.Date(zika$report_date))
+```
+
+```{r}
 #Plot data with googleVis
-#Seems to truncate to the first 400 rows
-plot(gvisMap(zika, "location", "report_date"))
+#Suffers from max 400 hits via googlevis
+plot_map = function(startDay, startMonth, startYear, endDay, endMonth, endYear){
+  if(startYear <= endYear){
+    if(startMonth <= endMonth){
+      timePeriod = subset(zika, Year <= endYear & Year >= startYear)
+      timePeriod = subset(timePeriod, Month <= endMonth & Month >= startMonth)
+      timePeriod = subset(timePeriod, Day <= endDay & Day >= startDay)
+      plot(gvisMap(timePeriod, "location", "report_date"))
+    }
+  }
+}
 ```
