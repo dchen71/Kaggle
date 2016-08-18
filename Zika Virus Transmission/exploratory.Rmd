@@ -137,14 +137,18 @@ zika$Day = day(as.Date(zika$report_date))
 
 ```{r}
 #Plot data with googleVis
-#Suffers from max 400 hits via googlevis
+#Weak fix by sampling by 400 if more than 400 entries
 plot_map = function(startDay, startMonth, startYear, endDay, endMonth, endYear){
   if(startYear <= endYear){
     if(startMonth <= endMonth){
       timePeriod = subset(zika, Year <= endYear & Year >= startYear)
       timePeriod = subset(timePeriod, Month <= endMonth & Month >= startMonth)
       timePeriod = subset(timePeriod, Day <= endDay & Day >= startDay)
-      plot(gvisMap(timePeriod, "location", "report_date"))
+      if(nrow(timePeriod) > 400){
+        plot(gvisMap(sample(timePeriod,400), "location", "report_date"))
+      } else {
+        plot(gvisMap(timePeriod, "location", "report_date"))
+      }
     }
   }
 }
