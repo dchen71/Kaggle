@@ -35,4 +35,16 @@ It seems like that more than half of the people who attended have gotten full ti
 ```{r}
 hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)])
 ```
-According to the histogram, the majority of the people who attended, got jobs within a year of attending. 
+According to the histogram, the majority of the people who attended, got jobs within a year of attending. There do seem to be outliers that may be due to false reporting as it is unlikely there were tech bootcamps back in 2003, especially a few years after the dot-com bubble crashed.
+
+```{r}
+table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1])
+```
+The bulk of the people who attended bootcamps and had jobs after already had bachelor's degrees. The next biggest group was those with master's degrees and finally those with some college credit.
+
+```{r}
+majors = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampFullJobAfter == 1]))
+majors = majors[majors$Freq != 0,]
+majors = majors[order(majors$Freq),]
+```
+The majority of those who were hired came from English majors, followed by political science, psychology, and economics majors. There do appear to be those who had degrees in IT and Computer Science, and other more directly computationally intensive majors listed here.
