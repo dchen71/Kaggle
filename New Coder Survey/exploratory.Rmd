@@ -1,0 +1,38 @@
+---
+title: "Exploratory"
+output: html_document
+---
+
+```{r}
+#Load libraries
+library(dplyr)
+library(ggplot2)
+library(googleVis)
+library(lubridate)
+library(data.table)
+
+#Read the data
+survey = read.csv("input/2016-FCC-New-Coders-Survey-Data.csv")
+```
+
+```{r}
+head(survey)
+```
+
+Judging from the names head of the data, there are numerous types of data available such as the resources someone uses to learn, what they did in school, their current work, what they want to do, if they have attended bootcamps, etc.
+
+```{r}
+bootcampers = survey[which(survey$AttendedBootcamp == 1),]
+```
+
+It seems a little more than 5% of the surveyed demographics have attended bootcamps.
+
+```{r}
+table(bootcampers$BootcampFullJobAfter)
+```
+It seems like that more than half of the people who attended have gotten full time jobs afterwards. 
+
+```{r}
+hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)])
+```
+According to the histogram, the majority of the people who attended, got jobs within a year of attending. 
