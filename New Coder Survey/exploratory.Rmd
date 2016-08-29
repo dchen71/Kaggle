@@ -28,6 +28,18 @@ bootcampers = survey[which(survey$AttendedBootcamp == 1),]
 It seems a little more than 5% of the surveyed demographics have attended bootcamps.
 
 ```{r}
+hist(bootcampers$Age)
+mean(bootcampers$Age, na.rm = T)
+```
+The distribution of the ages are right skewed. The average age of a person who went to a bootcamp is 31.
+
+```{r}
+table(bootcampers$HasDebt)
+```
+
+It seems like a good chunk of the people who attended bootcamps had some form of debt.
+
+```{r}
 table(bootcampers$BootcampFullJobAfter)
 ```
 It seems like that more than half of the people who attended have gotten full time jobs afterwards. 
@@ -43,8 +55,20 @@ table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1])
 The bulk of the people who attended bootcamps and had jobs after already had bachelor's degrees. The next biggest group was those with master's degrees and finally those with some college credit.
 
 ```{r}
-majors = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampFullJobAfter == 1]))
-majors = majors[majors$Freq != 0,]
-majors = majors[order(majors$Freq),]
+majors_hired = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampFullJobAfter == 1]))
+majors_hired = majors_hired[majors_hired$Freq != 0,]
+majors_hired = majors_hired[order(majors_hired$Freq),]
 ```
 The majority of those who were hired came from English majors, followed by political science, psychology, and economics majors. There do appear to be those who had degrees in IT and Computer Science, and other more directly computationally intensive majors listed here.
+
+```{r}
+table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 0])
+```
+The degrees held by those that did not manage to get a full time job after are similar to those who did. Bachelor's degree holders form the bulk of the numbers followed by master's degree holders. 
+
+```{r}
+majors_nothired = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampFullJobAfter == 0]))
+majors_nothired = majors_nothired[majors_nothired$Freq != 0,]
+majors_nothired = majors_nothired[order(majors_nothired$Freq),]
+```
+The majors that was not hired the most was also English. Interestingly, it is followed by degree holders of Computer Science and Business Administration. 
