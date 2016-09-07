@@ -72,3 +72,14 @@ majors_nothired = majors_nothired[majors_nothired$Freq != 0,]
 majors_nothired = majors_nothired[order(majors_nothired$Freq),]
 ```
 The majors that was not hired the most was also English. Interestingly, it is followed by degree holders of Computer Science and Business Administration. 
+
+```{r}
+hist(bootcampers$StudentDebtOwe)
+```
+Most of the surveyed people have student debts up to 50k with it sharply dropping after.
+
+```{r}
+table(survey$ResourceOther)
+```
+Taking a look through, it appearrs that quite a bit of people were too lazy to fill in the survey for the tool they used as well as had some garbage data like "your mom".
+
