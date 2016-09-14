@@ -3,7 +3,9 @@ title: "Who are the bootcampers"
 output: html_document
 ---
 
-I'm interested in seeing who are the types of people who attend bootcamps, and the impact of programming bootcamps. 
+I'm interested in seeing who are the types of people who attend bootcamps, and the impact of programming bootcamps. I have always felt that bootcamps, with the exceptions of a few of them, feel like a scam due to the lack of transparency and purported, high employment rates afterwards. Hopefully, this self-reported data can help answer some of those questions
+
+First, the data is loaded.
 
 ```{r}
 #Load libraries
@@ -14,18 +16,21 @@ survey = read.csv("input/2016-FCC-New-Coders-Survey-Data.csv")
 ```
 
 ```{r}
-names(survey)
+set.seed(1)
+sample(names(survey),20)
 ```
 
 Judging from the names of the variables of the data, there are numerous types of data available such as the resources someone uses to learn, what they did in school, their current work, what they want to do, if they have attended bootcamps, etc.
+
+Now let's take a look at those who had attended bootcamps.
 
 ```{r}
 bootcampers = survey[which(survey$AttendedBootcamp == 1),]
 ```
 
-It seems a little more than ```{r} round((nrow(bootcampers)/nrow(survey)) * 100,2)```% of the surveyed demographics have attended bootcamps.
+It seems a little more than `r round((nrow(bootcampers)/nrow(survey)) * 100,2)`% of the surveyed demographics have attended bootcamps.
 
-Let's take a lot at some of the demographic data.
+Let's take a look at some of the demographic data.
 
 ###Age
 
@@ -33,13 +38,23 @@ Let's take a lot at some of the demographic data.
 hist(bootcampers$Age, main="Histogram of the Age Distribution of People who attended Bootcamps",
      xlab = "Age")
 ```
-The distribution of the ages are right skewed. It is mostly younger people who are trying to attend. The average age of a person who went to a bootcamp is ```{r} round(mean(bootcampers$Age, na.rm = T)) ```.
+
+The distribution of the ages are right skewed. It is mostly younger people who are trying to attend. The average age of a person who went to a bootcamp is `r round(mean(bootcampers$Age, na.rm = T)) `.
+
+###Debt
+
+`r round(nrow(bootcampers[bootcampers$HasDebt == 1,])/nrow(bootcampers) * 100, 2) `% of the students has some form of debt.
+
+`r round(nrow(bootcampers[bootcampers$HasStudentDebt == 1,])/nrow(bootcampers) * 100, 2) `% of the students have student debt.
+
 
 ```{r}
-table(bootcampers$HasDebt)
+hist(bootcampers$StudentDebtOwe)
 ```
 
-It seems like a good chunk of the people who attended bootcamps had some form of debt.
+Most of the surveyed people have student debts up to 50k with it sharply dropping after.
+
+
 
 ```{r}
 table(bootcampers$BootcampFullJobAfter)
@@ -49,11 +64,13 @@ It seems like that more than half of the people who attended have gotten full ti
 ```{r}
 hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)])
 ```
+
 According to the histogram, the majority of the people who attended, got jobs within a year of attending. There do seem to be outliers that may be due to false reporting as it is unlikely there were tech bootcamps back in 2003, especially a few years after the dot-com bubble crashed.
 
 ```{r}
 table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1])
 ```
+
 The bulk of the people who attended bootcamps and had jobs after already had bachelor's degrees. The next biggest group was those with master's degrees and finally those with some college credit.
 
 ```{r}
@@ -61,11 +78,13 @@ majors_hired = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampF
 majors_hired = majors_hired[majors_hired$Freq != 0,]
 majors_hired = majors_hired[order(majors_hired$Freq),]
 ```
+
 The majority of those who were hired came from English majors, followed by political science, psychology, and economics majors. There do appear to be those who had degrees in IT and Computer Science, and other more directly computationally intensive majors listed here.
 
 ```{r}
 table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 0])
 ```
+
 The degrees held by those that did not manage to get a full time job after are similar to those who did. Bachelor's degree holders form the bulk of the numbers followed by master's degree holders. 
 
 ```{r}
@@ -73,19 +92,18 @@ majors_nothired = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$Bootca
 majors_nothired = majors_nothired[majors_nothired$Freq != 0,]
 majors_nothired = majors_nothired[order(majors_nothired$Freq),]
 ```
+
 The majors that was not hired the most was also English. Interestingly, it is followed by degree holders of Computer Science and Business Administration. 
 
-```{r}
-hist(bootcampers$StudentDebtOwe)
-```
-Most of the surveyed people have student debts up to 50k with it sharply dropping after.
 
 ```{r}
 table(survey$ResourceOther)
 ```
+
 Taking a look through, it appearrs that quite a bit of people were too lazy to fill in the survey for the tool they used as well as had some garbage data like "your mom".
 
 ```{r}
 table(bootcampers$BootcampName)
 ```
+
 There is a variety of schools including some that think that Free Code Camp is a bootcamp.
