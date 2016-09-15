@@ -10,6 +10,7 @@ First, the data is loaded.
 ```{r}
 #Load libraries
 library(ggplot2)
+library(knitr)
 
 #Read the data
 survey = read.csv("input/2016-FCC-New-Coders-Survey-Data.csv")
@@ -49,26 +50,33 @@ The distribution of the ages are right skewed. It is mostly younger people who a
 
 
 ```{r}
-hist(bootcampers$StudentDebtOwe)
+hist(bootcampers$StudentDebtOwe, main="Histogram of the Amount of Student Debt Owed",
+     xlab="Student Debt Owed")
 ```
 
 Most of the surveyed people have student debts up to 50k with it sharply dropping after.
 
-
-
 ```{r}
-table(bootcampers$BootcampFullJobAfter)
+fullJobAfter = as.data.frame(table(bootcampers$BootcampFullJobAfter))
+names(fullJobAfter) = c("FullJobAfter", "Freq")
+fullJobAfter$FullJobAfter = c("No", "Yes")
+kable(fullJobAfter)
 ```
 It seems like that more than half of the people who attended have gotten full time jobs afterwards. 
 
 ```{r}
-hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)])
+hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)], 
+     main = "Histogram of the Number of Months after attending a Bootcamp before Full Time Job",
+     xlab  = "Number of months ago after Attending Bootcamp")
 ```
 
 According to the histogram, the majority of the people who attended, got jobs within a year of attending. There do seem to be outliers that may be due to false reporting as it is unlikely there were tech bootcamps back in 2003, especially a few years after the dot-com bubble crashed.
 
 ```{r}
-table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1])
+bootcampDegrees = as.data.frame(table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1]))
+names(bootcampDegrees) = c("Degree", "Freq")
+bootcampDegrees = bootcampDegrees[order(bootcampDegrees$Freq),]
+kable(bootcampDegrees)
 ```
 
 The bulk of the people who attended bootcamps and had jobs after already had bachelor's degrees. The next biggest group was those with master's degrees and finally those with some college credit.
@@ -76,7 +84,9 @@ The bulk of the people who attended bootcamps and had jobs after already had bac
 ```{r}
 majors_hired = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampFullJobAfter == 1]))
 majors_hired = majors_hired[majors_hired$Freq != 0,]
-majors_hired = majors_hired[order(majors_hired$Freq),]
+majors_hired = tail(majors_hired[order(majors_hired$Freq),], 10)
+names(majors_hired) = c("Major", "Freq")
+kable(majors_hired)
 ```
 
 The majority of those who were hired came from English majors, followed by political science, psychology, and economics majors. There do appear to be those who had degrees in IT and Computer Science, and other more directly computationally intensive majors listed here.
@@ -90,20 +100,27 @@ The degrees held by those that did not manage to get a full time job after are s
 ```{r}
 majors_nothired = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampFullJobAfter == 0]))
 majors_nothired = majors_nothired[majors_nothired$Freq != 0,]
-majors_nothired = majors_nothired[order(majors_nothired$Freq),]
+majors_nothired = tail(majors_nothired[order(majors_nothired$Freq),], 10)
+names(majors_nothired) = c("Major", "Freq")
+kable(majors_nothired)
 ```
 
 The majors that was not hired the most was also English. Interestingly, it is followed by degree holders of Computer Science and Business Administration. 
 
 
 ```{r}
-table(survey$ResourceOther)
+resources = as.data.frame(table(survey$ResourceOther))
+names(resources) = c("Resource", "Freq")
+resources = tail(resources[order(resources$Freq),], 10)
+#Clean up duplicates from top 10
 ```
 
 Taking a look through, it appearrs that quite a bit of people were too lazy to fill in the survey for the tool they used as well as had some garbage data like "your mom".
 
 ```{r}
-table(bootcampers$BootcampName)
+bootcamps = as.data.frame(table(bootcampers$BootcampName))
+names(bootcamps) = c("Bootcamp" , "Freq")
+bootcamps = tail(bootcamps[order(bootcamps$Freq),], 10)
 ```
 
 There is a variety of schools including some that think that Free Code Camp is a bootcamp.
