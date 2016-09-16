@@ -54,7 +54,20 @@ hist(bootcampers$StudentDebtOwe, main="Histogram of the Amount of Student Debt O
      xlab="Student Debt Owed")
 ```
 
-Most of the surveyed people have student debts up to 50k with it sharply dropping after.
+The amount of debt that people have is right skewed. Most of the surveyed people have student debts up to 50k with it sharply dropping after. It is possible that the very end value is a outlier as it is a bit over 3x more than the next value but it is a possible value if say, the person went into med school. To check if it is an outlier though, we can see if it is above 1.5 * IQR(interquartile range) of the third quartile or 1.5 * IQR below the 1st quartile.
+
+```{r}
+quantile(bootcampers$StudentDebtOwe, na.rm=TRUE)
+1.5 * IQR(bootcampers$StudentDebtOwe, na.rm=TRUE)
+```
+
+The outliers are any value below -35000 and above 85000. 
+
+```{r}
+hist(bootcampers$StudentDebtOwe[bootcampers$StudentDebtOwe < 85000], main="Histogram of the Amount of Student Debt Owed", xlab="Student Debt Owed")
+```
+
+In redrawing the graph without the outliers, we can see the end of the data. We can see that the frequency has a decreasing trend until the small spike past the 70k mark.
 
 ```{r}
 fullJobAfter = as.data.frame(table(bootcampers$BootcampFullJobAfter))
