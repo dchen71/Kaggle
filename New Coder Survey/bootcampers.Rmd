@@ -11,6 +11,7 @@ First, the data is loaded.
 #Load libraries
 library(ggplot2)
 library(knitr)
+library(plyr)
 
 #Read the data
 survey = read.csv("input/2016-FCC-New-Coders-Survey-Data.csv")
@@ -70,7 +71,7 @@ hist(bootcampers$StudentDebtOwe[bootcampers$StudentDebtOwe < 85000], main="Histo
 
 In redrawing the graph without the outliers, we can see the end of the data. We can see that the frequency has a decreasing trend until the small spike past the 70k mark.
 
-###Job
+###Job Prospects
 
 ```{r}
 fullJobAfter = as.data.frame(table(bootcampers$BootcampFullJobAfter))
@@ -129,9 +130,15 @@ resources = as.data.frame(table(survey$ResourceOther))
 names(resources) = c("Resource", "Freq")
 resources = tail(resources[order(resources$Freq),], 10)
 #Clean up duplicates from top 10
+resources$Resource[resources$Resource %in% c("Treehouse ", "treehouse", "Team Treehouse")] = "Treehouse"
+resources$Resource[resources$Resource %in% c("Lynda.com")] = "Lynda"
+
+resources = ddply(resources, .(Resource), colwise(sum))
+resources = resources[order(resources$Freq),]
+kable(resources)
 ```
 
-Taking a look through, it appearrs that quite a bit of people were too lazy to fill in the survey for the tool they used as well as had some garbage data like "your mom".
+There were a variety of data resources that were used. A lot of the entries were not filed out or needed to be cleaned up. The top 10 resources which were cleaned up after the fact, were Youtube, w3, Stack Overflow, Books, Lynda, and Treehouse. The most popular, Treehouse, offers a huge variety of courses from web design to game development. Lynda is an older company which offers a huge variety and was recently bought by linkedin.
 
 ```{r}
 bootcamps = as.data.frame(table(bootcampers$BootcampName))
