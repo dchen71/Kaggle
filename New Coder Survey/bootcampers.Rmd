@@ -94,6 +94,22 @@ kable(bootcampMajors)
 
 The majority of degree holders held English degrees followed by Computer Science and Psychology.
 
+```{r}
+#Find the degree/major breakdown
+degreeMajors = as.data.frame(table(bootcampers$SchoolDegree, bootcampers$SchoolMajor))
+#Manually setup degree/major
+aggregated_majors = aggregate(Freq ~ Var1, degreeMajors, max)
+as = degreeMajors[degreeMajors$Freq == 5 & degreeMajors$Var1 == "associate's degree",]
+bs = degreeMajors[degreeMajors$Freq == 26 & degreeMajors$Var1 == "bachelor's degree",]
+ms = degreeMajors[degreeMajors$Freq == 11 & degreeMajors$Var1 == "master's degree (non-professional)",]
+phd = degreeMajors[degreeMajors$Freq == 1 & degreeMajors$Var1 == "Ph.D.",]
+pd = degreeMajors[degreeMajors$Freq == 3 & degreeMajors$Var1 == "professional degree (MBA, MD, JD, etc.)",]
+degreeMajors = rbind(as,bs,ms,phd,pd)
+kable(degreeMajors)
+```
+
+The breakdown for the most popular degree to major is shown here. Those with Associate's degrees primarily came from Computer Science backgrounds. Those with Bachelor's and Master's also primarily came from an English degree background. Those who had a Ph.D are a little more unclear as they had a variety of different degrees including more scientific and more liberal arts oriented degrees. Those with professional degrees equally came from History and law. 
+
 ###Job Prospects
 
 ```{r}
