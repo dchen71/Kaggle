@@ -85,11 +85,11 @@ The majority of people who attended bootcamps already had bachelor's degrees. Fo
 What are the majors of the people then?
 
 ```{r}
-bootcampDegrees = as.data.frame(table(bootcampers$SchoolMajor))
-bootcampDegrees = bootcampDegrees[bootcampDegrees$Freq != 0,]
-bootcampDegrees = tail(bootcampDegrees[order(bootcampDegrees$Freq),], 10)
-names(bootcampDegrees) = c("Major", "Freq")
-kable(bootcampDegrees)
+bootcampMajors = as.data.frame(table(bootcampers$SchoolMajor))
+bootcampMajors = bootcampMajors[bootcampMajors$Freq != 0,]
+bootcampMajors = tail(bootcampMajors[order(bootcampMajors$Freq),], 10)
+names(bootcampMajors) = c("Major", "Freq")
+kable(bootcampMajors)
 ```
 
 The majority of degree holders held English degrees followed by Computer Science and Psychology.
