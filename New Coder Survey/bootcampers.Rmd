@@ -22,7 +22,7 @@ set.seed(1)
 sample(names(survey),20)
 ```
 
-Judging from the names of the variables of the data, there are numerous types of data available such as the resources someone uses to learn, what they did in school, their current work, what they want to do, if they have attended bootcamps, etc.
+Judging from the names of some of the variables of the data, there are numerous types of data available such as the resources someone uses to learn, what they did in school, their current work, what they want to do, if they have attended bootcamps, etc.
 
 Now let's take a look at those who had attended bootcamps.
 
@@ -63,13 +63,36 @@ quantile(bootcampers$StudentDebtOwe, na.rm=TRUE)
 40000 + 1.5 * IQR(bootcampers$StudentDebtOwe, na.rm=TRUE)
 ```
 
-The outliers are any value below -35000 and above 85000. 
+The outliers are any value below -35000 and above 85000. As the lowest value is 2, any value about 85000 is considered an outlier.
 
 ```{r}
 hist(bootcampers$StudentDebtOwe[bootcampers$StudentDebtOwe < 85000], main="Histogram of the Amount of Student Debt Owed", xlab="Student Debt Owed")
 ```
 
 In redrawing the graph without the outliers, we can see the end of the data. We can see that the frequency has a decreasing trend until the small spike past the 70k mark.
+
+###Education
+
+```{r}
+bootcampDegrees = as.data.frame(table(bootcampers$SchoolDegree))
+names(bootcampDegrees) = c("Degree", "Freq")
+bootcampDegrees = bootcampDegrees[order(bootcampDegrees$Freq),]
+kable(bootcampDegrees)
+```
+
+The majority of people who attended bootcamps already had bachelor's degrees. Following them by a quarter are those with some college credit and then those with master's degrees.
+
+What are the majors of the people then?
+
+```{r}
+bootcampDegrees = as.data.frame(table(bootcampers$SchoolMajor))
+bootcampDegrees = bootcampDegrees[bootcampDegrees$Freq != 0,]
+bootcampDegrees = tail(bootcampDegrees[order(bootcampDegrees$Freq),], 10)
+names(bootcampDegrees) = c("Major", "Freq")
+kable(bootcampDegrees)
+```
+
+The majority of degree holders held English degrees followed by Computer Science and Psychology.
 
 ###Job Prospects
 
@@ -90,13 +113,13 @@ hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)]
 According to the histogram, the majority of the people who attended, got jobs within a year of attending. There do seem to be outliers that may be due to false reporting as it is unlikely there were tech bootcamps back in 2003, especially a few years after the dot-com bubble crashed.
 
 ```{r}
-bootcampDegrees = as.data.frame(table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1]))
-names(bootcampDegrees) = c("Degree", "Freq")
-bootcampDegrees = bootcampDegrees[order(bootcampDegrees$Freq),]
-kable(bootcampDegrees)
+jobAfterDegrees = as.data.frame(table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1]))
+names(jobAfterDegrees) = c("Degree", "Freq")
+jobAfterDegrees = jobAfterDegrees[order(jobAfterDegrees$Freq),]
+kable(jobAfterDegrees)
 ```
 
-The bulk of the people who attended bootcamps and had jobs after already had bachelor's degrees. The next biggest group was those with master's degrees and finally those with some college credit.
+The bulk of the people who attended bootcamps and had jobs after bootcamp, already had bachelor's degrees. The next biggest group was those with master's degrees and finally those with some college credit.
 
 ```{r}
 majors_hired = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampFullJobAfter == 1]))
