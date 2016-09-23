@@ -3,7 +3,7 @@ title: "Who are the bootcampers"
 output: html_document
 ---
 
-I'm interested in seeing who are the types of people who attend bootcamps, and the impact of programming bootcamps. I have always felt that bootcamps, with the exceptions of a few of them, feel like a scam due to the lack of transparency and purported, high employment rates afterwards. Hopefully, this self-reported data can help answer some of those questions
+I'm interested in seeing who are the types of people who attend bootcamps, and the impact of programming bootcamps. I have always felt that bootcamps, with the exceptions of a few of them, feel like a scam due to the lack of transparency and purported, high employment rates after attending them. Hopefully, this self-reported data can help answer some of those questions
 
 First, the data is loaded.
 
@@ -22,7 +22,7 @@ set.seed(1)
 sample(names(survey),20)
 ```
 
-Judging from the names of some of the variables of the data, there are numerous types of data available such as the resources someone uses to learn, what they did in school, their current work, what they want to do, if they have attended bootcamps, etc.
+Taking a quick exploratory analysis into the variables of the data, there are numerous types of data available such as the resources someone uses to learn, what they did in school, their current work, what they want to do, if they have attended bootcamps, etc.
 
 Now let's take a look at those who had attended bootcamps.
 
@@ -116,9 +116,13 @@ The breakdown for the most popular degree to major is shown here. Those with Ass
 fullJobAfter = as.data.frame(table(bootcampers$BootcampFullJobAfter))
 names(fullJobAfter) = c("FullJobAfter", "Freq")
 fullJobAfter$FullJobAfter = c("No", "Yes")
-kable(fullJobAfter)
+ggplot(fullJobAfter, aes(x=FullJobAfter, y=Freq, fill=FullJobAfter)) + 
+  geom_bar(stat="identity") +
+  ggtitle("Number of people with full time job after bootcamp") +
+  xlab("Full Time Job After")
 ```
-It seems like that more than half of the people who attended have gotten full time jobs afterwards. 
+
+As can be seen in the plot, more than half of those who had attended, ended up with full time job after bootcamp. 
 
 ```{r}
 hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)], 
@@ -132,7 +136,11 @@ According to the histogram, the majority of the people who attended, got jobs wi
 jobAfterDegrees = as.data.frame(table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1]))
 names(jobAfterDegrees) = c("Degree", "Freq")
 jobAfterDegrees = jobAfterDegrees[order(jobAfterDegrees$Freq),]
-kable(jobAfterDegrees)
+ggplot(jobAfterDegrees, aes(x=Degree, y=Freq, fill=Degree)) + 
+  geom_bar(stat="identity") +
+  ggtitle("Type of Degree of those with job after") +
+  xlab("Degree") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 The bulk of the people who attended bootcamps and had jobs after bootcamp, already had bachelor's degrees. The next biggest group was those with master's degrees and finally those with some college credit.
