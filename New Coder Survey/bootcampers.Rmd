@@ -84,7 +84,7 @@ ggplot(bootcampDegrees, aes(x=Degree, y=Freq, fill=Degree)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-The majority of people who attended bootcamps already had bachelor's degrees. Following themare those with some college credit and those with master's degrees.
+The majority of people who attended bootcamps already had bachelor's degrees. The second and third most type of degrees are some college credit and those with master's degrees.
 
 What are the majors of those college educated people then?
 
@@ -93,6 +93,7 @@ bootcampMajors = as.data.frame(table(bootcampers$SchoolMajor))
 bootcampMajors = bootcampMajors[bootcampMajors$Freq != 0,]
 bootcampMajors = tail(bootcampMajors[order(bootcampMajors$Freq),], 10)
 names(bootcampMajors) = c("Major", "Freq")
+bootcampMajors$Major = gsub(" ", "\n", bootcampMajors$Major) #New line as lazy fix for ggplot
 ggplot(bootcampMajors, aes(x=Major, y=Freq, fill=Major)) + 
   geom_bar(stat="identity") +
   ggtitle("Top 10 Type of degrees for people who attended Bootcamps") +
@@ -130,7 +131,7 @@ ggplot(fullJobAfter, aes(x=FullJobAfter, y=Freq, fill=FullJobAfter)) +
   xlab("Full Time Job After")
 ```
 
-As can be seen in the plot, more than half of those who had attended, ended up with full time job after bootcamp. 
+As can be seen in the plot, more than half of those who had attended, ended up with full time job after bootcamp. The question though, is how long did it take before they had a full time job afterwards?
 
 ```{r}
 hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)], 
@@ -138,7 +139,7 @@ hist(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)]
      xlab  = "Number of months ago after Attending Bootcamp")
 ```
 
-According to the histogram, the majority of the people who attended, got jobs within a year of attending. There do seem to be outliers that may be due to false reporting as it is unlikely there were tech bootcamps back in 2003, especially a few years after the dot-com bubble crashed.
+According to the histogram, the majority of the people who attended, got jobs within a year of attending. There do seem to be outliers that may be due to false reporting as it is unlikely there were tech bootcamps back in 2003, especially a few years after the dot-com bubble crashed. Regardless, the mean number of months before full time employment is `r mean(bootcampers$BootcampMonthsAgo[which(bootcampers$BootcampFullJobAfter == 1)], na.rm=TRUE)`.
 
 ```{r}
 jobAfterDegrees = as.data.frame(table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 1]))
