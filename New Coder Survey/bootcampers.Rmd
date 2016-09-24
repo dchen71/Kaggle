@@ -209,13 +209,16 @@ majors_nothired = tail(majors_nothired[order(majors_nothired$Freq),], 10)
 names(majors_nothired) = c("Major", "Freq")
 ggplot(majors_nothired, aes(x=Major, y=Freq, fill=Major)) + 
   geom_bar(stat="identity") +
-  ggtitle("School Major of those without job after") +
-  xlab("Degree") +
+  ggtitle("Top 10 School Major of those without job after") +
+  xlab("Major") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-The majors that was not hired the most was also English. Interestingly, it is followed by degree holders of Computer Science and Business Administration. 
+The top major again was English. Interestingly, it is followed by degree holders of Computer Science and Business Administration. 
 
+###Bootcamps
+
+As there are a lot of different bootcamps, only the top 10 was examined as there were many bootcamps with a single person attending. 
 
 ```{r}
 bootcamps = as.data.frame(table(bootcampers$BootcampName))
@@ -224,13 +227,33 @@ bootcamps = tail(bootcamps[order(bootcamps$Freq),], 10)
 ggplot(bootcamps, aes(x=Bootcamp, y=Freq, fill=Bootcamp)) + 
   geom_bar(stat="identity") +
   ggtitle("Top 10 Attended Bootcamps") +
-  xlab("Degree") +
+  xlab("Bootcamp") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-
-As there are a lot of different bootcamps, only the top 10 was examined as there were many with a single person attending. There are also some dummy data stemming from Free Code Camp not being an actual bootcamp.
 
 General Assembly had the highest attendance rate. General Assembly is one of the oldest bootcamps as well as has numerous courses. Flatiron School is the second most attended and offers in person programs in New York as well as online. Dev Bootcamp is another one of the older bootcamps, offering courses in numerous places as well as having online courses now. 
 
 The top three offers online courses as well as numerous other in person courses in many locations. The courses that they offer in common are web development related.
 
+Now the question is, what are the full time prospects like with the top 10 most popular bootcamps?
+
+```{r}
+top10_bootcamps = subset(bootcampers, BootcampName %in% bootcamps$Bootcamp)
+bootcamp_fulltime = as.data.frame(table(bootcampers$BootcampName[bootcampers$BootcampFullJobAfter == 1]))
+bootcamp_fulltime = bootcamp_fulltime[bootcamp_fulltime$Var1 %in% bootcamps$Bootcamp,]
+names(bootcamp_fulltime) = c("Bootcamp", "Freq")
+bootcamp_nofulltime = as.data.frame(table(bootcampers$BootcampName[bootcampers$BootcampFullJobAfter == 0]))
+bootcamp_nofulltime = bootcamp_nofulltime[bootcamp_nofulltime$Var1 %in% bootcamps$Bootcamp,]
+names(bootcamp_nofulltime) = c("Bootcamp", "Freq")
+bootcamp_stats = merge(bootcamp_fulltime, bootcamp_nofulltime, by.x="Bootcamp", by.y="Bootcamp")
+names(bootcamp_stats) = c("Bootcamp", "Fulltime", "NoFullTime")
+bootcamp_stats$Percent = (bootcamp_stats$Fulltime/(bootcamp_stats$NoFullTime + bootcamp_stats$Fulltime)) * 100
+ggplot(bootcamp_stats, aes(x=Bootcamp, y=Percent, fill=Bootcamp)) + 
+  geom_bar(stat="identity") +
+  ggtitle("Percentage of job afterwards by top 10 bootcamps") +
+  xlab("Bootcamp") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+###Conclusion
