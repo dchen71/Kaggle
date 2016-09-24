@@ -275,3 +275,7 @@ ggplot(bootcamp_stats, aes(x=Bootcamp, y=AvgTime, fill=Bootcamp)) +
 The lowest number of months needed came from Prime Digital Academy. Interestingly enough, their percentage of those with full time jobs afterwards was one the lowest of the top 10 most attended schools. Inversely, Code Fellows, which had similar percentage of people with jobs afterwards, had the longest average number of months needed. Turing, which had the second highest percentage of those with jobs afterwards, was the second lowest in this survey. Hack Reactor, with it's 95% rating, took a little bit longer at 9.3 months.
 
 ###Conclusion
+
+The type of people who attend bootcamps tended to be younger people in the 20s-30s. They may owe student debt ranging from about 0-80k. They likely already have Bachelor's Degrees and have majors in non-technical skilled fields. A lot of these people also like to use Treehouse as a secondary resource. 
+
+In terms of bootcamps, 58.4% of those attended found jobs afterwards. The majority of those people found full time employment within a year after bootcamp. The people going into the programs tended to be Bachelor Degree holders in English. The percentage of employment after bootcamp depended on the schools attended. For example, Hack Reactor had a percentage of about 95% of it's alumnis finding a full time position however, taking an average of 9 months. However, it is important to take into account that the data may have self-reporting bias and low sample sizes for certain schools.
