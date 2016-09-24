@@ -119,6 +119,27 @@ kable(degreeMajors)
 
 The breakdown for the most popular degree to major is shown here. Those with Associate's degrees primarily came from Computer Science backgrounds. Those with Bachelor's and Master's also primarily came from an English degree background. Those who had a Ph.D are a little more unclear as they had a variety of different degrees including more scientific and more liberal arts oriented degrees. Those with professional degrees equally came from History and law. 
 
+###Resources used
+
+```{r}
+resources = as.data.frame(table(survey$ResourceOther))
+names(resources) = c("Resource", "Freq")
+resources = tail(resources[order(resources$Freq),], 10)
+#Clean up duplicates from top 10
+resources$Resource[resources$Resource %in% c("Treehouse ", "treehouse", "Team Treehouse")] = "Treehouse"
+resources$Resource[resources$Resource %in% c("Lynda.com")] = "Lynda"
+
+resources = ddply(resources, .(Resource), colwise(sum))
+resources = resources[order(resources$Freq),]
+ggplot(resources, aes(x=Resource, y=Freq, fill=Resource)) + 
+  geom_bar(stat="identity") +
+  ggtitle("Top 6 Resources used") +
+  xlab("Degree") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+There were a variety of data resources that were used. A lot of the entries were not filed out or needed to be cleaned up. The top 10 resources which were cleaned up after the fact, were Youtube, w3, Stack Overflow, Books, Lynda, and Treehouse. The most popular, Treehouse, offers a huge variety of courses from web design to game development. Lynda is an older company which offers a huge variety and was recently bought by linkedin.
+
 ###Job Prospects
 
 ```{r}
@@ -161,7 +182,7 @@ majors_hired = tail(majors_hired[order(majors_hired$Freq),], 10)
 names(majors_hired) = c("Major", "Freq")
 ggplot(majors_hired, aes(x=Major, y=Freq, fill=Major)) + 
   geom_bar(stat="identity") +
-  ggtitle("School Major of those with job after") +
+  ggtitle("Top 10 School Major of those with job after") +
   xlab("Degree") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
@@ -169,10 +190,17 @@ ggplot(majors_hired, aes(x=Major, y=Freq, fill=Major)) +
 The majority of those who were hired came from English majors, followed by political science, psychology, and economics majors. There do appear to be those who had degrees in IT and Computer Science, and other more directly computationally intensive majors listed here.
 
 ```{r}
-table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 0])
+nojobAfterDegrees = as.data.frame(table(bootcampers$SchoolDegree[bootcampers$BootcampFullJobAfter == 0]))
+names(nojobAfterDegrees) = c("Degree", "Freq")
+nojobAfterDegrees = nojobAfterDegrees[order(jobAfterDegrees$Freq),]
+ggplot(nojobAfterDegrees, aes(x=Degree, y=Freq, fill=Degree)) + 
+  geom_bar(stat="identity") +
+  ggtitle("Type of Degree of those without job after") +
+  xlab("Degree") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-The degrees held by those that did not manage to get a full time job after are similar to those who did. Bachelor's degree holders form the bulk of the numbers followed by master's degree holders. 
+The degrees held by those that did not manage to get a full time job after are similar to those who did. The majority of the degrees held by those without full time employment after are bachelor's degrees, some college credit, and master's degrees.
 
 ```{r}
 majors_nothired = as.data.frame(table(bootcampers$SchoolMajor[bootcampers$BootcampFullJobAfter == 0]))
@@ -188,25 +216,6 @@ ggplot(majors_nothired, aes(x=Major, y=Freq, fill=Major)) +
 
 The majors that was not hired the most was also English. Interestingly, it is followed by degree holders of Computer Science and Business Administration. 
 
-
-```{r}
-resources = as.data.frame(table(survey$ResourceOther))
-names(resources) = c("Resource", "Freq")
-resources = tail(resources[order(resources$Freq),], 10)
-#Clean up duplicates from top 10
-resources$Resource[resources$Resource %in% c("Treehouse ", "treehouse", "Team Treehouse")] = "Treehouse"
-resources$Resource[resources$Resource %in% c("Lynda.com")] = "Lynda"
-
-resources = ddply(resources, .(Resource), colwise(sum))
-resources = resources[order(resources$Freq),]
-ggplot(resources, aes(x=Resource, y=Freq, fill=Resource)) + 
-  geom_bar(stat="identity") +
-  ggtitle("Top 6 Resources used") +
-  xlab("Degree") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-There were a variety of data resources that were used. A lot of the entries were not filed out or needed to be cleaned up. The top 10 resources which were cleaned up after the fact, were Youtube, w3, Stack Overflow, Books, Lynda, and Treehouse. The most popular, Treehouse, offers a huge variety of courses from web design to game development. Lynda is an older company which offers a huge variety and was recently bought by linkedin.
 
 ```{r}
 bootcamps = as.data.frame(table(bootcampers$BootcampName))
