@@ -255,6 +255,23 @@ ggplot(bootcamp_stats, aes(x=Bootcamp, y=Percent, fill=Bootcamp)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-As can be seen in the graph, the best is Hack Reactor. Hack Reactor had about 95% of it's particpants with jobs after the program. The most attended one, General Assembly, had about 61%. The average percentage for job afterwards is `r mean(bootcamp_stats$Percent)`.
+As can be seen in the graph, the best is Hack Reactor. Hack Reactor had about 95% of it's particpants with jobs after the program. The most attended one, General Assembly, had about 61%. The average percentage for job afterwards is `r mean(bootcamp_stats$Percent)`. What are the average number of months needed for employment?
+
+```{r}
+bootcamp_stats$AvgTime = NA
+for(i in unique(droplevels(top10_bootcamps$BootcampName))){
+  bootcamp_subset = subset(top10_bootcamps, BootcampName == i)
+  bootcamp_stats$AvgTime[bootcamp_stats$Bootcamp == i] = mean(bootcamp_subset$BootcampMonthsAgo[which(bootcamp_subset$BootcampFullJobAfter == 1)], na.rm=TRUE)
+}
+
+ggplot(bootcamp_stats, aes(x=Bootcamp, y=AvgTime, fill=Bootcamp)) + 
+  geom_bar(stat="identity") +
+  ggtitle("Average number of months needed for job by top 10 bootcamps") +
+  xlab("Bootcamp") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  ylab("Average Number of Months")
+```
+
+The lowest number of months needed came from Prime Digital Academy. Interestingly enough, their percentage of those with full time jobs afterwards was one the lowest of the top 10 most attended schools. Inversely, Code Fellows, which had similar percentage of people with jobs afterwards, had the longest average number of months needed. Turing, which had the second highest percentage of those with jobs afterwards, was the second lowest in this survey. Hack Reactor, with it's 95% rating, took a little bit longer at 9.3 months.
 
 ###Conclusion
