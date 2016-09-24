@@ -253,7 +253,8 @@ ggplot(bootcamp_stats, aes(x=Bootcamp, y=Percent, fill=Bootcamp)) +
   ggtitle("Percentage of job afterwards by top 10 bootcamps") +
   xlab("Bootcamp") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
 ```
+
+As can be seen in the graph, the best is Hack Reactor. Hack Reactor had about 95% of it's particpants with jobs after the program. The most attended one, General Assembly, had about 61%. The average percentage for job afterwards is `r mean(bootcamp_stats$Percent)`.
 
 ###Conclusion
