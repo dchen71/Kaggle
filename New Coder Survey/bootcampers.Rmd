@@ -7,7 +7,7 @@ I'm interested in seeing who are the types of people who attend bootcamps, and t
 
 First, the data is loaded.
 
-```{r}
+```{r, warning=FALSE}
 #Load libraries
 library(ggplot2)
 library(knitr)
@@ -77,19 +77,27 @@ In redrawing the graph without the outliers, we can see the end of the data. We 
 bootcampDegrees = as.data.frame(table(bootcampers$SchoolDegree))
 names(bootcampDegrees) = c("Degree", "Freq")
 bootcampDegrees = bootcampDegrees[order(bootcampDegrees$Freq),]
-kable(bootcampDegrees)
+ggplot(bootcampDegrees, aes(x=Degree, y=Freq, fill=Degree)) + 
+  geom_bar(stat="identity") +
+  ggtitle("Type of degrees for people who attended Bootcamps") +
+  xlab("Degree") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-The majority of people who attended bootcamps already had bachelor's degrees. Following them by a quarter are those with some college credit and then those with master's degrees.
+The majority of people who attended bootcamps already had bachelor's degrees. Following themare those with some college credit and those with master's degrees.
 
-What are the majors of the people then?
+What are the majors of those college educated people then?
 
 ```{r}
 bootcampMajors = as.data.frame(table(bootcampers$SchoolMajor))
 bootcampMajors = bootcampMajors[bootcampMajors$Freq != 0,]
 bootcampMajors = tail(bootcampMajors[order(bootcampMajors$Freq),], 10)
 names(bootcampMajors) = c("Major", "Freq")
-kable(bootcampMajors)
+ggplot(bootcampMajors, aes(x=Major, y=Freq, fill=Major)) + 
+  geom_bar(stat="identity") +
+  ggtitle("Top 10 Type of degrees for people who attended Bootcamps") +
+  xlab("Major") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 The majority of degree holders held English degrees followed by Computer Science and Psychology.
