@@ -47,3 +47,6 @@ Temporary Items
 
 #Ignore r history
 */.Rhistory
+
+#Git ignore iPython checkpoints
+*/.ipynb_checkpoints/
