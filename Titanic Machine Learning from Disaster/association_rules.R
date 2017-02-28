@@ -53,6 +53,10 @@ for(i in 1:length(total$Name)){
 }
 total$title <- as.factor(total$title)
 
+#Save unmodified version
+total.all = total
+test.all = tail(total, nrow(test))
+
 #Convert to factors
 total = total %>% mutate_if(is.integer, as.factor) %>% mutate_if(is.numeric, as.factor)
 total$Sex = as.factor(total$Sex)
