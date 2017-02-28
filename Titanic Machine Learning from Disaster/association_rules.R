@@ -67,6 +67,7 @@ total$Name = NULL
 total$Ticket = NULL
 total$Cabin = NULL
 total$Fare = NULL
+total$PassengerId = NULL
 
 #Remake the train and test
 train = head(total, nrow(train))
@@ -87,6 +88,7 @@ pred = predict(trans.train, trans.test, rules_cut) #Get predicted grouping
 #Change results of prediction to 0 for deceased and 1 for alive
 test$Survived = pred #Add in prediction
 test$Survived = ifelse(test$Survived == 1, 0, 1)
+test$PassengerId = test.all$PassengerId
 
 #Save test file
 write.csv(test[,c("PassengerId", "Survived")],"prediction.csv", row.names=FALSE)
