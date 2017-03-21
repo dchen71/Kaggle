@@ -77,7 +77,10 @@ vg_platform <- vg %>%
   count(Platform) %>% 
   glimpse()
 
-hchart(vg_platform, "column", hcaes(x = Platform, y = n))
+hchart(vg_platform, "column", hcaes(x = Platform, y = n)) %>%
+  hc_xAxis(title=list(text="Platform")) %>%
+  hc_yAxis(title=list(text="Number of Releases")) %>%
+  hc_title(text="Number of Releases vs Year per platform")
 ```
 
 As can be seen from the graph, the highest number of games were developed for the PS2 and the lowest being those from the very early generations such as the 3DO.
@@ -90,7 +93,10 @@ ps2 <- vg %>%
   filter(Platform == "PS2", !is.na(Year_of_Release)) %>%
   count(Platform, Year_of_Release)
 
-hchart(ps2, "line", hcaes(x=Year_of_Release, y=n))
+hchart(ps2, "line", hcaes(x=Year_of_Release, y=n)) %>%
+  hc_xAxis(title=list(text="Year")) %>%
+  hc_yAxis(title=list(text="Number of Releases")) %>%
+  hc_title(text="Number of Releases vs Year for PS2")
 ```
 
 As we can see, 2000 was when the PS2 was released. From there, it rapidly gained new titles. However, the title number began to stagnate around 2003. In 2006, the PS3 was released the number of titles for the PS2 became to decline.
@@ -101,7 +107,10 @@ ps23 <- vg %>%
   filter(Platform %in% c("PS2", "PS3"), !is.na(Year_of_Release)) %>%
   count(Platform, Year_of_Release)
 
-hchart(ps23, "line", hcaes(x=Year_of_Release, y=n, group=Platform))
+hchart(ps23, "line", hcaes(x=Year_of_Release, y=n, group=Platform)) %>%
+  hc_xAxis(title=list(text="Year")) %>%
+  hc_yAxis(title=list(text="Number of Releases")) %>%
+  hc_title(text="Number of Releases vs Year for PS2 and PS3")
 ```
 
 As can be seen in the plot above, the decline in the PS2 games began with the rise of the PS3. The peak of the PS3 games released was around when games made for the PS2 were about discontinued.
