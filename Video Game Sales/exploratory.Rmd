@@ -5,225 +5,56 @@ output: html_document
 
 ## Introduction
 
-I'm interested in finding out what the differences in deaths are between education groups. I assume, that the more educated that one is, the less likely one will die by non-natural causes. 
+This is a very light exploratory analysis primarily done to familiarize myself with the highcharter package.
+
+First, the necessary libraries and datafiles are loaded.
+
 
 ## Preprocessing the data
 
-First, the input data is loaded in.
-
 ```{r}
-# Packages
-library(readr)
+#Load necessary libraries
+library(ggplot2) # Data visualization
+library(readr) # CSV file I/O, e.g. the read_csv function
+library(highcharter)
 library(dplyr)
-library(ggplot2)
-
-# Read input data
-deathRecords = read_csv("input/DeathRecords.csv")
-mannerOfDeath = read_csv("input/MannerOfDeath.csv")
-education2003 = read_csv("input/Education2003Revision.csv")
-```
-
-Next, the dataset is subset and merged with the manner of death and education to determine the actual description of the data.
-
-```{r}
-filteredRecords = deathRecords[,c('Id', "MannerOfDeath", "Education2003Revision")]
-
-# Merge together manner of death and educational info
-filteredRecords = merge(filteredRecords, mannerOfDeath, by.x="MannerOfDeath", by.y="Code")
-filteredRecords$MannerOfDeath = filteredRecords$Description
-filteredRecords$Description = NULL
-filteredRecords = merge(filteredRecords, education2003, by.x="Education2003Revision", by.y="Code")
-filteredRecords$Education2003Revision = filteredRecords$Description
-filteredRecords$Description = NULL
-```
-
-First, we take a quick look at the distribution of manner of deaths listed in the data.
-
-```{r}
-#Check the distribution of manner of death in the dataset
-ggplot(filteredRecords, aes(x=MannerOfDeath, color=MannerOfDeath, fill=MannerOfDeath)) + 
-  geom_bar(stat="count") + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  ggtitle("The Counts of the Manner of Deaths")
-```
-
-The data shows that the majority of the dataset that was collected, died of natural causes. The next highest values are not specified and accidental.
-
-Next, we take a look at the different levels of education for each death.
-
-```{r}
-#Check the distribution of education in the dataset
-ggplot(filteredRecords, aes(x=Education2003Revision, color=Education2003Revision, fill=Education2003Revision)) + 
-  geom_bar(stat="count") + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  ggtitle("The Counts of the Education Levels")
-```
-
-The data collected shows that much of the deaths in the dataset are from high school/ged completed people. The least are those with doctorate or professional degrees.
-
-Next, the data is aggregated based on education and manner of death to show the number of deaths for each manner of death in each education group.
-
-```{r}
-#Group by education and manner of death
-grouped_data = aggregate(filteredRecords, 
-                         by=list(filteredRecords$Education2003Revision, filteredRecords$MannerOfDeath),
-                         FUN=length)
-
-grouped_data$Id = NULL
-grouped_data$MannerOfDeath = NULL
-names(grouped_data) = c("Education", "MannerOfDeath", "Count")
-grouped_data$Education = as.factor(grouped_data$Education)
-grouped_data$MannerOfDeath = as.factor(grouped_data$MannerOfDeath)
-```
-
-In addition, an extra column is created to help determine the percentage of deaths per each education group.
-
-```{r}
-#Want to normalize to group to find percentage of count/total # in group
-total8th = sum(grouped_data$Count[grouped_data$Education == "8th grade or less"])
-total9th = sum(grouped_data$Count[grouped_data$Education == "9 - 12th grade, no diploma"])
-totalAssoc = sum(grouped_data$Count[grouped_data$Education == "Associate degree"])
-totalBac = sum(grouped_data$Count[grouped_data$Education == "Bachelor's degree"])
-totalDoc = sum(grouped_data$Count[grouped_data$Education == "Doctorate or professional degree"])
-totalHigh = sum(grouped_data$Count[grouped_data$Education == "high school graduate or GED completed"])
-totalMast = sum(grouped_data$Count[grouped_data$Education == "Master's degree"])
-totalColl = sum(grouped_data$Count[grouped_data$Education == "some college credit, but no degree"])
-totalUnknown = sum(grouped_data$Count[grouped_data$Education == "Unknown"])
-
-#Normalize data by dividing each value based on education group total numbers
-grouped_data$PercentGroup = 0
-
-for(i in 1:nrow(grouped_data)){
-  if(grouped_data$Education[i] == "8th grade or less"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / total8th
-  } else if(grouped_data$Education[i] == "9 - 12th grade, no diploma"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / total9th
-  } else if(grouped_data$Education[i] == "Associate degree"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / totalAssoc
-  } else if(grouped_data$Education[i] == "Bachelor's degree"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / totalBac
-  } else if(grouped_data$Education[i] == "Doctorate or professional degree"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / totalDoc
-  } else if(grouped_data$Education[i] == "high school graduate or GED completed"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / totalHigh
-  } else if(grouped_data$Education[i] == "Master's degree"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / totalMast
-  } else if(grouped_data$Education[i] == "some college credit, but no degree"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / totalColl
-  } else if(grouped_data$Education[i] == "Unknown"){
-    grouped_data$PercentGroup[i] = grouped_data$Count[i] / totalUnknown
-  }
-}
-grouped_data$PercentGroup = grouped_data$PercentGroup * 100
-```
-
-## So how are people dying?
-
-To explore how people are dying, we can compare based on the numbers of people who are dying as well as the percentage. 
-
-First, we wrun a helper function to help display the counts and the percentages.
-
-```{r}
-#Method to print both the count based and percentage based graphs
-plotGraph = function(df, manner){
-  subset_level = subset(df, MannerOfDeath == manner)
-  titlePer = paste("The percentage of deaths per education for", manner)
-  print(ggplot(subset_level, aes(x=Education, y=PercentGroup, color=Education, fill=Education)) + 
-    geom_bar(stat="identity") +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    ggtitle(titlePer))
-  titleCount = paste("The number of deaths per education for", manner)
-  print(ggplot(subset_level, aes(x=Education, y=Count, color=Education, fill=Education)) + 
-    geom_bar(stat="identity") +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    ggtitle(titleCount))
-}
-```
-
-Now we finally take a look at the data. First, we will take a look at the accidents.
-
-###Accidents
-
-```{r}
-plotGraph(grouped_data, "Accident")
-```
-
-Based on the count data, there are a lot of accidental deaths coming from the high school/ged group. However, when we actualy look at the percentage of the group that actually dies from accidents, we see that it drops to roughly similar levels with the other groups. The highest percentage group that has accidental deaths are unknown, with 9-12th grade and some college closeby. The lower groups include 8th grade and less, bachelor's degree holders, doctorates, and master's degree holders.
-
-###Unknown
-
-```{r}
-plotGraph(grouped_data, "Could not determine")
-```
-
-The number of deaths, that could not be determined is lower compared to accidents. Regardless, high school graduates are still top of the list which is unsurprising due to the sheer number that was collected in the data set. The overall percentage that die in a way that could not be determined is relatively low with most of the groups under 0.5%. The exceptions are 8th grade and less and unknown education people.
-
-###Homicide
-
-```{r}
-plotGraph(grouped_data, "Homicide")
-```
-
-The highest number of recorded homicides were high school graduates followed by 9th-12th graders. The least number of deaths comes from doctorates, followed by master's degree holders, and then roughly between associate degree and bachelor degree holders. Switching it over to percentages, we see a different picture. It appears that people who dropped out of high school without a diploma, had almost a 1.5% deaths attributed to homicides. In addition, we see clearly that doctorate degree holders and to a slightly lesser degree, bachelor's degree and master's degree holders were murdered the least.
-
-###Natural
-
-```{r}
-plotGraph(grouped_data, "Natural")
-```
-
-The highest numbers of deaths in the dataset are due to natural causes. When we look at the percentages within education groups, we see that they are all roughly about the same with the outlier being unknown. This is expected as most people will die of natural causes.
-
-###Not specified
-
-```{r}
-plotGraph(grouped_data, "Not specified")
-
-```
-
-The count data follows the trends as the other dataset with high school graudates leading in numbers. The percentages show that unknown education group die in a not specified way. The other groups roughly die by not specified ways at least 10% with interestingly doctorate/professional degree holders dying at least 20% from this.
-
-###Pending investigation
-
-```{r}
-plotGraph(grouped_data, "Pending investigation")
-```
-
-The count data for deaths pending investigation follow similar trends as the other factors of death such as the higher number of high school graduate/GED completed people and low number of doctoral degree holders dying deaths pending investigation. Looking at the actual percentage, a very low percentage of each group dies a death that was pending investigation. The highest is unknown, with a percentage of 0.44%.
-
-###Suicide
-
-```{r}
-plotGraph(grouped_data, "Suicide")
-```
-
-The count data shows similar trends as the other death types. When we look at the percentage, we see a different picture. From the data gathered, we see that most groups seem to suicide at around 1.5-2%. We see the minimum of about 0.5% coming from the 8th grade or less group and a high of about 2.25% coming from the some college credit people.
-
-
-###Per education distrubtion
-
-The following shows the distribution based on the education groups for the deceased.
-
-```{r}
-#Plots per group distrubtion based on percentage
-plotPercentDeath = function(df,group){
-    subset_level = subset(df, Education == group)
-    title = paste("Distribution of death for", group)
-    print(ggplot(subset_level, aes(x=MannerOfDeath, y=PercentGroup, color=MannerOfDeath, fill=MannerOfDeath)) + 
-      geom_bar(stat="identity") +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-      ggtitle(title))
-}
 ```
 
 ```{r}
-for(i in 1:length(levels(grouped_data$Education))){
-  plotPercentDeath(grouped_data, levels(grouped_data$Education)[i])
-}
+#Load datafile
+vg <- read_csv("input/Video_Games_Sales_as_at_22_Dec_2016.csv")
 ```
 
-As can be seen by the graphs above, every group had a good chunk of people die by natural causes, followed by not specified at a much lower rate, and finally by accidents. 
+Next, some very preliminary look into the data to see how the data is structured and looks like:
 
-##Conclusion
+```{r}
+head(vg)
+```
 
-Based on the data several conclusions for the education types can be drawn. People of all education levels are most likely to die from natural causes, with about 70-80% of deaths in the USA attributed to natural causes. Those whose education could not be determined appeared to have a higher percentage of undetermined deaths. Deaths from accidents are somewhat common as it accounted for at least about 4% of the deaths in each group. Homocides are a rare occurence and higher educations appear to be murdered less and people who attended high school and no diploma appear to be murdered at a higher percentage. Suicides are more common than homocides. Interestingly, those with middle school education or less, commited suicide at a lesser percentage than the rest of the groups while those with some college credit, commited suicide at the highest percentage. Higher education in this case appears to confer lower percentages of getting murdered. It's to be noted that the data is heavily skewed towards lower education background, especically high school graduates, and that the data spans only 2014 which may account for some of the discrepancy with expectations. 
+```{r}
+tail(vg)
+```
+
+As can be seen, the data is broken up based on the title of the games, platform, when it was released, genre, publishers, sales data, and ratings.
+
+For now, we check to see if there are NA values in any of the columns.
+
+```{r}
+sapply(vg, function(x)(anyNA(x)))
+```
+
+As can be seen, not all for of the rows are completely filled in, including useful classifier data including the name or genre. To confirm what the data is comprised of, we will see the classes of all of the columns.
+
+```{r}
+str(vg)
+```
+
+As can be seen in the output, the year and the user score will have to be fixed to become numeric data columns.
+
+```{r}
+vg_platform <- vg %>% 
+  count(Platform) %>% 
+  glimpse()
+
+hchart(vg_platform, "column", hcaes(x = Platform, y = n))
+```
