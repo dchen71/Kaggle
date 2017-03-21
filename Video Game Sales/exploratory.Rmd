@@ -1,5 +1,5 @@
 ---
-title: "How do educated people kick the bucket?"
+title: "Exploratory Video Game Analysis"
 output: html_document
 ---
 
@@ -51,10 +51,57 @@ str(vg)
 
 As can be seen in the output, the year and the user score will have to be fixed to become numeric data columns.
 
+First, the year of release column will be fixed.
+
 ```{r}
+vg <- vg %>%
+  mutate(Year_of_Release = as.integer(Year_of_Release))
+```
+
+Next, the user score.
+
+```{r}
+vg <- vg %>% 
+  mutate(User_Score = as.numeric(User_Score))
+```
+
+Now that the data has been processed, we can begin to properly examine the data.
+
+## Data Analysis
+
+First, we look at the number of games per platform.
+
+```{r}
+#Bar plot showing the number of titles per platform
 vg_platform <- vg %>% 
   count(Platform) %>% 
   glimpse()
 
 hchart(vg_platform, "column", hcaes(x = Platform, y = n))
 ```
+
+As can be seen from the graph, the highest number of games were developed for the PS2 and the lowest being those from the very early generations such as the 3DO.
+
+Now we look at the frequency of releases for the PS2.
+
+```{r}
+#Line chart of PS2 by year
+ps2 <- vg %>%
+  filter(Platform == "PS2", !is.na(Year_of_Release)) %>%
+  count(Platform, Year_of_Release)
+
+hchart(ps2, "line", hcaes(x=Year_of_Release, y=n))
+```
+
+As we can see, 2000 was when the PS2 was released. From there, it rapidly gained new titles. However, the title number began to stagnate around 2003. In 2006, the PS3 was released the number of titles for the PS2 became to decline.
+
+```{r}
+#Grouped line chart of PS2 and PS3
+ps23 <- vg %>%
+  filter(Platform %in% c("PS2", "PS3"), !is.na(Year_of_Release)) %>%
+  count(Platform, Year_of_Release)
+
+hchart(ps23, "line", hcaes(x=Year_of_Release, y=n, group=Platform))
+```
+
+As can be seen in the plot above, the decline in the PS2 games began with the rise of the PS3. The peak of the PS3 games released was around when games made for the PS2 were about discontinued.
